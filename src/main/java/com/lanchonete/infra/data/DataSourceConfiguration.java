@@ -14,9 +14,17 @@ import java.util.Objects;
 public class DataSourceConfiguration {
     private final String ambiente = System.getenv("environment");
 
+    /**
+     * Configura data base port ambiente
+     * Ambiente Vazio é de Test usando o h2
+     * Com ambiente dev ou prod usando o Postgresql
+     * @return DataSource
+     */
     @Bean
     public DataSource dataSource() {
-        return (Objects.nonNull(ambiente) && !ambiente.isEmpty()) ? getDataSourceAmbiente() : getDataSourceImMemory();
+        return (Objects.nonNull(ambiente) && !ambiente.isEmpty())
+                ? getDataSourceAmbiente()
+                : getDataSourceImMemory();
     }
 
     @Bean
@@ -29,7 +37,7 @@ public class DataSourceConfiguration {
             adapter.setDatabase(Database.H2);
             adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
         }
-        adapter.setGenerateDdl(false);
+        adapter.setGenerateDdl(true);
         adapter.setPrepareConnection(false);
         adapter.setShowSql(false);
         return adapter;
@@ -38,7 +46,7 @@ public class DataSourceConfiguration {
     private DataSource getDataSourceAmbiente() {
         DataSourceBuilder builder = DataSourceBuilder.create();
         builder.driverClassName("org.postgresql.Driver");
-        builder.url(System.getenv("data_base"));
+        builder.url(System.getenv("data_base_url"));
         builder.username(System.getenv("data_base_user"));
         builder.password("data_base_password");
 

@@ -28,4 +28,6 @@ public abstract class AbstractProduto extends BaseEntity {
     @Column()
     private EnumProdutoTipo produtoTipo;
 
+    private String nome;
+
 }

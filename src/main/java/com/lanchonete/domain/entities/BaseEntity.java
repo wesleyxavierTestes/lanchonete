@@ -16,7 +16,9 @@ import lombok.Setter;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    protected long id;
 
-    private Calendar dataCadastro;
+    protected Calendar dataCadastro;
+
+    protected boolean status; 
 }

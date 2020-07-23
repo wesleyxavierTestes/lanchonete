@@ -11,6 +11,12 @@ import com.lanchonete.domain.entities.produtos.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produtos.baseentity.IProduto;
 import com.lanchonete.domain.entities.produtos.baseentity.IProdutoCardapio;
 
+import lombok.*;
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Combo  extends AbstractProduto implements IProdutoCardapio {
  

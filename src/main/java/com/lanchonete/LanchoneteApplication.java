@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @ComponentScan({
 	"com.lanchonete.infra.data",
-	"com.lanchonete.controllers"
+	"com.lanchonete.controllers",
+	"com.lanchonete.domain.services"
 })
 @EntityScan("com.lanchonete.domain.entities")
 @EnableJpaRepositories("com.lanchonete.infra.repositorys")

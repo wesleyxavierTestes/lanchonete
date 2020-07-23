@@ -3,13 +3,15 @@ package com.lanchonete.domain.entities.produtos.entities;
 import javax.persistence.Entity;
 
 import com.lanchonete.domain.entities.produtos.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produtos.baseentity.IProdutoComposicao;
+import com.lanchonete.domain.entities.produtos.baseentity.IProduto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Builder
 @Data
 @Entity
-public class Ingrediente  extends AbstractProduto implements IProdutoComposicao {
+public class Produto extends AbstractProduto implements IProduto {
+
     
 }

@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.ArrayList;
 import java.net.URL;
 
-import com.lanchonete.apllication.dto.cliente.ClienteDto;
-import com.lanchonete.domain.entities.cliente.Cliente;
-import com.lanchonete.domain.services.cliente.ClienteService;
+import com.lanchonete.apllication.dto.cliente.EnderecoDto;
+import com.lanchonete.domain.entities.cliente.Endereco;
+import com.lanchonete.domain.services.cliente.EnderecoService;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ClienteTest {
+public class EnderecoTest {
     
 	@LocalServerPort
 	private int port;
@@ -37,26 +37,26 @@ public class ClienteTest {
     private TestRestTemplate restTemplate;
     
     @Autowired
-    protected ClienteService _repository;
+    protected EnderecoService _repository;
 
     @Test
-    @DisplayName("Deve listar todos clientes com lista vazia")
+    @DisplayName("Deve listar todos enderecos com lista vazia")
 	public void listar() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteList+"/?page=1", port);
+        String url = String.format(URL_CONSTANTS_TEST.EnderecoList+"/?page=1", port);
     
         ResponseEntity<String> response = restTemplate
         .getForEntity(new URL(url).toString(), String.class);
         String json = response.getBody();
-       Page<Cliente> page = new PageImpl<>(new ArrayList<Cliente>());
+       Page<Endereco> page = new PageImpl<>(new ArrayList<Endereco>());
        
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(json);
 	}
 
     @Test
-    @DisplayName("Deve buscar um cliente")
+    @DisplayName("Deve buscar um endereco")
     public void find_inexistente() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteFind+"/?id=100000", port);
+        String url = String.format(URL_CONSTANTS_TEST.EnderecoFind+"/?id=100000", port);
 
         ResponseEntity<Object> response = restTemplate
                 .getForEntity(new URL(url).toString(), Object.class);
@@ -66,14 +66,15 @@ public class ClienteTest {
     }
 
     @Test
-    @DisplayName("Deve tentar salvar cliente invalido")
+    @DisplayName("Deve tentar salvar endereco invalido")
     public void save_invalid_test() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteSave, port);
+        String url = String.format(URL_CONSTANTS_TEST.EnderecoSave, port);
 
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(new ClienteDto(), null);
+        HttpEntity<EnderecoDto> requestUpdate = new HttpEntity<>(new EnderecoDto(), null);
 
-        ResponseEntity<ClienteDto> response = restTemplate
-                .exchange(new URL(url).toString(), HttpMethod.POST, requestUpdate, ClienteDto.class);
+        ResponseEntity<EnderecoDto> response = restTemplate
+                .exchange(new URL(url).toString(), HttpMethod.POST, requestUpdate, 
+                EnderecoDto.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
@@ -81,29 +82,29 @@ public class ClienteTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "8"})
-    @DisplayName("Deve tentar alterar cliente inexisnte")
+    @DisplayName("Deve tentar alterar endereco inexisnte")
     public void update(String parametro) throws Exception {
 
-        String url = String.format(URL_CONSTANTS_TEST.ClienteUpdate, port);
+        String url = String.format(URL_CONSTANTS_TEST.EnderecoUpdate, port);
 
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(ClienteDto.builder().nome(parametro).build(), null);
+        HttpEntity<EnderecoDto> requestUpdate = new HttpEntity<>(EnderecoDto.builder().cep(parametro).build(), null);
 
-        ResponseEntity<ClienteDto> response = restTemplate
-                .exchange(new URL(url).toString(), HttpMethod.PUT, requestUpdate, ClienteDto.class);
+        ResponseEntity<EnderecoDto> response = restTemplate
+                .exchange(new URL(url).toString(), HttpMethod.PUT, requestUpdate, EnderecoDto.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());        
     }
 
     @Test
-    @DisplayName("Deve tentar excluir cliente inexistente")
+    @DisplayName("Deve tentar excluir endereco inexistente")
     public void delete_inexistente() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteDelete+"?id=0", port);
+        String url = String.format(URL_CONSTANTS_TEST.EnderecoDelete+"?id=0", port);
 
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(null);
+        HttpEntity<EnderecoDto> requestUpdate = new HttpEntity<>(null);
         
-        ResponseEntity<ClienteDto> response = restTemplate
-                .exchange(new URL(url).toString(), HttpMethod.DELETE, requestUpdate, ClienteDto.class);
+        ResponseEntity<EnderecoDto> response = restTemplate
+                .exchange(new URL(url).toString(), HttpMethod.DELETE, requestUpdate, EnderecoDto.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
