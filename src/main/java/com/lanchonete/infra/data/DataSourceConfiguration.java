@@ -3,20 +3,36 @@ package com.lanchonete.infra.data;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import javax.sql.DataSource;
 import java.util.Objects;
 
 @Configuration
 public class DataSourceConfiguration {
-    private final String ambiente = System.getenv("ambiente");
+    private final String ambiente = System.getenv("environment");
 
     @Bean
     public DataSource dataSource() {
-        return
-        (Objects.nonNull(ambiente) && !ambiente.isEmpty())
-        ? getDataSourceAmbiente()
-        : getDataSourceImMemory();
+        return (Objects.nonNull(ambiente) && !ambiente.isEmpty()) ? getDataSourceAmbiente() : getDataSourceImMemory();
+    }
+
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        if (Objects.nonNull(ambiente) && !ambiente.isEmpty()) {
+            adapter.setDatabase(Database.POSTGRESQL);
+            adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
+        } else {
+            adapter.setDatabase(Database.H2);
+            adapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
+        }
+        adapter.setGenerateDdl(false);
+        adapter.setPrepareConnection(false);
+        adapter.setShowSql(false);
+        return adapter;
     }
 
     private DataSource getDataSourceAmbiente() {
@@ -33,10 +49,9 @@ public class DataSourceConfiguration {
     private DataSource getDataSourceImMemory() {
         DataSourceBuilder builder = DataSourceBuilder.create();
         builder.driverClassName("org.h2.Driver");
-        builder.url(System.getenv("jdbc:h2:mem:"));
-        builder.username(System.getenv("sa"));
-        builder.password("");
-
+        builder.url("jdbc:h2:mem:db");
+        builder.username("sa");
+        builder.password("sa");
         System.out.println("H2 On");
         return builder.build();
     }
