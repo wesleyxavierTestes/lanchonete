@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IClienteRepository extends JpaRepository<Cliente, Long>  {
 
-    // @Query(nativeQuery = true, value = "SELECT * FROM FROM cliente WHERE tipo_cliente like ?1")
+    @Query(nativeQuery = true, value = "SELECT * FROM cliente WHERE tipo_cliente like ?1")
     List<Cliente> findByTipoCliente(String tipoCliente);
 }
