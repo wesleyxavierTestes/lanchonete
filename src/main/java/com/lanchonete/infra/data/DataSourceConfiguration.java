@@ -48,7 +48,7 @@ public class DataSourceConfiguration {
         builder.driverClassName("org.postgresql.Driver");
         builder.url(System.getenv("data_base_url"));
         builder.username(System.getenv("data_base_user"));
-        builder.password("data_base_password");
+        builder.password(System.getenv("data_base_password"));
 
         System.out.println("Postgresql On");
         return builder.build();

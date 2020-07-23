@@ -36,8 +36,13 @@ public class ClienteController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<Cliente>> listar(@RequestParam(name = "page") int page) {
+    public ResponseEntity<Page<Cliente>> list(@RequestParam(name = "page") int page) {
         return ResponseEntity.ok(this._service.list(page));
+    }
+
+    @GetMapping("list/spendmore")
+    public ResponseEntity<Page<Cliente>> listSpendMore(@RequestParam(name = "page") int page) {
+        return ResponseEntity.ok(this._service.listSpendMore(page));
     }
 
     @GetMapping("find")
@@ -70,9 +75,25 @@ public class ClienteController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
-        Cliente entity = this._service.delete(id);
+    @DeleteMapping("active")
+    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
+        Cliente entity = this._service.find(id);
+        
+        entity.setAtivo(true);
+        entity = this._service.update(entity);
+
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("desactive")
+    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
+        Cliente entity = this._service.find(id);
+
+        entity.setAtivo(false);
+        entity = this._service.update(entity);
+
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();

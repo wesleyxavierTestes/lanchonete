@@ -1,5 +1,6 @@
 package com.lanchonete.domain.services.cliente;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,4 +55,9 @@ public class ClienteService extends BaseService<Cliente> {
         List<Cliente> entity = _repository.findByTipoCliente("ConsumidorFinal");
         return Objects.nonNull(entity) && !entity.isEmpty();
     }
+
+	public Page<Cliente> listSpendMore(int page) {
+        Page<Cliente> entity = null; // _repository.listSpendMore("ConsumidorFinal");
+        return entity;
+	}
 }

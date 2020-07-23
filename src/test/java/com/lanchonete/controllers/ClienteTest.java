@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.ArrayList;
 import java.net.URL;
 
+import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
@@ -86,7 +87,9 @@ public class ClienteTest {
 
         String url = String.format(URL_CONSTANTS_TEST.ClienteUpdate, port);
 
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(ClienteDto.builder().nome(parametro).build(), null);
+        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(
+            ClienteDto.builder().nome(parametro).build()
+        , null);
 
         ResponseEntity<ClienteDto> response = restTemplate
                 .exchange(new URL(url).toString(), HttpMethod.PUT, requestUpdate, ClienteDto.class);
@@ -104,6 +107,19 @@ public class ClienteTest {
         
         ResponseEntity<ClienteDto> response = restTemplate
                 .exchange(new URL(url).toString(), HttpMethod.DELETE, requestUpdate, ClienteDto.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+    // save/default
+
+    @Test
+    @DisplayName("Deve tentar salvar cliente default")
+    public void save_default() throws Exception {
+        String url = String.format(URL_CONSTANTS_TEST.ClienteSaveDefault, port);
+        
+        ResponseEntity<ClienteDto> response = restTemplate
+                .postForEntity(new URL(url).toString(), new ClienteDefaultDto("teste"), ClienteDto.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());

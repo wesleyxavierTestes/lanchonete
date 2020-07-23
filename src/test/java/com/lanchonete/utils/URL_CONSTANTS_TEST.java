@@ -8,6 +8,7 @@ public final class URL_CONSTANTS_TEST {
     public final static String ClienteList = "http://localhost:%s/api/cliente/list";
     public final static String ClienteFind = "http://localhost:%s/api/cliente/find";
     public final static String ClienteSave = "http://localhost:%s/api/cliente/save";
+    public final static String ClienteSaveDefault = "http://localhost:%s/api/cliente/save/default";
     public final static String ClienteUpdate = "http://localhost:%s/api/cliente/update";
     public final static String ClienteDelete = "http://localhost:%s/api/cliente/delete";
     

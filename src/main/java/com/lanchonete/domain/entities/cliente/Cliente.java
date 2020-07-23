@@ -36,11 +36,11 @@ public class Cliente extends BaseEntity {
     @Column(nullable = false)
     private String cnjp;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "tipo_pessoa")
     @Enumerated(EnumType.STRING)
     private EnumTipoPessoa tipoPessoa;
             
-    @Column(nullable = false)
+    @Column(nullable = false, name = "tipo_cliente")
     @Enumerated(EnumType.STRING)
     private EnumTipoCliente tipoCliente;
    

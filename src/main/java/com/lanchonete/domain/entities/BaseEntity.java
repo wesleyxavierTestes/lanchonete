@@ -20,5 +20,5 @@ public abstract class BaseEntity {
 
     protected Calendar dataCadastro;
 
-    protected boolean status; 
+    protected boolean ativo; 
 }
