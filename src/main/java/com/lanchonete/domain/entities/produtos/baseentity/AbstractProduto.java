@@ -1,7 +1,9 @@
 package com.lanchonete.domain.entities.produtos.baseentity;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,8 +28,13 @@ import lombok.Setter;
 public abstract class AbstractProduto extends BaseEntity {
 
     @Column()
+    private UUID codigo;
+
+    @Column()
     private EnumProdutoTipo produtoTipo;
 
     private String nome;
 
+    private BigDecimal valor;
+    private BigDecimal custo;
 }

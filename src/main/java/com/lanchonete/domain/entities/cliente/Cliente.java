@@ -1,6 +1,5 @@
 package com.lanchonete.domain.entities.cliente;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,7 +8,6 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
 
 import com.lanchonete.domain.entities.BaseEntity;
-import com.lanchonete.domain.entities.produtos.entities.Lanche;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 
 import lombok.AllArgsConstructor;
