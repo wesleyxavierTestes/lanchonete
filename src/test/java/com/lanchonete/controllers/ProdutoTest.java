@@ -2,12 +2,11 @@ package com.lanchonete.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.net.URL;
 
-import com.lanchonete.apllication.dto.produto.ProdutoDto;
+import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
 import com.lanchonete.domain.entities.produtos.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -39,6 +38,15 @@ public class ProdutoTest {
     @Autowired
     protected ProdutoService _repository;
 
+    @Test
+    public void converter() throws Exception {
+        Produto produto = new Produto();
+        produto.setNome("Marcelo");
+        Ingrediente i = produto.convert(Ingrediente.class);
+        i.setObservacao("Teste");
+        assertEquals("Teste", i.getObservacao());
+    }
+    
     @Test
     @DisplayName("Deve listar todos Produtos com lista vazia")
 	public void listar() throws Exception {

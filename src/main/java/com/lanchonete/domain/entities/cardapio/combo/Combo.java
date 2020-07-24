@@ -1,4 +1,4 @@
-package com.lanchonete.domain.entities.produtos.entities;
+package com.lanchonete.domain.entities.cardapio.combo;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import com.lanchonete.domain.entities.produtos.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produtos.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produtos.baseentity.IProdutoCombo;
+import com.lanchonete.domain.entities.produtos.baseentity.IProdutoPedido;
 
 import lombok.*;
 
@@ -20,7 +21,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Combo extends AbstractProduto implements IProdutoCardapio {
+public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
     private Set<IProdutoCombo> composicao = new HashSet<IProdutoCombo>();

@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.enuns.EnumProdutoTipo;
 
+import org.modelmapper.ModelMapper;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +27,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class AbstractProduto extends BaseEntity {
+public abstract class AbstractProduto extends BaseEntity implements IProduto {
 
     @Column()
     private UUID codigo;
@@ -37,4 +39,10 @@ public abstract class AbstractProduto extends BaseEntity {
 
     private BigDecimal valor;
     private BigDecimal custo;
+
+    public <T extends IProduto> T convert(Class<T> type) {
+        ModelMapper mapper = new ModelMapper();
+        T i = mapper.map(this, type);
+        return i;
+    }
 }
