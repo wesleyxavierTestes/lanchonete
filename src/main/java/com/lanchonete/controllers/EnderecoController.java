@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.services.cliente.EnderecoService;
+import com.lanchonete.utils.ModelMapperUtils;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/endereco")
 public class EnderecoController {
 
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = ModelMapperUtils.getInstance();
 
     private final EnderecoService _service;
 

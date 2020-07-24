@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.domain.entities.produtos.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
+import com.lanchonete.utils.ModelMapperUtils;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/produto")
 public class ProdutoController {
 
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = ModelMapperUtils.getInstance();
 
     private final ProdutoService _service;
 
