@@ -29,7 +29,7 @@ public class DataSourceConfiguration {
 
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        final HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         if (Objects.nonNull(ambiente) && !ambiente.isEmpty()) {
             adapter.setDatabase(Database.POSTGRESQL);
             adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
@@ -44,7 +44,7 @@ public class DataSourceConfiguration {
     }
 
     private DataSource getDataSourceAmbiente() {
-        DataSourceBuilder builder = DataSourceBuilder.create();
+        final DataSourceBuilder builder = DataSourceBuilder.create();
         builder.driverClassName("org.postgresql.Driver");
         builder.url(System.getenv("data_base_url"));
         builder.username(System.getenv("data_base_user"));
@@ -55,7 +55,7 @@ public class DataSourceConfiguration {
     }
 
     private DataSource getDataSourceImMemory() {
-        DataSourceBuilder builder = DataSourceBuilder.create();
+        final DataSourceBuilder builder = DataSourceBuilder.create();
         builder.driverClassName("org.h2.Driver");
         builder.url("jdbc:h2:mem:db");
         builder.username("sa");

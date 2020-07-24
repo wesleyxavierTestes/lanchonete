@@ -2,7 +2,6 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
-
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.services.cliente.EnderecoService;
@@ -73,9 +72,9 @@ public class EnderecoController {
 
     @DeleteMapping("delete")
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
-    Endereco entity = this._service.delete(id);
-    if (Objects.nonNull(entity))
-        return ResponseEntity.ok(mapper.map(entity, EnderecoDto.class));
-    return ResponseEntity.badRequest().build();
+        Endereco entity = this._service.delete(id);
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(mapper.map(entity, EnderecoDto.class));
+        return ResponseEntity.badRequest().build();
     }
 }

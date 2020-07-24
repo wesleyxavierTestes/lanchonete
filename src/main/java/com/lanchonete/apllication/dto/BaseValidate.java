@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class BaseValidate {
+import com.lanchonete.domain.entities.BaseEntity;
+
+import org.modelmapper.ModelMapper;
+
+public abstract class BaseValidate<T extends BaseEntity> {
 
     public boolean valid = true;
 
@@ -35,4 +39,8 @@ public abstract class BaseValidate {
     }
 
     public abstract boolean getIsValid();
+
+    public abstract T createEntity(ModelMapper mapper);
+    public abstract T updateEntity(T entity);
+
 }

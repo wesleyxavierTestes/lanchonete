@@ -1,5 +1,6 @@
 package com.lanchonete.domain.services.venda;
 
+import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.venda.IVendaRepository;
@@ -22,5 +23,9 @@ public class VendaService extends BaseService<Venda> {
 
     public Page<Venda> listFilter(int page) {
         return this._repository.findAll(PageRequest.of((page - 1), 10));
+    }
+
+    public Page<VendaListDto> listDto(int page) {
+        return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
 }

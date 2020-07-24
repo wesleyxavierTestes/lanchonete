@@ -3,6 +3,7 @@ package com.lanchonete.controllers;
 import java.util.Objects;
 
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
+import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.ModelMapperUtils;
@@ -36,8 +37,9 @@ public class ProdutoController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<Produto>> listar(@RequestParam(name = "page") int page) {
-        return ResponseEntity.ok(this._service.list(page));
+    public ResponseEntity<Page<ProdutoListDto>> list(@RequestParam(name = "page") int page) {
+        Page<ProdutoListDto> list = this._service.listDto(page);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("find")
@@ -64,17 +66,39 @@ public class ProdutoController {
         if (!entityDto.getIsValid())
             return ResponseEntity.badRequest().build();
 
-        Produto entity = this._service.update(mapper.map(entityDto, Produto.class));
+        Produto entity = this._service.find(entityDto.id);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().build();
+        
+        entity = this._service.update(entityDto.updateEntity(entity));
+
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(mapper.map(entity, ProdutoDto.class));
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
-    Produto entity = this._service.delete(id);
-    if (Objects.nonNull(entity))
-        return ResponseEntity.ok(mapper.map(entity, ProdutoDto.class));
-    return ResponseEntity.badRequest().build();
+    @DeleteMapping("active")
+    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
+        Produto entity = this._service.find(id);
+        
+        entity.setAtivo(true);
+        entity = this._service.update(entity);
+
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(mapper.map(entity, ProdutoDto.class));
+        return ResponseEntity.badRequest().build();
     }
+
+    @DeleteMapping("desactive")
+    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
+        Produto entity = this._service.find(id);
+
+        entity.setAtivo(false);
+        entity = this._service.update(entity);
+
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(mapper.map(entity, ProdutoDto.class));
+        return ResponseEntity.badRequest().build();
+    }
+
 }

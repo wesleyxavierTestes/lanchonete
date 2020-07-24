@@ -1,5 +1,6 @@
 package com.lanchonete.domain.services.produto;
 
+import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
@@ -22,5 +23,9 @@ public class ProdutoService extends BaseService<Produto> {
 
     public Page<Produto> listFilter(int page) {
         return this._repository.findAll(PageRequest.of((page - 1), 10));
+    }
+
+    public Page<ProdutoListDto> listDto(int page) {
+        return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
 }

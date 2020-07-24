@@ -2,7 +2,9 @@ package com.lanchonete.apllication.dto.cliente;
 
 import com.lanchonete.apllication.dto.BaseValidate;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
-import com.lanchonete.utils.ModelMapperUtils;
+
+import org.modelmapper.ModelMapper;
+
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteDto extends BaseValidate {
+public class ClienteDto extends BaseValidate<Cliente> {
 
     public long id;
     public String nome;
@@ -31,6 +33,10 @@ public class ClienteDto extends BaseValidate {
             this.SetValidation("nome", "nome está nullo");
         }
         return this.valid;
+    }
+
+    public Cliente createEntity(ModelMapper mapper) {
+        return mapper.map(this, Cliente.class);
     }
 
     public Cliente updateEntity(Cliente entity) {

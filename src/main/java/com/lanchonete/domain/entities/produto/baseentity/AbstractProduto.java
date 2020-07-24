@@ -16,7 +16,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.BaseEntity;
-import com.lanchonete.domain.enuns.EnumProdutoTipo;
+import com.lanchonete.domain.enuns.EnumTipoProduto;
 
 import org.modelmapper.ModelMapper;
 
@@ -33,7 +33,7 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
     private UUID codigo;
 
     @Column()
-    private EnumProdutoTipo produtoTipo;
+    private EnumTipoProduto tipoProduto;
 
     private String nome;
 

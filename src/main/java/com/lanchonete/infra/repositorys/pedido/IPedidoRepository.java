@@ -19,7 +19,7 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Long>  {
 
     @Query(
         nativeQuery = true, 
-        value = "SELECT (c.*) FROM pedido as c",
-        countQuery = "SELECT (c.nome, c.nome, c.nome) FROM pedido")
+        value = "SELECT (c.*) FROM pedido as c where c.ativo = true",
+        countQuery = "SELECT (c.*) FROM pedido as c where c.ativo = true")
 	Page<PedidoListDto> findAllDto(PageRequest of);
 }

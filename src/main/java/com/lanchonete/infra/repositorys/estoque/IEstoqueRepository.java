@@ -17,20 +17,32 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IEstoqueRepository extends JpaRepository<AbstractEstoque, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM estoque WHERE tipo_estoque like ?1")
+    @Query(
+    nativeQuery = true, 
+    value = "SELECT * FROM estoque WHERE tipo_estoque like ?1")
     List<IEstoque> findByTipoEstoque(String tipoEstoque);
 
-    @Query(nativeQuery = true, value = "SELECT (c.*) FROM estoque as c", countQuery = "SELECT (c.nome, c.nome, c.nome) FROM estoque")
+    @Query(
+    nativeQuery = true, 
+    value = "SELECT (c.*) FROM estoque as c", 
+    countQuery = "SELECT (c.*) FROM estoque as c")
     List<IEstoque> findAll(PageRequest of);
 
-    @Query(nativeQuery = true, value = "SELECT (c.*) FROM estoque as c", countQuery = "SELECT (c.nome, c.nome, c.nome) FROM estoque")
+    @Query(
+    nativeQuery = true, 
+    value = "SELECT (c.*) FROM estoque as c where c.ativo = true", 
+    countQuery = "SELECT (c.*) FROM estoque as c where c.ativo = true")
     List<EstoqueSaida> findAllSaida(PageRequest of);
 
-    @Query(nativeQuery = true, 
+    @Query(
+    nativeQuery = true, 
     value = "SELECT (c.*) FROM estoque as c", 
-    countQuery = "SELECT (c.nome, c.nome, c.nome) FROM estoque")
+    countQuery = "SELECT (c.*) FROM estoque as c")
     List<EstoqueEntrada> findAllEntrada(PageRequest of);
 
-    @Query(nativeQuery = true, value = "SELECT (c.*) FROM estoque as c", countQuery = "SELECT (c.nome, c.nome, c.nome) FROM estoque")
+    @Query(
+    nativeQuery = true, 
+    value = "SELECT (c.*) FROM estoque as c where c.ativo = true", 
+    countQuery = "SELECT (c.*) FROM estoque as c where c.ativo = true")
     Page<EstoqueListDto> findAllDto(PageRequest of);
 }

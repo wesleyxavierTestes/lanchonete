@@ -1,5 +1,6 @@
 package com.lanchonete.domain.services.lanche;
 
+import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
@@ -22,5 +23,9 @@ public class LancheService extends BaseService<Lanche> {
 
     public Page<Lanche> listFilter(int page) {
         return this._repository.findAll(PageRequest.of((page - 1), 10));
+    }
+
+    public Page<LancheListDto> listDto(int page) {
+        return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
 }

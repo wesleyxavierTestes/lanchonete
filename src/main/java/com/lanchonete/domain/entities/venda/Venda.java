@@ -31,4 +31,6 @@ public class Venda extends BaseEntity {
 
     private BigDecimal valorDesconto;
     private BigDecimal valorTotal;
+
+    
 }

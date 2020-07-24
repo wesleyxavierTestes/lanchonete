@@ -19,7 +19,7 @@ public interface ICardapioRepository extends JpaRepository<Cardapio, Long>  {
 
     @Query(
         nativeQuery = true, 
-        value = "SELECT (c.*) FROM cardapio as c",
-        countQuery = "SELECT (c.nome, c.nome, c.nome) FROM cardapio")
+        value = "SELECT (c.*) FROM cardapio as c where c.ativo = true",
+        countQuery = "SELECT (c.*) FROM cardapio as c where c.ativo = true")
 	Page<CardapioListDto> findAllDto(PageRequest of);
 }
