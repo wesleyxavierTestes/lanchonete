@@ -1,13 +1,12 @@
 package com.lanchonete.domain.services.cliente;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
+import com.lanchonete.apllication.dto.cliente.ClienteListDto;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
-import com.lanchonete.domain.entities.cliente.EnumTipoPessoa;
+import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.cliente.IClienteRepository;
@@ -57,7 +56,12 @@ public class ClienteService extends BaseService<Cliente> {
     }
 
 	public Page<Cliente> listSpendMore(int page) {
-        Page<Cliente> entity = null; // _repository.listSpendMore("ConsumidorFinal");
+        Page<Cliente> entity = null;
+         //  _repository.listSpendMore("ConsumidorFinal");
         return entity;
-	}
+    }
+    
+    public Page<ClienteListDto> listDto(int page) {
+        return _repository.findAllDto(PageRequest.of((page - 1), 10));
+    }
 }

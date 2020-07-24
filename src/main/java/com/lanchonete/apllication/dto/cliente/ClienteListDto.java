@@ -1,11 +1,10 @@
 package com.lanchonete.apllication.dto.cliente;
 
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lanchonete.apllication.dto.BaseValidate;
-import com.lanchonete.domain.entities.cliente.Cliente;
-import com.lanchonete.domain.entities.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
+import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +14,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClienteListDto extends BaseValidate {
-    
+
     public String nome;
-    public String cpfCnpj;
-    public String tipoPessoa;            
-    public String tipoCliente;   
-    public String enderecoNome;
+
+    @JsonIgnore
+    public String cpf;
+    @JsonIgnore
+    public String cnjp;
+
+    @JsonGetter("nome")
+    public String getCpfCnpj() {
+        return tipoPessoa == EnumTipoPessoa.Fisica ? this.cpf : this.cnjp;
+    }
+
+    @JsonIgnore
+    public EnumTipoPessoa tipoPessoa;
+
+    @JsonIgnore
+    public EnumTipoCliente tipoCliente;
+
+    @JsonGetter("tipoCliente")
+    public String geTtipoCliente() {
+        return tipoCliente == EnumTipoCliente.GeraFisco ? "Comum" : "Final";
+    }
 
     @Override
     public boolean getIsValid() {
@@ -29,13 +45,4 @@ public class ClienteListDto extends BaseValidate {
         }
         return this.valid;
     }
-
-    public static ClienteListDto converter(Cliente cli) 
-    {
-        return ClienteListDto.builder()
-        .nome(cli.getNome())
-        .cpfCnpj(cli.getCpfCnpj())
-        .build();
-    }
-
 }

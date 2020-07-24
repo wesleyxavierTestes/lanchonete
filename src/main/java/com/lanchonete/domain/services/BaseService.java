@@ -49,6 +49,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
         if (!Objects.nonNull(exists))
             return null;
         entity.setDataCadastro(exists.getDataCadastro());
+        
         try {
             T entitySave = _repository.save(entity);
             return entitySave;

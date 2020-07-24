@@ -3,7 +3,7 @@ package com.lanchonete.controllers;
 import java.util.Objects;
 
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
-import com.lanchonete.domain.entities.produtos.entities.Produto;
+import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.ModelMapperUtils;
 

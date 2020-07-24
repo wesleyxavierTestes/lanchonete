@@ -6,7 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
-
+import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 
@@ -27,11 +27,11 @@ public class Cliente extends BaseEntity {
     private String nome;
 
     @Min(8)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String cpf;
     
     @Min(9)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String cnjp;
 
     @Column(nullable = false, name = "tipo_pessoa")
@@ -49,5 +49,5 @@ public class Cliente extends BaseEntity {
         return this.tipoPessoa == EnumTipoPessoa.Fisica
                 ? this.cpf
                 : this.cnjp;
-	}
+    }
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
+import com.lanchonete.apllication.dto.cliente.ClienteListDto;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.utils.ModelMapperUtils;
@@ -37,8 +38,9 @@ public class ClienteController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<Cliente>> list(@RequestParam(name = "page") int page) {
-        return ResponseEntity.ok(this._service.list(page));
+    public ResponseEntity<Page<ClienteListDto>> list(@RequestParam(name = "page") int page) {
+        Page<ClienteListDto> list = this._service.listDto(page);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/spendmore")
@@ -70,7 +72,12 @@ public class ClienteController {
         if (!entityDto.getIsValid())
             return ResponseEntity.badRequest().build();
 
-        Cliente entity = this._service.update(mapper.map(entityDto, Cliente.class));
+        Cliente entity = this._service.find(entityDto.id);
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+        
+        entity = this._service.update(entityDto.updateEntity(entity));
+
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();

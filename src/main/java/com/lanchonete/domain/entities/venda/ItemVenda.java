@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 
-import com.lanchonete.domain.entities.produtos.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produtos.baseentity.IProdutoVenda;
+import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
 import lombok.*;
 

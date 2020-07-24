@@ -1,6 +1,6 @@
 package com.lanchonete.domain.services.produto;
 
-import com.lanchonete.domain.entities.produtos.entities.Produto;
+import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 

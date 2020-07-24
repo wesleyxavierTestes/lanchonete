@@ -8,8 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.BaseEntity;
-import com.lanchonete.domain.entities.produtos.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produtos.baseentity.IProdutoCardapio;
+import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 
 @Entity
 public class Cardapio extends BaseEntity {

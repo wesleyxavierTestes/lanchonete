@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.net.URL;
 
 import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
-import com.lanchonete.domain.entities.produtos.entities.Produto;
+import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 import org.junit.jupiter.api.DisplayName;

@@ -1,8 +1,8 @@
 package com.lanchonete.apllication.dto.produto;
 
-import javax.validation.constraints.NotNull;
-
 import com.lanchonete.apllication.dto.BaseValidate;
+import com.lanchonete.domain.entities.produto.baseentity.IProduto;
+import com.lanchonete.domain.entities.produto.entities.Produto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProdutoDto extends BaseValidate {
 
-    @NotNull
+    public long id;
     public String nome;
 
     @Override
@@ -24,4 +24,8 @@ public class ProdutoDto extends BaseValidate {
         return this.valid;
     }
 
+    public Produto updateEntity(Produto entity) {
+
+        return entity;
+    }
 }

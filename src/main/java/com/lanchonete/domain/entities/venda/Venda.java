@@ -9,8 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.BaseEntity;
-import com.lanchonete.domain.entities.produtos.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produtos.baseentity.IProdutoVenda;
+import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
