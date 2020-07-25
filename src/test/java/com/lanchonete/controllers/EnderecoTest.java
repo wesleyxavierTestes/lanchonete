@@ -10,6 +10,7 @@ import java.net.URL;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.services.cliente.EnderecoService;
+import com.lanchonete.mocks.EnderecoMock;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,10 @@ public class EnderecoTest {
     public void save_invalid_test() throws Exception {
         String url = String.format(URL_CONSTANTS_TEST.EnderecoSave, port);
 
-        HttpEntity<EnderecoDto> requestUpdate = new HttpEntity<>(new EnderecoDto(), null);
+        EnderecoDto endereco = EnderecoMock.dto();
+        endereco.cep = null;
+        HttpEntity<EnderecoDto> requestUpdate = new HttpEntity<>(
+            endereco, null);
 
         ResponseEntity<EnderecoDto> response = restTemplate
                 .exchange(new URL(url).toString(), HttpMethod.POST, requestUpdate, 

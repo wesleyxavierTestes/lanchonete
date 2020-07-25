@@ -10,13 +10,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.enuns.pedidos.EnumEstadoPedido;
-import com.lanchonete.utils.ModelMapperUtils;
-
-import org.modelmapper.ModelMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,9 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Pedido extends BaseEntity implements IPedidoState {
-    protected static ModelMapper mapper = ModelMapperUtils.getInstance();
-    
+public abstract class Pedido extends BaseEntity implements IPedidoState {    
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
     private Set<IProdutoPedido> ItemsVenda = new HashSet<IProdutoPedido>();
 
@@ -39,19 +35,19 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
 
     @Override
     public IPedidoState fazerPedido() {
-       return mapper.map(this, PedidoAguardando.class)
+       return Mapper.map(this, PedidoAguardando.class)
         .configurar(EnumEstadoPedido.Aguardando);
     }
 
     @Override
     public IPedidoState cancelarPedido() {
-        return mapper.map(this, PedidoCancelamento.class)
+        return Mapper.map(this, PedidoCancelamento.class)
         .configurar(EnumEstadoPedido.Cancelado);
     }
 
     @Override
     public IPedidoState finalizarPedido() {
-        return mapper.map(this, PedidoFinalizado.class)
+        return Mapper.map(this, PedidoFinalizado.class)
         .configurar(EnumEstadoPedido.Finalizado);
     }
 }

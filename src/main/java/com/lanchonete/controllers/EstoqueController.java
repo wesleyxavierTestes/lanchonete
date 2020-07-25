@@ -4,14 +4,14 @@ import java.util.Objects;
 
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueListDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.services.estoque.EstoqueService;
-import com.lanchonete.utils.ModelMapperUtils;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration.AccessLevel;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/estoque")
 public class EstoqueController {
 
-    private ModelMapper mapper = ModelMapperUtils.getInstance();
-
     private final EstoqueService _service;
 
     @Autowired
     public EstoqueController(EstoqueService service) {
         _service = service;
-        mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(AccessLevel.PRIVATE);
     }
 
     // TODO: INCOMPLETO
@@ -59,13 +56,15 @@ public class EstoqueController {
     // TODO: NECESSITA DE TESTES
     @PostMapping("save/adicionar")
     public ResponseEntity<Object> saveAdicionar(@RequestBody() EstoqueDto entityDto) {
-        if (!entityDto.getIsValid())
-            return ResponseEntity.badRequest().build();
+        
 
-        EstoqueEntrada entrada = new EstoqueEntrada();
+        EstoqueEntrada entity = Mapper.map(entityDto, EstoqueEntrada.class);
         // TODO: Lógica
 
-        EstoqueEntrada entity = (EstoqueEntrada) this._service.save(entrada);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().build();
+
+        entity = (EstoqueEntrada) this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(entityDto);
         return ResponseEntity.badRequest().build();
@@ -75,16 +74,18 @@ public class EstoqueController {
     // TODO: NECESSITA DE TESTES
     @PostMapping("save/remover")
     public ResponseEntity<Object> saveRemover(@RequestBody() EstoqueDto entityDto) {
-        if (!entityDto.getIsValid())
-            return ResponseEntity.badRequest().build();
-
-        EstoqueSaida entrada = new EstoqueSaida();
-        // TODO: Lógica
         
-        EstoqueSaida entity = (EstoqueSaida) this._service.save(entrada);
+
+        EstoqueSaida entity = Mapper.map(entityDto, EstoqueSaida.class);
+        // TODO: Lógica
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().build();
+        
+        entity = (EstoqueSaida) this._service.save(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, EstoqueDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, EstoqueDto.class));
         return ResponseEntity.badRequest().build();
     }
 
@@ -100,7 +101,7 @@ public class EstoqueController {
         entity = this._service.delete(id);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, EstoqueDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, EstoqueDto.class));
         return ResponseEntity.badRequest().build();
     }
 

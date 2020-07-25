@@ -8,10 +8,12 @@ import java.net.URL;
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.services.cliente.ClienteService;
+import com.lanchonete.mocks.ClienteMock;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 import com.lanchonete.utils.pages.ClienteUtilsPageMock;
 
@@ -45,32 +47,10 @@ public class ClienteTest {
     @Test
     @DisplayName("Deve converter uma ClienteDto para Cliente incluindo Endereco")
     public void converterClientDto() throws Exception {
-        EnderecoDto enderecoDtomock = EnderecoDto.builder()
-                                    .cep("00000000")
-                                    .numero("123456")       
-                                    .logradouro("i.endereco.logradouro")   
-                                    .complemento("i.endereco.complemento") 
-                                    .bairro("i.endereco.bairro")    
-                                    .localidade("i.endereco.localidade")
-                                    .uf("i.endereco.uf")
-                                    .unidade("i.endereco.unidad")
-                                    .ibge("i.endereco.ibge")
-                                    .gia("i.endereco.gia")
-                                    .build();
-        ClienteDto clienteDtoMock = ClienteDto.builder()
-                                    .nome("wesley xavier")
-                                    .cnjp("0000000000")
-                                    .cpf(null)
-                                    .id(1)
-                                    .tipoCliente(EnumTipoCliente.GeraFisco)
-                                    .tipoPessoa(EnumTipoPessoa.Juridica)
-                                    .endereco(enderecoDtomock)
-                                    .build();
 
-        Cliente cliente = new Cliente();
-        clienteDtoMock.updateEntity(cliente);
+        Cliente cliente = Mapper.map(ClienteMock.dto());
 
-        assertEquals(clienteDtoMock.nome, cliente.getNome());
+        assertEquals(ClienteMock.dto().nome, cliente.getNome());
     }
 
     @Test

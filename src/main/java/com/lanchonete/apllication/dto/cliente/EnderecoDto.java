@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnderecoDto {
+public class EnderecoDto  {
+    
+    public long id;
     
     @NotNull
     public String cep;
@@ -34,7 +36,4 @@ public class EnderecoDto {
     public String ibge;
     public String gia;
 
-    public boolean getIsValid() {
-        return this.cep != null;
-    }
 }

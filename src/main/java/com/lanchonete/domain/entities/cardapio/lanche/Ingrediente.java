@@ -14,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ingrediente")
-@Polymorphism(type = PolymorphismType.IMPLICIT)
 public class Ingrediente extends AbstractProduto implements IProdutoComposicao {
     
     private String observacao;

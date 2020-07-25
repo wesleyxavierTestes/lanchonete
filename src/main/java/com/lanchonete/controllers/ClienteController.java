@@ -5,12 +5,10 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.ClienteListDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
-import com.lanchonete.utils.ModelMapperUtils;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration.AccessLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/cliente")
 public class ClienteController {
 
-    private ModelMapper mapper = ModelMapperUtils.getInstance();
-
     private final ClienteService _service;
 
     @Autowired
     public ClienteController(ClienteService service) {
         _service = service;
-        mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(AccessLevel.PRIVATE);
     }
 
     // TODO: INCOMPLETO
@@ -62,28 +57,28 @@ public class ClienteController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() ClienteDto entityDto) {
-        if (!entityDto.getIsValid())
-            return ResponseEntity.badRequest().build();
 
-        Cliente entity = this._service.save(entityDto.createEntity(mapper));
+        Cliente entity = Mapper.map(entityDto);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().build();
+        entity = this._service.save(entity);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() ClienteDto entityDto) {
-        if (!entityDto.getIsValid())
-            return ResponseEntity.badRequest().build();
 
         Cliente entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().build();
 
-        entity = this._service.update(entityDto.updateEntity(entity));
+        entity = Mapper.map(entityDto, entity);
+        entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();
     }
 
@@ -95,7 +90,7 @@ public class ClienteController {
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();
     }
 
@@ -107,7 +102,7 @@ public class ClienteController {
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();
     }
 
@@ -119,14 +114,14 @@ public class ClienteController {
         if (clienteDefaultExiste)
             return ResponseEntity.badRequest().build();
 
-        Cliente entity = mapper.map(entityDto, Cliente.class);
+        Cliente entity = Mapper.map(entityDto, Cliente.class);
 
         this._service.createClienteDefault(entity);
 
         entity = this._service.save(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
         return ResponseEntity.badRequest().build();
     }
 }

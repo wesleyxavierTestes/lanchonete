@@ -3,12 +3,10 @@ package com.lanchonete.controllers;
 import java.util.Objects;
 
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.services.cliente.EnderecoService;
-import com.lanchonete.utils.ModelMapperUtils;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration.AccessLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/endereco")
 public class EnderecoController {
 
-    private ModelMapper mapper = ModelMapperUtils.getInstance();
-
     private final EnderecoService _service;
 
     @Autowired
     public EnderecoController(EnderecoService service) {
         _service = service;
-        mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(AccessLevel.PRIVATE);
+
     }
 
     @GetMapping("list")
@@ -50,23 +46,28 @@ public class EnderecoController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() EnderecoDto entityDto) {
-        if (!entityDto.getIsValid())
-            return ResponseEntity.badRequest().build();
 
-        Endereco entity = this._service.save(mapper.map(entityDto, Endereco.class));
+        Endereco entity = Mapper.map(entityDto);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().build();
+        entity = this._service.save(entity);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, EnderecoDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, EnderecoDto.class));
         return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() EnderecoDto entityDto) {
-        if (!entityDto.getIsValid())
+
+        Endereco entity = this._service.find(entityDto.id);
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().build();
 
-        Endereco entity = this._service.update(mapper.map(entityDto, Endereco.class));
+        entity = Mapper.map(entityDto, entity);
+        entity = this._service.update(entity);
+
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, EnderecoDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, EnderecoDto.class));
         return ResponseEntity.badRequest().build();
     }
 
@@ -74,7 +75,7 @@ public class EnderecoController {
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
         Endereco entity = this._service.delete(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(mapper.map(entity, EnderecoDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, EnderecoDto.class));
         return ResponseEntity.badRequest().build();
     }
 }

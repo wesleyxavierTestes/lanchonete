@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.ArrayList;
 import java.net.URL;
 
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
@@ -38,7 +39,7 @@ public class ProdutoTest {
     public void converter() throws Exception {
         Produto produto = new Produto();
         produto.setNome("Marcelo");
-        Ingrediente i = produto.convert(Ingrediente.class);
+        Ingrediente i = Mapper.map(produto, Ingrediente.class);
         i.setObservacao("Teste");
         assertEquals("Teste", i.getObservacao());
     }

@@ -1,8 +1,6 @@
 package com.lanchonete.domain.entities.cliente;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 import com.lanchonete.domain.entities.BaseEntity;
 
