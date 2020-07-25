@@ -1,6 +1,6 @@
 package com.lanchonete.apllication.dto.estoque;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class EstoqueDto  {
 
     public long id;
-    public long idProduto;
     public long quantidade;
-    public Calendar data;
+    public LocalDateTime data;
+
+    public EstoqueProdutoDto produto;
 }

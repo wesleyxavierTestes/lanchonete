@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class PedidoCancelamento extends Pedido {
     
     @Override
-    public PedidoCancelamento configurar(EnumEstadoPedido estado) {
-        this.setEstado(estado);
+    public PedidoCancelamento configurar() {
+        this.configurarEstadoPedido(EnumEstadoPedido.Cancelado);
         return this;
     }
 }

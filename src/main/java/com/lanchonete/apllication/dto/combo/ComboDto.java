@@ -14,4 +14,5 @@ public class ComboDto  {
     public long id;
     public String nome;
     public List<ComposicaoDto> composicao;
+    private String observacao;
 }

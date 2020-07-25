@@ -1,6 +1,10 @@
 package com.lanchonete.apllication.dto.cliente;
 
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
+import com.lanchonete.utils.MessageError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
@@ -17,22 +21,24 @@ import lombok.NoArgsConstructor;
 public class ClienteDto  {
 
     public long id;
-    @NotNull(message = "Name is mandatory")
-    @Max(message = "Name is mandatory", value = 200)
+    @NotNull(message = MessageError.IS_MANDATORY)
+    @Max(message = MessageError.MAX_LIMITE, value = 2)
     public String nome;
     
-    @Max(message = "Name is mandatory", value = 8)
+    @Max(message = MessageError.MAX_LIMITE, value = 8)
     public String cpf;
 
-    @Max(message = "Name is mandatory", value = 14)
+    @Max(message = MessageError.IS_MANDATORY, value = 14)
     public String cnjp;
 
-    @NotNull(message = "Name is mandatory")
+    @NotNull(message = MessageError.IS_MANDATORY)
     public EnumTipoPessoa tipoPessoa;
 
-    @NotNull(message = "Name is mandatory")
+    @NotNull(message = MessageError.IS_MANDATORY)
     public EnumTipoCliente tipoCliente;
 
-    @NotNull
+    @NotNull(message = MessageError.IS_MANDATORY)
     public EnderecoDto endereco = new EnderecoDto();
+
+    public List<EnderecoDto> lista = new ArrayList<>();
 }

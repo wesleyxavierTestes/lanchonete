@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.services.lanche.LancheService;
 
@@ -55,6 +56,8 @@ public class LancheController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() LancheDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Lanche entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
@@ -86,6 +89,9 @@ public class LancheController {
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
 
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
+
         entity.setAtivo(true);
         entity = this._service.update(entity);
 
@@ -97,6 +103,9 @@ public class LancheController {
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
         entity.setAtivo(false);
         entity = this._service.update(entity);

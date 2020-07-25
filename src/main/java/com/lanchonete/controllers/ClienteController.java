@@ -5,9 +5,12 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.ClienteListDto;
+import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
+import com.lanchonete.utils.HttpBase;
+import com.lanchonete.utils.UrlConstants;
 import com.lanchonete.apllication.validations.Validations;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,16 @@ public class ClienteController {
     @GetMapping("list/spendmore")
     public ResponseEntity<Page<Cliente>> listSpendMore(@RequestParam(name = "page") int page) {
         return ResponseEntity.ok(this._service.listSpendMore(page));
+    }
+
+    @GetMapping("cep")
+    public ResponseEntity<Object> getMethodName(@RequestParam String cep) {
+        try {
+            HttpBase.HttpGet(UrlConstants.getViaCep(cep), EnderecoDto.class);
+            return ResponseEntity.badRequest().body("");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new EnderecoDto());
+        }
     }
 
     // TODO: INCOMPLETO
@@ -80,6 +93,8 @@ public class ClienteController {
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() ClienteDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Cliente entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
@@ -97,6 +112,9 @@ public class ClienteController {
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Cliente entity = this._service.find(id);
 
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
+
         entity.setAtivo(true);
         entity = this._service.update(entity);
 
@@ -108,6 +126,9 @@ public class ClienteController {
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Cliente entity = this._service.find(id);
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
         entity.setAtivo(false);
         entity = this._service.update(entity);

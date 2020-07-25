@@ -1,7 +1,10 @@
 package com.lanchonete.domain.entities.pedido;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -9,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.BaseEntity;
@@ -25,29 +29,41 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Pedido extends BaseEntity implements IPedidoState {    
+public abstract class Pedido extends BaseEntity implements IPedidoState {
+    
+    @NotNull(message = "Itens são obrigatório")
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
-    private Set<IProdutoPedido> ItemsVenda = new HashSet<IProdutoPedido>();
+    private Set<IProdutoPedido> ItensVenda = new HashSet<IProdutoPedido>();
 
     private BigDecimal valorDesconto;
     private BigDecimal valorTotal;
-    private EnumEstadoPedido estado = EnumEstadoPedido.Realizando;
+
+    private EnumEstadoPedido estado = EnumEstadoPedido.Novo;
+
+    @OneToMany
+    private List<EstadoPedido> estadosPedido;
+
+    protected void configurarEstadoPedido(EnumEstadoPedido estado) {
+        this.setEstado(estado);
+
+        if (!Objects.nonNull(this.estadosPedido))
+            this.estadosPedido = new ArrayList<>();
+            
+        this.estadosPedido.add(new EstadoPedido(this.getEstado()));
+    }
 
     @Override
     public IPedidoState fazerPedido() {
-       return Mapper.map(this, PedidoAguardando.class)
-        .configurar(EnumEstadoPedido.Aguardando);
+        return Mapper.map(this, PedidoAguardando.class).configurar();
     }
 
     @Override
     public IPedidoState cancelarPedido() {
-        return Mapper.map(this, PedidoCancelamento.class)
-        .configurar(EnumEstadoPedido.Cancelado);
+        return Mapper.map(this, PedidoCancelamento.class).configurar();
     }
 
     @Override
     public IPedidoState finalizarPedido() {
-        return Mapper.map(this, PedidoFinalizado.class)
-        .configurar(EnumEstadoPedido.Finalizado);
+        return Mapper.map(this, PedidoFinalizado.class).configurar();
     }
 }

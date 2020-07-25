@@ -40,8 +40,8 @@ public class ProdutoTest {
         Produto produto = new Produto();
         produto.setNome("Marcelo");
         Ingrediente i = Mapper.map(produto, Ingrediente.class);
-        i.setObservacao("Teste");
-        assertEquals("Teste", i.getObservacao());
+        i.setNome("Teste");
+        assertEquals("Teste", i.getNome());
     }
     
     @Test

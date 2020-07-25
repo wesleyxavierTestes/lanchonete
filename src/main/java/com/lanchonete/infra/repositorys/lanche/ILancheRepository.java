@@ -19,7 +19,19 @@ public interface ILancheRepository extends JpaRepository<Lanche, Long>  {
 
     @Query(
         nativeQuery = true, 
+        value = "SELECT (c.*) FROM lanche as c",
+        countQuery = "SELECT (c.*) FROM lanche as c")
+    Page<LancheListDto> findAllDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
         value = "SELECT (c.*) FROM lanche as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = true")
-	Page<LancheListDto> findAllDto(PageRequest of);
+    Page<LancheListDto> listActiveDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM lanche as c where c.ativo = false",
+        countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = false")
+	Page<LancheListDto> listDesactiveDto(PageRequest of);
 }

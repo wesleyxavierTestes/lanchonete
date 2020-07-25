@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 import com.lanchonete.domain.services.combo.ComboService;
 
@@ -54,6 +55,8 @@ public class ComboController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() ComboDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Combo entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
@@ -66,6 +69,8 @@ public class ComboController {
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() ComboDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Combo entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
@@ -83,6 +88,9 @@ public class ComboController {
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Combo entity = this._service.find(id);
 
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
+
         entity.setAtivo(true);
         entity = this._service.update(entity);
 
@@ -94,6 +102,9 @@ public class ComboController {
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Combo entity = this._service.find(id);
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
         entity.setAtivo(false);
         entity = this._service.update(entity);

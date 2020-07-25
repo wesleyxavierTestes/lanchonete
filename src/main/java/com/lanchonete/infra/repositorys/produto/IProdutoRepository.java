@@ -14,7 +14,19 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
 
     @Query(
         nativeQuery = true, 
+        value = "SELECT (c.*) FROM produto as c",
+        countQuery = "SELECT (c.*) FROM produto as c")
+    Page<ProdutoListDto> findAllDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
         value = "SELECT (c.*) FROM produto as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM produto as c where c.ativo = true")
-	Page<ProdutoListDto> findAllDto(PageRequest of);
+    Page<ProdutoListDto> listActiveDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM produto as c where c.ativo = false",
+        countQuery = "SELECT (c.*) FROM produto as c where c.ativo = false")
+	Page<ProdutoListDto> listDesactiveDto(PageRequest of);
 }

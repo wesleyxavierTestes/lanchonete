@@ -7,7 +7,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.Min;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;

@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.services.pedido.PedidoService;
 
@@ -55,6 +56,8 @@ public class PedidoController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() PedidoDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Pedido entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
@@ -65,24 +68,12 @@ public class PedidoController {
         return ResponseEntity.badRequest().body("");
     }
 
-    @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() PedidoDto entityDto) {
+    @DeleteMapping("cancel")
+    public ResponseEntity<Object> cancel(@RequestParam(name = "id") long id) {
+        Pedido entity = this._service.find(id);
 
-        Pedido entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body("");
-
-        entity = Mapper.map(entityDto, entity);
-        entity = this._service.update(entity);
-
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, PedidoDto.class));
-        return ResponseEntity.badRequest().body("");
-    }
-
-    @DeleteMapping("active")
-    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        Pedido entity = this._service.find(id);
 
         entity.setAtivo(true);
         entity = this._service.update(entity);
@@ -95,6 +86,9 @@ public class PedidoController {
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Pedido entity = this._service.find(id);
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
         entity.setAtivo(false);
         entity = this._service.update(entity);

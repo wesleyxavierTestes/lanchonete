@@ -1,7 +1,7 @@
 package com.lanchonete.domain.enuns.pedidos;
 
 public enum EnumEstadoPedido {
-    Realizando,
+    Novo,
     Aguardando,
     Cancelado,
     Finalizado

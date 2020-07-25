@@ -28,4 +28,12 @@ public class ProdutoService extends BaseService<Produto> {
     public Page<ProdutoListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+    public Page<ProdutoListDto> listActiveDto(int page) {
+        return _repository.listActiveDto(PageRequest.of((page - 1), 10));
+    }
+
+    public Page<ProdutoListDto> listDesactiveDto(int page) {
+        return _repository.listDesactiveDto(PageRequest.of((page - 1), 10));
+    }
 }

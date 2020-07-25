@@ -18,6 +18,7 @@ import com.lanchonete.utils.pages.ClienteUtilsPageMock;
 import com.lanchonete.apllication.validations.CustomErro;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -52,75 +53,78 @@ public class ClienteTest {
         assertEquals(ClienteMock.dto().nome, cliente.getNome());
     }
 
-    @Test
-    @DisplayName("Deve listar todos clientes com lista vazia")
-    public void listar() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteList + "/?page=1", port);
+    @Nested
+    @DisplayName(value = "Testes com clientes Invalidos")
+    class ClienteInvalids {
+        @Test
+        @DisplayName("Deve listar todos clientes com lista vazia")
+        public void listar() throws Exception {
+            String url = String.format(URL_CONSTANTS_TEST.ClienteList + "/?page=1", port);
 
-        ResponseEntity<ClienteUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
-                ClienteUtilsPageMock.class);
-        ClienteUtilsPageMock page = response.getBody();
+            ResponseEntity<ClienteUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
+                    ClienteUtilsPageMock.class);
+            ClienteUtilsPageMock page = response.getBody();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(page);
-        assertNotNull(page.content);
-    }
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(page);
+            assertNotNull(page.content);
+        }
 
-    @Test
-    @DisplayName("Deve buscar um cliente")
-    public void find_inexistente() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=100000", port);
+        @Test
+        @DisplayName("Deve buscar um cliente")
+        public void find_inexistente() throws Exception {
+            String url = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=100000", port);
 
-        ResponseEntity<Object> response = restTemplate.getForEntity(new URL(url).toString(), Object.class);
+            ResponseEntity<Object> response = restTemplate.getForEntity(new URL(url).toString(), Object.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        }
 
-    }
+        @Test
+        @DisplayName("Deve tentar salvar cliente invalido")
+        public void save_invalid_test() throws Exception {
+            String url = String.format(URL_CONSTANTS_TEST.ClienteSave, port);
 
-    @Test
-    @DisplayName("Deve tentar salvar cliente invalido")
-    public void save_invalid_test() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteSave, port);
+            ClienteDto entity = new ClienteDto();
+            entity.nome = "teste1";
+            entity.endereco = new EnderecoDto();
+            HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(entity, null);
 
-        ClienteDto entity = new ClienteDto();
-        entity.nome = "teste1";
-        entity.endereco = new EnderecoDto();
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(entity, null);
+            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
+                    requestUpdate, CustomErro[].class);
 
-        ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
-                requestUpdate, CustomErro[].class);
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertTrue(response.getBody().length > 0);
+        }
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().length > 0);
-    }
+        @ParameterizedTest
+        @ValueSource(strings = { "", "8" })
+        @DisplayName("Deve tentar alterar cliente inexisnte")
+        public void update(String parametro) throws Exception {
 
-    @ParameterizedTest
-    @ValueSource(strings = { "", "8" })
-    @DisplayName("Deve tentar alterar cliente inexisnte")
-    public void update(String parametro) throws Exception {
+            String url = String.format(URL_CONSTANTS_TEST.ClienteUpdate, port);
 
-        String url = String.format(URL_CONSTANTS_TEST.ClienteUpdate, port);
+            ClienteDto entity = ClienteDto.builder().nome(parametro).build();
 
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(ClienteDto.builder().nome(parametro).build(), null);
+            HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(entity, null);
 
-        ResponseEntity<ClienteDto> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
-                requestUpdate, ClienteDto.class);
+            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
+                    requestUpdate, CustomErro[].class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        }
 
-    }
+        @Test
+        @DisplayName("Deve tentar salvar cliente default")
+        public void save_default() throws Exception {
+            String url = String.format(URL_CONSTANTS_TEST.ClienteSaveDefault, port);
 
-    @Test
-    @DisplayName("Deve tentar salvar cliente default")
-    public void save_default() throws Exception {
-        String url = String.format(URL_CONSTANTS_TEST.ClienteSaveDefault, port);
+            ResponseEntity<ClienteDto> response = restTemplate.postForEntity(new URL(url).toString(),
+                    new ClienteDefaultDto("teste"), ClienteDto.class);
 
-        ResponseEntity<ClienteDto> response = restTemplate.postForEntity(new URL(url).toString(),
-                new ClienteDefaultDto("teste"), ClienteDto.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
     }
 
 }

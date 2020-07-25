@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class PedidoAguardando extends Pedido {
 
     @Override
-    public PedidoAguardando configurar(EnumEstadoPedido estado) {
-        this.setEstado(estado);
+    public PedidoAguardando configurar() {
+        this.configurarEstadoPedido(EnumEstadoPedido.Aguardando);
         return this;
     }
 }

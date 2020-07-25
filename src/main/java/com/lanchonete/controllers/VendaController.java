@@ -45,6 +45,13 @@ public class VendaController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/cancel")
+    public ResponseEntity<Page<VendaListDto>> listCancel(@RequestParam(name = "page") int page) {
+        Page<VendaListDto> list = this._service.listCancelDto(page);
+        return ResponseEntity.ok(list);
+    }
+
+
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Venda entity = this._service.find(id);
@@ -65,38 +72,14 @@ public class VendaController {
         return ResponseEntity.badRequest().body("");
     }
 
-    @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() VendaDto entityDto) {
+    @DeleteMapping("cancel")
+    public ResponseEntity<Object> cancel(@RequestParam(name = "id") long id) {
+        Venda entity = this._service.find(id);
 
-        Venda entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body("");
 
-        entity = Mapper.map(entityDto, entity);
-        entity = this._service.update(entity);
-
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
-        return ResponseEntity.badRequest().body("");
-    }
-
-    @DeleteMapping("active")
-    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        Venda entity = this._service.find(id);
-
         entity.setAtivo(true);
-        entity = this._service.update(entity);
-
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
-        return ResponseEntity.badRequest().body("");
-    }
-
-    @DeleteMapping("desactive")
-    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        Venda entity = this._service.find(id);
-
-        entity.setAtivo(false);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))

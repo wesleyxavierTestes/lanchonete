@@ -19,7 +19,13 @@ public interface IVendaRepository extends JpaRepository<Venda, Long>  {
 
     @Query(
         nativeQuery = true, 
-        value = "SELECT (c.*) FROM venda as c where c.ativo = true",
-        countQuery = "SELECT (c.*) FROM venda as c where c.ativo = true")
-	Page<VendaListDto> findAllDto(PageRequest of);
+        value = "SELECT (c.*) FROM venda as c",
+        countQuery = "SELECT (c.*) FROM venda as c")
+    Page<VendaListDto> findAllDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM venda as c where c.ativo = false",
+        countQuery = "SELECT (c.*) FROM venda as c where c.ativo = false")
+	Page<VendaListDto> listCancelDto(PageRequest of);
 }

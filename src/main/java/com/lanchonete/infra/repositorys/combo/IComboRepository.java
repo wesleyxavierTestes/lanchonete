@@ -19,7 +19,20 @@ public interface IComboRepository extends JpaRepository<Combo, Long>  {
 
     @Query(
         nativeQuery = true, 
+        value = "SELECT (c.*) FROM combo as c",
+        countQuery = "SELECT (c.*) FROM combo as c")
+    Page<ComboListDto> findAllDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
         value = "SELECT (c.*) FROM combo as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM combo as c where c.ativo = true")
-	Page<ComboListDto> findAllDto(PageRequest of);
+    Page<ComboListDto> listActiveDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM combo as c where c.ativo = false",
+        countQuery = "SELECT (c.*) FROM combo as c where c.ativo = false")
+    Page<ComboListDto> listDesactiveDto(PageRequest of);
+    
 }

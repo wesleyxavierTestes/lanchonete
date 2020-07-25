@@ -11,4 +11,6 @@ public class PedidoDto  {
 
     public long id;
     public String nome;
+
+    public ClientePedidoDto cliente;
 }

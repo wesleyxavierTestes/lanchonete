@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 
@@ -54,10 +55,13 @@ public class CardapioController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() CardapioDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Cardapio entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body("");
+
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));
@@ -66,6 +70,8 @@ public class CardapioController {
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() CardapioDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Cardapio entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
@@ -82,6 +88,9 @@ public class CardapioController {
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Cardapio entity = this._service.find(id);
+        
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
         entity.setAtivo(true);
         entity = this._service.update(entity);
@@ -95,8 +104,26 @@ public class CardapioController {
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Cardapio entity = this._service.find(id);
 
+        if (!Objects.nonNull(entity))
+        return ResponseEntity.badRequest().body("");
+
         entity.setAtivo(false);
         entity = this._service.update(entity);
+
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));
+        return ResponseEntity.badRequest().body("");
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
+        Cardapio entity = this._service.find(id);
+        
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
+
+        entity.setAtivo(false);
+        entity = this._service.delete(id);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));

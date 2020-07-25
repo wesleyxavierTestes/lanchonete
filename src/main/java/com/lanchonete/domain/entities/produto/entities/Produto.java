@@ -26,8 +26,7 @@ import lombok.Setter;
 @Entity
 public class Produto extends AbstractProduto implements IProduto {
 
-    private String p;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = AbstractEstoque.class)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, 
+        targetEntity = AbstractEstoque.class)
     private List<IEstoque> estoque;
 }

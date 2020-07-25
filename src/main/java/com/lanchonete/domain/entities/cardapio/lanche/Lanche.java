@@ -25,8 +25,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
+public class Lanche extends AbstractProduto implements 
+IProdutoPedido, IProdutoCardapio, IProdutoCombo {
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
     private Set<IProdutoComposicao> ingredientesLanche = new HashSet<IProdutoComposicao>();
+
+    
 }

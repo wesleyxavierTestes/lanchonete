@@ -1,5 +1,6 @@
 package com.lanchonete.domain.entities.cardapio.lanche;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
@@ -15,6 +16,5 @@ import lombok.Setter;
 @Setter
 @Entity(name = "ingrediente")
 public class Ingrediente extends AbstractProduto implements IProdutoComposicao {
-    
-    private String observacao;
+
 }

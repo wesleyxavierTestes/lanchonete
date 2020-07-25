@@ -27,7 +27,7 @@ import lombok.Setter;
 public class Venda extends BaseEntity {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
-    private Set<IProdutoVenda> ItemsVenda = new HashSet<IProdutoVenda>();
+    private Set<IProdutoVenda> ItensVenda = new HashSet<IProdutoVenda>();
 
     private BigDecimal valorDesconto;
     private BigDecimal valorTotal;

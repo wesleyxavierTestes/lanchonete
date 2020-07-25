@@ -7,5 +7,5 @@ public interface IPedidoState {
     IPedidoState cancelarPedido();
     IPedidoState finalizarPedido();
 
-    IPedidoState configurar(EnumEstadoPedido estado);
+    IPedidoState configurar();
 }

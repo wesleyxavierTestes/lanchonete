@@ -28,4 +28,8 @@ public class VendaService extends BaseService<Venda> {
     public Page<VendaListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<VendaListDto> listCancelDto(int page) {
+		return _repository.listCancelDto(PageRequest.of((page - 1), 10));
+	}
 }

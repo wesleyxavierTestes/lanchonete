@@ -14,12 +14,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IPedidoRepository extends JpaRepository<Pedido, Long>  {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM pedido WHERE tipo_pedido like ?1")
-    List<Pedido> findByTipoPedido(String tipoPedido);
+    @Query(nativeQuery = true, value = "SELECT * FROM pedido WHERE estado like ?1")
+    List<Pedido> findByEstado(String estado);
 
     @Query(
         nativeQuery = true, 
-        value = "SELECT (c.*) FROM pedido as c where c.ativo = true",
-        countQuery = "SELECT (c.*) FROM pedido as c where c.ativo = true")
-	Page<PedidoListDto> findAllDto(PageRequest of);
+        value = "SELECT (c.*) FROM pedido as c",
+        countQuery = "SELECT (c.*) FROM pedido as c")
+    Page<PedidoListDto> findAllDto(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM pedido as c where c.ativo = false",
+        countQuery = "SELECT (c.*) FROM pedido as c where c.ativo = false")
+	Page<PedidoListDto> listCancelDto(PageRequest of);
 }
