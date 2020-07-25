@@ -45,4 +45,16 @@ public interface IEstoqueRepository extends JpaRepository<AbstractEstoque, Long>
     value = "SELECT (c.*) FROM estoque as c where c.ativo = true", 
     countQuery = "SELECT (c.*) FROM estoque as c where c.ativo = true")
     Page<EstoqueListDto> findAllDto(PageRequest of);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM estoque as c where c.estoque_tipo = 'S'", 
+        countQuery = "SELECT (c.*) FROM estoque as c where c.estoque_tipo = 'S'")
+	Page<EstoqueListDto> listLeave(PageRequest of);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM estoque as c where cestoque_tipo = 'E'", 
+        countQuery = "SELECT (c.*) FROM estoque as c where c.estoque_tipo = 'E'")
+	Page<EstoqueListDto> listEntrance(PageRequest of);
 }

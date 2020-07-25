@@ -1,5 +1,6 @@
 package com.lanchonete.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,7 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     protected long id;
 
-    protected Calendar dataCadastro;
+    protected LocalDateTime dataCadastro;
 
     protected boolean ativo; 
 }

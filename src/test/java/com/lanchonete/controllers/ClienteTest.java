@@ -2,7 +2,8 @@ package com.lanchonete.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.URL;
 
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
@@ -10,12 +11,11 @@ import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
-import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
-import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.mocks.ClienteMock;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 import com.lanchonete.utils.pages.ClienteUtilsPageMock;
+import com.lanchonete.apllication.validations.CustomErro;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ClienteTest {
@@ -58,8 +57,8 @@ public class ClienteTest {
     public void listar() throws Exception {
         String url = String.format(URL_CONSTANTS_TEST.ClienteList + "/?page=1", port);
 
-        ResponseEntity<ClienteUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(), 
-            ClienteUtilsPageMock.class);
+        ResponseEntity<ClienteUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
+                ClienteUtilsPageMock.class);
         ClienteUtilsPageMock page = response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -75,7 +74,7 @@ public class ClienteTest {
         ResponseEntity<Object> response = restTemplate.getForEntity(new URL(url).toString(), Object.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNull(response.getBody());
+
     }
 
     @Test
@@ -83,13 +82,17 @@ public class ClienteTest {
     public void save_invalid_test() throws Exception {
         String url = String.format(URL_CONSTANTS_TEST.ClienteSave, port);
 
-        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(new ClienteDto(), null);
+        ClienteDto entity = new ClienteDto();
+        entity.nome = "teste1";
+        entity.endereco = new EnderecoDto();
+        HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(entity, null);
 
-        ResponseEntity<ClienteDto> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
-                requestUpdate, ClienteDto.class);
+        ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
+                requestUpdate, CustomErro[].class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNull(response.getBody());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().length > 0);
     }
 
     @ParameterizedTest
@@ -101,12 +104,11 @@ public class ClienteTest {
 
         HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(ClienteDto.builder().nome(parametro).build(), null);
 
-        ResponseEntity<ClienteDto> response = restTemplate
-        .exchange(new URL(url).toString(), HttpMethod.PUT,
+        ResponseEntity<ClienteDto> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
                 requestUpdate, ClienteDto.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNull(response.getBody());
+
     }
 
     @Test
@@ -117,9 +119,8 @@ public class ClienteTest {
         ResponseEntity<ClienteDto> response = restTemplate.postForEntity(new URL(url).toString(),
                 new ClienteDefaultDto("teste"), ClienteDto.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
     }
 
-    
 }

@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CepController {
     
     @GetMapping(value="path")
-    public ResponseEntity<EnderecoDto> getMethodName(@RequestParam String cep) {
+    public ResponseEntity<Object> getMethodName(@RequestParam String cep) {
         try {
             HttpBase.HttpGet(UrlConstants.getViaCep(cep), EnderecoDto.class);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
         } catch (Exception e) {
             return new ResponseEntity<>(new EnderecoDto(), HttpStatus.BAD_REQUEST);
         }

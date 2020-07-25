@@ -38,8 +38,8 @@ public class ClienteService extends BaseService<Cliente> {
                 .gia("1004").ibge("3550308").localidade("São Paulo").logradouro("Praça da Sé").uf("SP")
                 .unidade("unidade").build();
 
-        if (entity.getClass() != null) {
-            nome = entity.getNome();
+        if (!Objects.nonNull(entity.getNome())|| entity.getNome().isEmpty()) {
+            nome = "Consumidor final";
         }
 
         entity.setNome(nome);

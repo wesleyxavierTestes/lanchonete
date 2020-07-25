@@ -24,4 +24,12 @@ public class EstoqueService extends BaseService<AbstractEstoque> {
     public Page<EstoqueListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<EstoqueListDto> listLeave(int page) {
+		return _repository.listLeave(PageRequest.of((page - 1), 10));
+	}
+
+	public Page<EstoqueListDto> listEntrance(int page) {
+		return _repository.listEntrance(PageRequest.of((page - 1), 10));
+	}
 }

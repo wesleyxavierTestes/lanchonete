@@ -1,9 +1,11 @@
 package com.lanchonete.domain.entities.cliente;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
@@ -22,27 +24,19 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Cliente extends BaseEntity {
     
-    @Min(2)
-    @Column(nullable = false)
     private String nome;
 
-    @Min(8)
-    @Column(nullable = true)
     private String cpf;
     
-    @Min(9)
-    @Column(nullable = true)
     private String cnjp;
 
-    @Column(nullable = false, name = "tipo_pessoa")
     @Enumerated(EnumType.STRING)
     private EnumTipoPessoa tipoPessoa;
             
-    @Column(nullable = false, name = "tipo_cliente")
     @Enumerated(EnumType.STRING)
     private EnumTipoCliente tipoCliente;
    
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Endereco endereco;
 
 	public String getCpfCnpj() {

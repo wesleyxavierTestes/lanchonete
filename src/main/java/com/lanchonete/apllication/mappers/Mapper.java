@@ -1,6 +1,7 @@
 package com.lanchonete.apllication.mappers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
@@ -9,6 +10,7 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
+import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.entities.cliente.Cliente;
@@ -37,6 +39,18 @@ public final class Mapper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static Cardapio map(final CardapioDto entityDto, final Cardapio entity) {
+        return CardapioMapper.update(entityDto, entity);
+    }
+
+    public static Cardapio map(final CardapioDto entity) {
+        return Mapper.map(entity, Cardapio.class);
+    }
+
+    public static CardapioDto map(final Cardapio entity) {
+        return Mapper.map(entity, CardapioDto.class);
     }
 
     public static Cliente map(final ClienteDto entityDto, final Cliente entity) {

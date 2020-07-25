@@ -32,6 +32,13 @@ public class VendaController {
 
     }
 
+    // TODO: INCOMPLETO
+    // TODO: NECESSITA DE TESTES
+    @GetMapping("novo")
+    public ResponseEntity<Object> novo() {
+        return ResponseEntity.ok(new VendaDto());
+    }
+
     @GetMapping("list")
     public ResponseEntity<Page<VendaListDto>> list(@RequestParam(name = "page") int page) {
         Page<VendaListDto> list = this._service.listDto(page);
@@ -39,11 +46,11 @@ public class VendaController {
     }
 
     @GetMapping("find")
-    public ResponseEntity<Venda> find(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Venda entity = this._service.find(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entity);
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Mapper.map(entity));
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
@@ -51,11 +58,11 @@ public class VendaController {
 
         Venda entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
@@ -63,14 +70,14 @@ public class VendaController {
 
         Venda entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("active")
@@ -82,7 +89,7 @@ public class VendaController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("desactive")
@@ -94,6 +101,6 @@ public class VendaController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 }

@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
-import com.lanchonete.apllication.dto.cliente.EnderecoDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.cliente.Endereco;
-import com.lanchonete.domain.services.cliente.EnderecoService;
+import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.domain.services.cardapio.CardapioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,53 +21,53 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/endereco")
-public class EnderecoController {
+@RequestMapping("api/cardapio")
+public class CardapioController {
 
-    private final EnderecoService _service;
+    private final CardapioService _service;
 
     @Autowired
-    public EnderecoController(EnderecoService service) {
+    public CardapioController(CardapioService service) {
         _service = service;
-
     }
 
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
-        return ResponseEntity.ok(new EnderecoDto());
+        return ResponseEntity.ok(new CardapioDto());
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<Endereco>> listar(@RequestParam(name = "page") int page) {
-        return ResponseEntity.ok(this._service.list(page));
+    public ResponseEntity<Page<CardapioListDto>> list(@RequestParam(name = "page") int page) {
+        Page<CardapioListDto> list = this._service.listDto(page);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
-        Endereco entity = this._service.find(id);
+        Cardapio entity = this._service.find(id);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity));
         return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() EnderecoDto entityDto) {
+    public ResponseEntity<Object> save(@RequestBody() CardapioDto entityDto) {
 
-        Endereco entity = Mapper.map(entityDto);
+        Cardapio entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body("");
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, EnderecoDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));
         return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() EnderecoDto entityDto) {
+    public ResponseEntity<Object> update(@RequestBody() CardapioDto entityDto) {
 
-        Endereco entity = this._service.find(entityDto.id);
+        Cardapio entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body("");
 
@@ -74,15 +75,32 @@ public class EnderecoController {
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, EnderecoDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));
         return ResponseEntity.badRequest().body("");
     }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
-        Endereco entity = this._service.delete(id);
+    @DeleteMapping("active")
+    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
+        Cardapio entity = this._service.find(id);
+
+        entity.setAtivo(true);
+        entity = this._service.update(entity);
+
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, EnderecoDto.class));
+            return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));
         return ResponseEntity.badRequest().body("");
     }
+
+    @DeleteMapping("desactive")
+    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
+        Cardapio entity = this._service.find(id);
+
+        entity.setAtivo(false);
+        entity = this._service.update(entity);
+
+        if (Objects.nonNull(entity))
+            return ResponseEntity.ok(Mapper.map(entity, CardapioDto.class));
+        return ResponseEntity.badRequest().body("");
+    }
+
 }

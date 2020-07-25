@@ -32,6 +32,13 @@ public class ProdutoController {
 
     }
 
+    // TODO: INCOMPLETO
+    // TODO: NECESSITA DE TESTES
+    @GetMapping("novo")
+    public ResponseEntity<Object> novo() {
+        return ResponseEntity.ok(new ProdutoDto());
+    }
+
     @GetMapping("list")
     public ResponseEntity<Page<ProdutoListDto>> list(@RequestParam(name = "page") int page) {
         Page<ProdutoListDto> list = this._service.listDto(page);
@@ -39,11 +46,11 @@ public class ProdutoController {
     }
 
     @GetMapping("find")
-    public ResponseEntity<Produto> find(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entity);
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Mapper.map(entity));
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
@@ -51,11 +58,11 @@ public class ProdutoController {
 
         Produto entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
@@ -63,14 +70,14 @@ public class ProdutoController {
 
         Produto entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("active")
@@ -82,7 +89,7 @@ public class ProdutoController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("desactive")
@@ -94,7 +101,7 @@ public class ProdutoController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
 }

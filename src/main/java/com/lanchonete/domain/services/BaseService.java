@@ -1,6 +1,6 @@
 package com.lanchonete.domain.services;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,7 +34,8 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     @Override
     public T save(T entity) {
         try {
-            entity.setDataCadastro(Calendar.getInstance());
+            entity.setDataCadastro(LocalDateTime.now());
+            entity.setAtivo(true);
             T entitySave = _repository.save(entity);
             return entitySave;
         } catch (Exception e) {

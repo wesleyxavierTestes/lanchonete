@@ -8,6 +8,7 @@ import com.lanchonete.apllication.dto.cliente.ClienteListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
+import com.lanchonete.apllication.validations.Validations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,13 @@ public class ClienteController {
 
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
+    // TODO: INCOMPLETO
+    // TODO: NECESSITA DE TESTES
+    @GetMapping("novo")
+    public ResponseEntity<Object> novo() {
+        return ResponseEntity.ok(new ClienteDto());
+    }
+
     @GetMapping("list")
     public ResponseEntity<Page<ClienteListDto>> list(@RequestParam(name = "page") int page) {
         Page<ClienteListDto> list = this._service.listDto(page);
@@ -48,23 +56,26 @@ public class ClienteController {
     }
 
     @GetMapping("find")
-    public ResponseEntity<Cliente> find(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Cliente entity = this._service.find(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entity);
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Mapper.map(entity));
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() ClienteDto entityDto) {
+        if (!Validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(Validations.get().getErros());
 
         Cliente entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
+
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
@@ -72,14 +83,14 @@ public class ClienteController {
 
         Cliente entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("active")
@@ -91,7 +102,7 @@ public class ClienteController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("desactive")
@@ -103,16 +114,16 @@ public class ClienteController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save/default")
-    public ResponseEntity<ClienteDto> saveDefault(@RequestBody() ClienteDefaultDto entityDto) {
+    public ResponseEntity<Object> saveDefault(@RequestBody() ClienteDefaultDto entityDto) {
 
         boolean clienteDefaultExiste = this._service.existeClientePadrao();
 
         if (clienteDefaultExiste)
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         Cliente entity = Mapper.map(entityDto, Cliente.class);
 
@@ -122,6 +133,6 @@ public class ClienteController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 }

@@ -31,6 +31,13 @@ public class ComboController {
         _service = service;
     }
 
+    // TODO: INCOMPLETO
+    // TODO: NECESSITA DE TESTES
+    @GetMapping("novo")
+    public ResponseEntity<Object> novo() {
+        return ResponseEntity.ok(new ComboDto());
+    }
+
     @GetMapping("list")
     public ResponseEntity<Page<ComboListDto>> list(@RequestParam(name = "page") int page) {
         Page<ComboListDto> list = this._service.listDto(page);
@@ -38,11 +45,11 @@ public class ComboController {
     }
 
     @GetMapping("find")
-    public ResponseEntity<Combo> find(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Combo entity = this._service.find(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entity);
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Mapper.map(entity));
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
@@ -50,11 +57,11 @@ public class ComboController {
 
         Combo entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ComboDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
@@ -62,14 +69,14 @@ public class ComboController {
 
         Combo entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ComboDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("active")
@@ -81,7 +88,7 @@ public class ComboController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ComboDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("desactive")
@@ -93,7 +100,7 @@ public class ComboController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ComboDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
 }

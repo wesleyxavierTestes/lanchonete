@@ -32,6 +32,13 @@ public class LancheController {
 
     }
 
+    // TODO: INCOMPLETO
+    // TODO: NECESSITA DE TESTES
+    @GetMapping("novo")
+    public ResponseEntity<Object> novo() {
+        return ResponseEntity.ok(new LancheDto());
+    }
+
     @GetMapping("list")
     public ResponseEntity<Page<LancheListDto>> list(@RequestParam(name = "page") int page) {
         Page<LancheListDto> list = this._service.listDto(page);
@@ -39,11 +46,11 @@ public class LancheController {
     }
 
     @GetMapping("find")
-    public ResponseEntity<Lanche> find(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entity);
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Mapper.map(entity));
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
@@ -51,13 +58,13 @@ public class LancheController {
 
         Lanche entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
-        
+            return ResponseEntity.badRequest().body("");
+
         entity = this._service.save(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
@@ -65,14 +72,14 @@ public class LancheController {
 
         Lanche entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("active")
@@ -84,7 +91,7 @@ public class LancheController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("desactive")
@@ -96,7 +103,7 @@ public class LancheController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
 }

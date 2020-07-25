@@ -13,24 +13,24 @@ public class EnderecoDto  {
     
     public long id;
     
-    @NotNull
+    @NotNull(message = "Name is mandatory")
     public String cep;
 
-    @NotNull
+    @NotNull(message = "Name is mandatory")
     public String numero;
 
-    @NotNull
+    @NotNull(message = "Name is mandatory")
     public String logradouro;
 
     public String complemento;
 
-    @NotNull
+    @NotNull(message = "Name is mandatory")
     public String bairro;
 
-    @NotNull
+    @NotNull(message = "Name is mandatory")
     public String localidade;
 
-    @NotNull
+    @NotNull(message = "Name is mandatory")
     public String uf;
     public String unidade;
     public String ibge;

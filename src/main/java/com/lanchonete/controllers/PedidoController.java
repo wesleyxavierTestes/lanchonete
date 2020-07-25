@@ -32,6 +32,13 @@ public class PedidoController {
 
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
+    // TODO: INCOMPLETO
+    // TODO: NECESSITA DE TESTES
+    @GetMapping("novo")
+    public ResponseEntity<Object> novo() {
+        return ResponseEntity.ok(new PedidoDto());
+    }
+
     @GetMapping("list")
     public ResponseEntity<Page<PedidoListDto>> list(@RequestParam(name = "page") int page) {
         Page<PedidoListDto> list = this._service.listDto(page);
@@ -39,11 +46,11 @@ public class PedidoController {
     }
 
     @GetMapping("find")
-    public ResponseEntity<Pedido> find(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Pedido entity = this._service.find(id);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entity);
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Mapper.map(entity));
+        return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
@@ -51,11 +58,11 @@ public class PedidoController {
 
         Pedido entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, PedidoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
@@ -63,14 +70,14 @@ public class PedidoController {
 
         Pedido entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("");
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, PedidoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("active")
@@ -82,7 +89,7 @@ public class PedidoController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, PedidoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 
     @DeleteMapping("desactive")
@@ -94,6 +101,6 @@ public class PedidoController {
 
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, PedidoDto.class));
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("");
     }
 }
