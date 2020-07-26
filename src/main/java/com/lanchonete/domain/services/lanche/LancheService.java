@@ -28,4 +28,12 @@ public class LancheService extends BaseService<Lanche> {
     public Page<LancheListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<LancheListDto> listActiveDto(int page) {
+		return this._repository.listActiveDto(PageRequest.of((page - 1), 10));
+	}
+
+	public Page<LancheListDto> listDesactiveDto(int page) {
+		return this._repository.listActiveDto(PageRequest.of((page - 1), 10));
+	}
 }

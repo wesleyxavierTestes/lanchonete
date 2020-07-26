@@ -64,4 +64,12 @@ public class ClienteService extends BaseService<Cliente> {
     public Page<ClienteListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<ClienteListDto> listActiveDto(int page) {
+		return this._repository.listActiveDto(PageRequest.of((page - 1), 10));
+	}
+
+	public Page<ClienteListDto> listDesactiveDto(int page) {
+		return this._repository.listDesactiveDto(PageRequest.of((page - 1), 10));
+	}
 }

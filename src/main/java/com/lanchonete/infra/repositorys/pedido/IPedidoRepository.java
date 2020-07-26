@@ -27,5 +27,5 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Long>  {
         nativeQuery = true, 
         value = "SELECT (c.*) FROM pedido as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM pedido as c where c.ativo = false")
-	Page<PedidoListDto> listCancelDto(PageRequest of);
+	Page<PedidoListDto> listCancelDto(PageRequest pageRequest);
 }

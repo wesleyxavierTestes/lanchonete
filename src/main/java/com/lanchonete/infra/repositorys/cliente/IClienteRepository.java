@@ -27,12 +27,12 @@ public interface IClienteRepository extends JpaRepository<Cliente, Long>  {
         nativeQuery = true, 
         value = "SELECT (c.*) FROM cliente as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM cliente as c where c.ativo = true")
-    Page<ClienteListDto> listActiveDto(PageRequest of);
+    Page<ClienteListDto> listActiveDto(PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM cliente as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM cliente as c where c.ativo = false")
-    Page<ClienteListDto> listDesactiveDto(PageRequest of);
+    Page<ClienteListDto> listDesactiveDto(PageRequest pageRequest);
     
 }

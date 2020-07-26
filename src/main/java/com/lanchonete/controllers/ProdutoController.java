@@ -8,6 +8,7 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
+import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProdutoController {
 
     private final ProdutoService _service;
+
+    @Autowired
+    private Validations validations;
 
     @Autowired
     public ProdutoController(ProdutoService service) {
@@ -58,7 +62,6 @@ public class ProdutoController {
         return ResponseEntity.ok(list);
     }
 
-
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
@@ -69,12 +72,12 @@ public class ProdutoController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() ProdutoDto entityDto) {
-        if (!Validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(Validations.get().getErros());
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
         Produto entity = Mapper.map(entityDto);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
@@ -83,12 +86,12 @@ public class ProdutoController {
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() ProdutoDto entityDto) {
-        if (!Validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(Validations.get().getErros());
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
         Produto entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity = Mapper.map(entityDto, entity);
         entity = this._service.update(entity);
@@ -102,8 +105,8 @@ public class ProdutoController {
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
         entity = this._service.update(entity);
@@ -117,8 +120,8 @@ public class ProdutoController {
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
         entity = this._service.update(entity);

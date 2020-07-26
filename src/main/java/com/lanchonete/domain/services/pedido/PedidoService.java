@@ -28,4 +28,8 @@ public class PedidoService extends BaseService<Pedido> {
     public Page<PedidoListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<PedidoListDto> listCancelDto(int page) {
+		return this._repository.listCancelDto(PageRequest.of((page - 1), 10));
+	}
 }

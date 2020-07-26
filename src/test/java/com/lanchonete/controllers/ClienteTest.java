@@ -42,7 +42,7 @@ public class ClienteTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    protected ClienteService _repository;
+    protected ClienteService _service;
 
     @Test
     @DisplayName("Deve converter uma ClienteDto para Cliente incluindo Endereco")
@@ -55,7 +55,7 @@ public class ClienteTest {
 
     @Nested
     @DisplayName(value = "Testes com clientes Invalidos")
-    class ClienteInvalids {
+    class ClienteInvalid {
         @Test
         @DisplayName("Deve listar todos clientes com lista vazia")
         public void listar() throws Exception {
@@ -75,7 +75,8 @@ public class ClienteTest {
         public void find_inexistente() throws Exception {
             String url = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=100000", port);
 
-            ResponseEntity<Object> response = restTemplate.getForEntity(new URL(url).toString(), Object.class);
+            ResponseEntity<Object> response = restTemplate
+            .getForEntity(new URL(url).toString(), Object.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
@@ -127,4 +128,16 @@ public class ClienteTest {
         }
     }
 
+    @Nested
+    @DisplayName(value = "Testes de integração clientes")
+    class ClienteValid {
+
+        @Test
+        @DisplayName("Deve listar todos clientes com lista vazia")
+        public void save_ok() throws Exception {
+
+            
+
+        }
+    }
 }

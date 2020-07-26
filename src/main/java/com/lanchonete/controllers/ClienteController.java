@@ -10,6 +10,7 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.utils.HttpBase;
+import com.lanchonete.utils.MessageError;
 import com.lanchonete.utils.UrlConstants;
 import com.lanchonete.apllication.validations.Validations;
 
@@ -30,6 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClienteController {
 
     private final ClienteService _service;
+
+    @Autowired
+    private Validations validations;
 
     @Autowired
     public ClienteController(ClienteService service) {
@@ -68,6 +72,18 @@ public class ClienteController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("lis/active")
+    public ResponseEntity<Page<ClienteListDto>> listActive(@RequestParam(name = "page") int page) {
+        Page<ClienteListDto> list = this._service.listActiveDto(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("lis/desactive")
+    public ResponseEntity<Page<ClienteListDto>> listDesactive(@RequestParam(name = "page") int page) {
+        Page<ClienteListDto> list = this._service.listDesactiveDto(page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Cliente entity = this._service.find(id);
@@ -78,33 +94,34 @@ public class ClienteController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() ClienteDto entityDto) {
-        if (!Validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(Validations.get().getErros());
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
         Cliente entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity = this._service.save(entity);
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() ClienteDto entityDto) {
-        if (!Validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(Validations.get().getErros());
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
         Cliente entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
-        entity = Mapper.map(entityDto, entity);
-        entity = this._service.update(entity);
+        this._service.update(Mapper.map(entityDto, entity));
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -113,13 +130,14 @@ public class ClienteController {
         Cliente entity = this._service.find(id);
 
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -128,13 +146,14 @@ public class ClienteController {
         Cliente entity = this._service.find(id);
 
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -153,7 +172,8 @@ public class ClienteController {
         entity = this._service.save(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ClienteDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 }

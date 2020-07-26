@@ -9,9 +9,9 @@ import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
-import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
+import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +30,9 @@ public class EstoqueController {
 
     private final EstoqueService _serviceEstoque;
     private final ProdutoService _serviceProduto;
+
+    @Autowired
+    private Validations validations;
 
     @Autowired
     public EstoqueController(
@@ -84,8 +87,8 @@ public class EstoqueController {
     // TODO: NECESSITA DE TESTES
     @PostMapping("save/add")
     public ResponseEntity<Object> saveAdicionar(@RequestBody() EstoqueDto entityDto) {
-        if (!Validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(Validations.get().getErros());
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
         if (!Objects.nonNull(entityDto) || !Objects.nonNull(entityDto.produto))
             return ResponseEntity.badRequest().body("");
@@ -103,6 +106,7 @@ public class EstoqueController {
         entity = (EstoqueEntrada) this._serviceEstoque.save(entity);
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(entityDto);
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -114,13 +118,14 @@ public class EstoqueController {
         EstoqueSaida entity = Mapper.map(entityDto, EstoqueSaida.class);
         // TODO: Lógica
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity = (EstoqueSaida) this._serviceEstoque.save(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, EstoqueDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -130,13 +135,14 @@ public class EstoqueController {
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
         AbstractEstoque entity = this._serviceEstoque.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity = this._serviceEstoque.delete(id);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, EstoqueDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 

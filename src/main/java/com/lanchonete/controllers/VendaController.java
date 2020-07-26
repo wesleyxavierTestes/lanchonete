@@ -5,8 +5,10 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.venda.VendaService;
+import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class VendaController {
 
     private final VendaService _service;
+
+    @Autowired
+    private Validations validations;
 
     @Autowired
     public VendaController(VendaService service) {
@@ -51,12 +55,13 @@ public class VendaController {
         return ResponseEntity.ok(list);
     }
 
-
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Venda entity = this._service.find(id);
+        
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -65,10 +70,13 @@ public class VendaController {
 
         Venda entity = Mapper.map(entityDto);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
         entity = this._service.save(entity);
+
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -77,13 +85,14 @@ public class VendaController {
         Venda entity = this._service.find(id);
 
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, VendaDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 }

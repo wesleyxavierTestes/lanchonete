@@ -28,4 +28,12 @@ public class ComboService extends BaseService<Combo> {
     public Page<ComboListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<ComboListDto> listActiveDto(int page) {
+		return this._repository.listActiveDto(PageRequest.of((page - 1), 10));
+	}
+
+	public Page<ComboListDto> listDesactiveDto(int page) {
+		return this._repository.listDesactiveDto(PageRequest.of((page - 1), 10));
+	}
 }

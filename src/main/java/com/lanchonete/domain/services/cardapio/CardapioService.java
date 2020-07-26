@@ -42,4 +42,12 @@ public class CardapioService extends BaseService<Cardapio> {
     public Page<CardapioListDto> listDto(int page) {
         return _repository.findAllDto(PageRequest.of((page - 1), 10));
     }
+
+	public Page<CardapioListDto> listActiveDto(int page) {
+		return this._repository.listActiveDto(PageRequest.of((page - 1), 10));
+	}
+
+	public Page<CardapioListDto> listDesactiveDto(int page) {
+		return this._repository.listDesactiveDto(PageRequest.of((page - 1), 10));
+	}
 }

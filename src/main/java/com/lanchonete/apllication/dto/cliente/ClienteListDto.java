@@ -18,12 +18,21 @@ public class ClienteListDto  {
 
     @JsonIgnore
     public String cpf;
+
     @JsonIgnore
     public String cnjp;
 
-    @JsonGetter("nome")
+    @JsonGetter("cpfCnpj")
     public String getCpfCnpj() {
-        return tipoPessoa == EnumTipoPessoa.Fisica ? this.cpf : this.cnjp;
+        return tipoPessoa == EnumTipoPessoa.Fisica ? cpfFormat() : cnpjFormat();
+    }
+
+    private String cnpjFormat() {
+        return this.cnjp;
+    }
+
+    private String cpfFormat() {
+        return this.cpf;
     }
 
     @JsonIgnore

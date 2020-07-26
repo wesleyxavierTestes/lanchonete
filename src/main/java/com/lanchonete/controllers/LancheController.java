@@ -8,6 +8,7 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.services.lanche.LancheService;
+import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,9 @@ public class LancheController {
     private final LancheService _service;
 
     @Autowired
+    private Validations validations;
+
+    @Autowired
     public LancheController(LancheService service) {
         _service = service;
 
@@ -46,27 +50,42 @@ public class LancheController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("lis/active")
+    public ResponseEntity<Page<LancheListDto>> listActive(@RequestParam(name = "page") int page) {
+        Page<LancheListDto> list = this._service.listActiveDto(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("lis/desactive")
+    public ResponseEntity<Page<LancheListDto>> listDesactive(@RequestParam(name = "page") int page) {
+        Page<LancheListDto> list = this._service.listDesactiveDto(page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
+        
         if (Objects.nonNull(entity))
             return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() LancheDto entityDto) {
-        if (!Validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(Validations.get().getErros());
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
         Lanche entity = Mapper.map(entityDto);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity = this._service.save(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -74,14 +93,14 @@ public class LancheController {
     public ResponseEntity<Object> update(@RequestBody() LancheDto entityDto) {
 
         Lanche entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
-        entity = Mapper.map(entityDto, entity);
-        entity = this._service.update(entity);
+        this._service.update(Mapper.map(entityDto, entity));
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -89,14 +108,15 @@ public class LancheController {
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 
@@ -104,14 +124,15 @@ public class LancheController {
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity)) 
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
         entity = this._service.update(entity);
 
         if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, LancheDto.class));
+            return ResponseEntity.ok(Mapper.map(entity));
+
         return ResponseEntity.badRequest().body("");
     }
 

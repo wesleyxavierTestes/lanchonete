@@ -15,6 +15,7 @@ import com.lanchonete.domain.entities.cardapio.combo.Combo;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
+import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
@@ -116,6 +117,10 @@ public final class Mapper {
 
     public static EstoqueSaida map(final EstoqueDto entityDto, final EstoqueSaida entity) {
         return EstoqueMapper.update(entityDto, entity);
+    }
+
+    public static EstoqueDto map(final AbstractEstoque entity) {
+        return Mapper.map(entity, EstoqueDto.class);
     }
 
     public static EstoqueDto map(final EstoqueSaida entity) {

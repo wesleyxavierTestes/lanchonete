@@ -14,19 +14,31 @@ import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Cliente extends BaseEntity {
     
+    @Column(nullable = false, length = 150)
     private String nome;
 
+    @Column(nullable = true, length = 100)
+    private String email;
+
+    @Column(nullable = true, precision = 9)
+    private String rg;
+
+    @Column(nullable = true, precision = 11)
     private String cpf;
     
+    @Column(nullable = true, length = 14)
     private String cnjp;
 
     @Enumerated(EnumType.STRING)
@@ -37,10 +49,4 @@ public class Cliente extends BaseEntity {
    
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Endereco endereco;
-
-	public String getCpfCnpj() {
-        return this.tipoPessoa == EnumTipoPessoa.Fisica
-                ? this.cpf
-                : this.cnjp;
-    }
 }

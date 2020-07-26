@@ -34,8 +34,13 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     @Override
     public T save(T entity) {
         try {
+            boolean exists = this._repository.existsById(entity.getId());            
+            if (exists)
+                return null;
+
             entity.setDataCadastro(LocalDateTime.now());
             entity.setAtivo(true);
+
             T entitySave = _repository.save(entity);
             return entitySave;
         } catch (Exception e) {
@@ -48,6 +53,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
         T exists = this.find(entity.getId());
         if (!Objects.nonNull(exists))
             return null;
+
         entity.setDataCadastro(exists.getDataCadastro());
         
         try {
