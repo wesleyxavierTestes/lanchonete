@@ -1,8 +1,5 @@
 package com.lanchonete.infra.repositorys.cardapio;
 
-import java.util.List;
-
-import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 
 import org.springframework.data.domain.Page;
@@ -14,25 +11,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ICardapioRepository extends JpaRepository<Cardapio, Long>  {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM cardapio WHERE tipo_cardapio like ?1")
-    List<Cardapio> findByTipoCardapio(String tipoCardapio);
-
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT (c.*) FROM cardapio as c",
-        countQuery = "SELECT (c.*) FROM cardapio as c")
-    Page<CardapioListDto> findAllDto(PageRequest of);
+    @Query(nativeQuery = true, 
+            value = "SELECT * FROM cardapio WHERE nome like *?1* limit 1")
+    Cardapio findByName(String tipoCardapio);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM cardapio as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM cardapio as c where c.ativo = true")
-    Page<CardapioListDto> listActiveDto(PageRequest pageRequest);
+    Page<Cardapio> listActive(PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM cardapio as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM cardapio as c where c.ativo = false")
-    Page<CardapioListDto> listDesactiveDto(PageRequest pageRequest);
+    Page<Cardapio> listDesactive(PageRequest pageRequest);
     
 }

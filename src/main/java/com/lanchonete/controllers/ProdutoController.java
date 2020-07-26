@@ -50,13 +50,13 @@ public class ProdutoController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("lis/active")
+    @GetMapping("list/active")
     public ResponseEntity<Page<ProdutoListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<ProdutoListDto> list = this._service.listActiveDto(page);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("lis/desactive")
+    @GetMapping("list/desactive")
     public ResponseEntity<Page<ProdutoListDto>> listDesactive(@RequestParam(name = "page") int page) {
         Page<ProdutoListDto> list = this._service.listDesactiveDto(page);
         return ResponseEntity.ok(list);
@@ -65,9 +65,10 @@ public class ProdutoController {
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save")
@@ -75,13 +76,12 @@ public class ProdutoController {
         if (!validations.by(entityDto).isValid())
             return ResponseEntity.badRequest().body(validations.getErros());
 
-        Produto entity = Mapper.map(entityDto);
-        if (!Objects.nonNull(entity)) 
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-        entity = this._service.save(entity);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().body("");
+        Produto entity = this._service.save(Mapper.map(entityDto));
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PutMapping("update")
@@ -90,45 +90,47 @@ public class ProdutoController {
             return ResponseEntity.badRequest().body(validations.getErros());
 
         Produto entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
-        entity = Mapper.map(entityDto, entity);
-        entity = this._service.update(entity);
+        this._service.update(Mapper.map(entityDto, entity));
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Produto entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, ProdutoDto.class));
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
 }

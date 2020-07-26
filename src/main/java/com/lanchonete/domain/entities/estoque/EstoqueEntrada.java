@@ -17,6 +17,7 @@ public class EstoqueEntrada extends AbstractEstoque {
 
   @Override
   public void configureSave() {
-    this.valor = this.valor.multiply(BigDecimal.valueOf(1));
+    if (this.quantidade < 0)
+      this.quantidade = this.quantidade *= 1;
   }
 }

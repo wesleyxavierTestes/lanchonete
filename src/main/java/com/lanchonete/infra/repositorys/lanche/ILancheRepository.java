@@ -13,25 +13,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ILancheRepository extends JpaRepository<Lanche, Long>  {
-
-    @Query(nativeQuery = true, value = "SELECT * FROM lanche WHERE tipo_lanche like ?1")
-    List<Lanche> findByTipoLanche(String tipoLanche);
-
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT (c.*) FROM lanche as c",
-        countQuery = "SELECT (c.*) FROM lanche as c")
-    Page<LancheListDto> findAllDto(PageRequest of);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM lanche as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = true")
-    Page<LancheListDto> listActiveDto(PageRequest of);
+    Page<Lanche> listActive(PageRequest of);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM lanche as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = false")
-	Page<LancheListDto> listDesactiveDto(PageRequest of);
+	Page<LancheListDto> listDesactive(PageRequest of);
 }

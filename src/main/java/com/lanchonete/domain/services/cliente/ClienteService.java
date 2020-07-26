@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.lanchonete.apllication.dto.cliente.ClienteListDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
@@ -51,25 +52,32 @@ public class ClienteService extends BaseService<Cliente> {
     }
 
     public boolean existeClientePadrao() {
-        List<Cliente> entity = _repository.findByTipoCliente("ConsumidorFinal");
-        return Objects.nonNull(entity) && !entity.isEmpty();
-    }
-
-	public Page<Cliente> listSpendMore(int page) {
-        Page<Cliente> entity = null;
-         //  _repository.listSpendMore("ConsumidorFinal");
-        return entity;
+        Cliente entity = this.findDefault();
+        return Objects.nonNull(entity);
     }
     
     public Page<ClienteListDto> listDto(int page) {
-        return _repository.findAllDto(PageRequest.of((page - 1), 10));
+        return _repository.findAll(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ClienteListDto.class));
     }
 
 	public Page<ClienteListDto> listActiveDto(int page) {
-		return this._repository.listActiveDto(PageRequest.of((page - 1), 10));
+        return _repository.listActive(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ClienteListDto.class));
 	}
 
 	public Page<ClienteListDto> listDesactiveDto(int page) {
-		return this._repository.listDesactiveDto(PageRequest.of((page - 1), 10));
+        return _repository.listDesactive(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ClienteListDto.class));
+	}
+
+	public Cliente findDefault() {
+        Cliente entity = _repository.findByTipoCliente("ConsumidorFinal");
+        return entity;
+	}
+
+	public Page<ClienteListDto> listSpendMore(int page) {
+        
+        return null;
 	}
 }

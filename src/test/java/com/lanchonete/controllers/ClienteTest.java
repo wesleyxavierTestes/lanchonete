@@ -12,9 +12,9 @@ import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
-import com.lanchonete.mocks.ClienteMock;
+import com.lanchonete.mocks.entities.ClienteMock;
+import com.lanchonete.mocks.pages.ClienteUtilsPageMock;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
-import com.lanchonete.utils.pages.ClienteUtilsPageMock;
 import com.lanchonete.apllication.validations.CustomErro;
 
 import org.junit.jupiter.api.DisplayName;
@@ -53,6 +53,15 @@ public class ClienteTest {
         assertEquals(ClienteMock.dto().nome, cliente.getNome());
     }
 
+    @Test
+    @DisplayName("Deve converter uma Cliente para ClienteDto incluindo Endereco")
+    public void converterDtoClient() throws Exception {
+
+        ClienteDto cliente = Mapper.map(ClienteMock.by());
+
+        assertEquals(ClienteMock.by().getNome(), cliente.nome);
+    }
+
     @Nested
     @DisplayName(value = "Testes com clientes Invalidos")
     class ClienteInvalid {
@@ -75,8 +84,8 @@ public class ClienteTest {
         public void find_inexistente() throws Exception {
             String url = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=100000", port);
 
-            ResponseEntity<Object> response = restTemplate
-            .getForEntity(new URL(url).toString(), Object.class);
+            ResponseEntity<String> response = restTemplate
+            .getForEntity(new URL(url).toString(), String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
@@ -99,19 +108,19 @@ public class ClienteTest {
             assertTrue(response.getBody().length > 0);
         }
 
-        @ParameterizedTest
-        @ValueSource(strings = { "", "8" })
-        @DisplayName("Deve tentar alterar cliente inexisnte")
-        public void update(String parametro) throws Exception {
+        @Test
+        @DisplayName("Deve tentar alterar cliente inexistente")
+        public void update() throws Exception {
 
             String url = String.format(URL_CONSTANTS_TEST.ClienteUpdate, port);
 
-            ClienteDto entity = ClienteDto.builder().nome(parametro).build();
+            ClienteDto entity = ClienteMock.dto();
+            entity.id = 0;
 
             HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
-                    requestUpdate, CustomErro[].class);
+            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
+                    requestUpdate, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }

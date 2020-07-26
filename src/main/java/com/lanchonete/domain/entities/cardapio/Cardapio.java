@@ -15,6 +15,9 @@ import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 @Entity
 public class Cardapio extends BaseEntity {
 
+    @Column(unique = true)
+    private String nome;
+
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
     @Column(name = "Itens_disponiveis")
     private Set<IProdutoCardapio> ItensDisponiveis = new HashSet<IProdutoCardapio>();

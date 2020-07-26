@@ -1,4 +1,4 @@
-package com.lanchonete.utils.pages;
+package com.lanchonete.mocks.pages;
 
 import java.util.Iterator;
 import java.util.List;

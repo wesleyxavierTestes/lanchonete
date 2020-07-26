@@ -49,20 +49,20 @@ public class PedidoController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("find")
-    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
-        Pedido entity = this._service.find(id);
-        
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-
-        return ResponseEntity.badRequest().body("");
-    }
-
-    @GetMapping("lis/cancel")
+    @GetMapping("list/cancel")
     public ResponseEntity<Page<PedidoListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<PedidoListDto> list = this._service.listCancelDto(page);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("find")
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        Pedido entity = this._service.find(id);
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save")
@@ -70,47 +70,43 @@ public class PedidoController {
         if (!validations.by(entityDto).isValid())
             return ResponseEntity.badRequest().body(validations.getErros());
 
-        Pedido entity = Mapper.map(entityDto);
-        if (!Objects.nonNull(entity)) 
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+        Pedido entity = this._service.save(Mapper.map(entityDto));
 
-        entity = this._service.save(entity);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("cancel")
     public ResponseEntity<Object> cancel(@RequestParam(name = "id") long id) {
         Pedido entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Pedido entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 }

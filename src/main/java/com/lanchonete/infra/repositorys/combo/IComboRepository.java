@@ -2,7 +2,6 @@ package com.lanchonete.infra.repositorys.combo;
 
 import java.util.List;
 
-import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 
 import org.springframework.data.domain.Page;
@@ -13,26 +12,17 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IComboRepository extends JpaRepository<Combo, Long>  {
-
-    @Query(nativeQuery = true, value = "SELECT * FROM combo WHERE tipo_combo like ?1")
-    List<Combo> findByTipoCombo(String tipoCombo);
-
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT (c.*) FROM combo as c",
-        countQuery = "SELECT (c.*) FROM combo as c")
-    Page<ComboListDto> findAllDto(PageRequest of);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM combo as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM combo as c where c.ativo = true")
-    Page<ComboListDto> listActiveDto(PageRequest pageRequest);
+    Page<Combo> listActive(PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM combo as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM combo as c where c.ativo = false")
-    Page<ComboListDto> listDesactiveDto(PageRequest pageRequest);
+    Page<Combo> listDesactive(PageRequest pageRequest);
     
 }

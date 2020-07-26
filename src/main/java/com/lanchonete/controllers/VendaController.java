@@ -33,7 +33,6 @@ public class VendaController {
     @Autowired
     public VendaController(VendaService service) {
         _service = service;
-
     }
 
     // TODO: INCOMPLETO
@@ -58,26 +57,24 @@ public class VendaController {
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Venda entity = this._service.find(id);
-        
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
 
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() VendaDto entityDto) {
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
-        Venda entity = Mapper.map(entityDto);
+        Venda entity = this._service.save(Mapper.map(entityDto));
+
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        entity = this._service.save(entity);
-
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("cancel")
@@ -88,11 +85,11 @@ public class VendaController {
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 }
