@@ -15,6 +15,7 @@ public class PedidoCancelamento extends Pedido {
     @Override
     public PedidoCancelamento configurar() {
         this.configurarEstadoPedido(EnumEstadoPedido.Cancelado);
+        this.setAtivo(false);
         return this;
     }
 }

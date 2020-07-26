@@ -2,6 +2,7 @@ package com.lanchonete.domain.entities.estoque;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,16 +23,12 @@ import lombok.Setter;
 @Entity(name = "estoque")
 @Table(name = "estoque")
 @DiscriminatorColumn(name = "estoque_tipo")
-public abstract class AbstractEstoque extends BaseEntity {
+public abstract class AbstractEstoque extends BaseEntity implements IEstoque {
 
   @ManyToOne(fetch = FetchType.EAGER)
   protected Produto produto;
-  protected BigDecimal valor;
 
-  /**
-   * Configuração para salvar
-   * Ignorar update
-   */
+  protected long quantidade;
+
   public abstract void configureSave();
-
 }

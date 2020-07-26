@@ -9,6 +9,7 @@ import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
+import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.MessageError;
@@ -35,9 +36,7 @@ public class EstoqueController {
     private Validations validations;
 
     @Autowired
-    public EstoqueController(
-        EstoqueService serviceEstoque,
-        ProdutoService serviceProduto) {
+    public EstoqueController(EstoqueService serviceEstoque, ProdutoService serviceProduto) {
         _serviceEstoque = serviceEstoque;
         _serviceProduto = serviceProduto;
     }
@@ -78,9 +77,10 @@ public class EstoqueController {
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         AbstractEstoque entity = this._serviceEstoque.find(id);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity, AbstractEstoque.class));
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity, AbstractEstoque.class));
     }
 
     // TODO: INCOMPLETO
@@ -90,43 +90,40 @@ public class EstoqueController {
         if (!validations.by(entityDto).isValid())
             return ResponseEntity.badRequest().body(validations.getErros());
 
-        if (!Objects.nonNull(entityDto) || !Objects.nonNull(entityDto.produto))
-            return ResponseEntity.badRequest().body("");
+        Produto produto = this._serviceProduto.find(entityDto.produto.id);
+        if (!Objects.nonNull(produto))
+            return ResponseEntity.badRequest().body(MessageError.PRODUTO_EXISTS);
 
-        EstoqueEntrada entity = Mapper.map(entityDto, EstoqueEntrada.class);
-        // TODO: Lógica
-
-        
-        entity.setProduto(this._serviceProduto.find(entity.getProduto().getId()));
-        
-            // _serviceEstoque
-        
-        //this._serviceEstoque.configureSave(entity);
+        EstoqueEntrada entity = (EstoqueEntrada) this._serviceEstoque
+                .configureSave(Mapper.map(entityDto, EstoqueEntrada.class), produto);
 
         entity = (EstoqueEntrada) this._serviceEstoque.save(entity);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(entityDto);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body("");
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(entityDto);
     }
 
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
     @PostMapping("save/remove")
     public ResponseEntity<Object> saveRemover(@RequestBody() EstoqueDto entityDto) {
+        if (!validations.by(entityDto).isValid())
+            return ResponseEntity.badRequest().body(validations.getErros());
 
-        EstoqueSaida entity = Mapper.map(entityDto, EstoqueSaida.class);
-        // TODO: Lógica
+        Produto produto = this._serviceProduto.find(entityDto.produto.id);
+        if (!Objects.nonNull(produto))
+            return ResponseEntity.badRequest().body(MessageError.PRODUTO_EXISTS);
 
-        if (!Objects.nonNull(entity)) 
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+        EstoqueSaida entity = (EstoqueSaida) this._serviceEstoque
+                .configureSave(Mapper.map(entityDto, EstoqueSaida.class), produto);
 
         entity = (EstoqueSaida) this._serviceEstoque.save(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(entityDto);
     }
 
     // TODO: INCOMPLETO
@@ -135,15 +132,15 @@ public class EstoqueController {
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
         AbstractEstoque entity = this._serviceEstoque.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity = this._serviceEstoque.delete(id);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
 }

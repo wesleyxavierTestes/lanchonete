@@ -43,7 +43,7 @@ public class ClienteController {
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
     @GetMapping("list/spendmore")
-    public ResponseEntity<Page<Cliente>> listSpendMore(@RequestParam(name = "page") int page) {
+    public ResponseEntity<Page<ClienteListDto>> listSpendMore(@RequestParam(name = "page") int page) {
         return ResponseEntity.ok(this._service.listSpendMore(page));
     }
 
@@ -51,7 +51,7 @@ public class ClienteController {
     public ResponseEntity<Object> getMethodName(@RequestParam String cep) {
         try {
             HttpBase.HttpGet(UrlConstants.getViaCep(cep), EnderecoDto.class);
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(" ");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new EnderecoDto());
         }
@@ -72,13 +72,13 @@ public class ClienteController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("lis/active")
+    @GetMapping("list/active")
     public ResponseEntity<Page<ClienteListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<ClienteListDto> list = this._service.listActiveDto(page);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("lis/desactive")
+    @GetMapping("list/desactive")
     public ResponseEntity<Page<ClienteListDto>> listDesactive(@RequestParam(name = "page") int page) {
         Page<ClienteListDto> list = this._service.listDesactiveDto(page);
         return ResponseEntity.ok(list);
@@ -87,9 +87,19 @@ public class ClienteController {
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         Cliente entity = this._service.find(id);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-        return ResponseEntity.badRequest().body("");
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity));
+    }
+
+    @GetMapping("find/default")
+    public ResponseEntity<Object> findefault() {
+        Cliente entity = this._service.findDefault();
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save")
@@ -97,15 +107,12 @@ public class ClienteController {
         if (!validations.by(entityDto).isValid())
             return ResponseEntity.badRequest().body(validations.getErros());
 
-        Cliente entity = Mapper.map(entityDto);
+        Cliente entity = this._service.save(Mapper.map(entityDto));
+
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        entity = this._service.save(entity);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PutMapping("update")
@@ -119,10 +126,10 @@ public class ClienteController {
 
         this._service.update(Mapper.map(entityDto, entity));
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("active")
@@ -133,12 +140,12 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
@@ -149,12 +156,12 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save/default")
@@ -163,17 +170,17 @@ public class ClienteController {
         boolean clienteDefaultExiste = this._service.existeClientePadrao();
 
         if (clienteDefaultExiste)
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         Cliente entity = Mapper.map(entityDto, Cliente.class);
 
         this._service.createClienteDefault(entity);
 
-        entity = this._service.save(entity);
+        this._service.save(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 }

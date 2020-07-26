@@ -1,6 +1,7 @@
 package com.lanchonete.domain.services.pedido;
 
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.pedido.IPedidoRepository;
@@ -21,15 +22,13 @@ public class PedidoService extends BaseService<Pedido> {
         _repository = repository;
     }
 
-    public Page<Pedido> listFilter(int page) {
-        return this._repository.findAll(PageRequest.of((page - 1), 10));
-    }
-
     public Page<PedidoListDto> listDto(int page) {
-        return _repository.findAllDto(PageRequest.of((page - 1), 10));
+        return _repository.findAll(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(PedidoListDto.class));
     }
 
 	public Page<PedidoListDto> listCancelDto(int page) {
-		return this._repository.listCancelDto(PageRequest.of((page - 1), 10));
+        return _repository.listCancel(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(PedidoListDto.class));
 	}
 }

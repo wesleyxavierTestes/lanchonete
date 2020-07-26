@@ -1,8 +1,10 @@
 package com.lanchonete.domain.entities.produto.entities;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -26,7 +28,12 @@ import lombok.Setter;
 @Entity
 public class Produto extends AbstractProduto implements IProduto {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, 
-        targetEntity = AbstractEstoque.class)
+    /**
+     * Estoques FindAllByProdutoId
+     */
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = AbstractEstoque.class)
     private List<IEstoque> estoque;
+
+    @Column(nullable = false)
+    private BigDecimal custo;
 }

@@ -2,7 +2,6 @@ package com.lanchonete.infra.repositorys.venda;
 
 import java.util.List;
 
-import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.domain.entities.venda.Venda;
 
 import org.springframework.data.domain.Page;
@@ -16,16 +15,10 @@ public interface IVendaRepository extends JpaRepository<Venda, Long>  {
 
     @Query(nativeQuery = true, value = "SELECT * FROM venda WHERE tipo_venda like ?1")
     List<Venda> findByTipoVenda(String tipoVenda);
-
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT (c.*) FROM venda as c",
-        countQuery = "SELECT (c.*) FROM venda as c")
-    Page<VendaListDto> findAllDto(PageRequest of);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM venda as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM venda as c where c.ativo = false")
-	Page<VendaListDto> listCancelDto(PageRequest of);
+	Page<Venda> listCancel(PageRequest of);
 }

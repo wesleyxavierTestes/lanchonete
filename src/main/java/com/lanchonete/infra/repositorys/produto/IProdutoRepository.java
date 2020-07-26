@@ -1,6 +1,5 @@
 package com.lanchonete.infra.repositorys.produto;
 
-import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 
 import org.springframework.data.domain.Page;
@@ -14,19 +13,13 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
 
     @Query(
         nativeQuery = true, 
-        value = "SELECT (c.*) FROM produto as c",
-        countQuery = "SELECT (c.*) FROM produto as c")
-    Page<ProdutoListDto> findAllDto(PageRequest of);
-    
-    @Query(
-        nativeQuery = true, 
         value = "SELECT (c.*) FROM produto as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM produto as c where c.ativo = true")
-    Page<ProdutoListDto> listActiveDto(PageRequest of);
+    Page<Produto> listActive(PageRequest of);
     
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM produto as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM produto as c where c.ativo = false")
-	Page<ProdutoListDto> listDesactiveDto(PageRequest of);
+	Page<Produto> listDesactive(PageRequest of);
 }

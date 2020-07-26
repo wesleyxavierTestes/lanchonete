@@ -44,29 +44,30 @@ public class ComboController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<ComboListDto>> list(@RequestParam(name = "page") int page) {
-        Page<ComboListDto> list = this._service.listDto(page);
+    public ResponseEntity<Page<Combo>> list(@RequestParam(name = "page") int page) {
+        Page<Combo> list = this._service.list(page);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("find")
-    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
-        Combo entity = this._service.find(id);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-        return ResponseEntity.badRequest().body("");
-    }
-
-    @GetMapping("lis/active")
+    @GetMapping("list/active")
     public ResponseEntity<Page<ComboListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<ComboListDto> list = this._service.listActiveDto(page);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("lis/desactive")
+    @GetMapping("list/desactive")
     public ResponseEntity<Page<ComboListDto>> listDesactive(@RequestParam(name = "page") int page) {
         Page<ComboListDto> list = this._service.listDesactiveDto(page);
         return ResponseEntity.ok(list);
+    }
+    
+    @GetMapping("find")
+    public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        Combo entity = this._service.find(id);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save")
@@ -74,13 +75,12 @@ public class ComboController {
         if (!validations.by(entityDto).isValid())
             return ResponseEntity.badRequest().body(validations.getErros());
 
-        Combo entity = Mapper.map(entityDto);
-        if (!Objects.nonNull(entity)) 
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-        entity = this._service.save(entity);
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
-        return ResponseEntity.badRequest().body("");
+        Combo entity = this._service.save(Mapper.map(entityDto));
+
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PutMapping("update")
@@ -89,47 +89,46 @@ public class ComboController {
             return ResponseEntity.badRequest().body(validations.getErros());
 
         Combo entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         this._service.update(Mapper.map(entityDto, entity));
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Combo entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         Combo entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity)) 
+        if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
-        entity = this._service.update(entity);
+        this._service.update(entity);
 
-        if (Objects.nonNull(entity))
-            return ResponseEntity.ok(Mapper.map(entity));
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.badRequest().body("");
+        return ResponseEntity.ok(Mapper.map(entity));
     }
-
 }

@@ -1,6 +1,7 @@
 package com.lanchonete.domain.services.produto;
 
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
@@ -26,14 +27,17 @@ public class ProdutoService extends BaseService<Produto> {
     }
 
     public Page<ProdutoListDto> listDto(int page) {
-        return _repository.findAllDto(PageRequest.of((page - 1), 10));
+        return _repository.findAll(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listActiveDto(int page) {
-        return _repository.listActiveDto(PageRequest.of((page - 1), 10));
+        return _repository.listActive(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDesactiveDto(int page) {
-        return _repository.listDesactiveDto(PageRequest.of((page - 1), 10));
+        return _repository.listDesactive(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ProdutoListDto.class));
     }
 }

@@ -1,7 +1,10 @@
 package com.lanchonete.apllication.mappers;
 
+import java.util.function.Function;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
@@ -13,6 +16,7 @@ import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
@@ -32,6 +36,17 @@ public final class Mapper {
         super();
     }
 
+
+    public static <T, Y> Function<T, Y> pageMap(Class<Y> ref) {
+        Function<T, Y> converter = new Function<T, Y>() {
+            @Override
+            public Y apply(T entity) {
+                return Mapper.map(entity, ref);
+            }
+        };
+        return converter;
+    }
+
     public static <Y, T> T map(final Y o, final Class<T> ref) {
         try {
             ModelMapper mapper = new ModelMapper();
@@ -40,6 +55,18 @@ public final class Mapper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static Categoria map(final CategoriaDto entityDto, final Categoria entity) {
+        return CategoriaMapper.update(entityDto, entity);
+    }
+
+    public static Categoria map(final CategoriaDto entity) {
+        return Mapper.map(entity, Categoria.class);
+    }
+
+    public static CategoriaDto map(final Categoria entity) {
+        return Mapper.map(entity, CategoriaDto.class);
     }
 
     public static Cardapio map(final CardapioDto entityDto, final Cardapio entity) {

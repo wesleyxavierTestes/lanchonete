@@ -1,6 +1,4 @@
-package com.lanchonete.apllication.dto.estoque;
-
-import java.time.LocalDateTime;
+package com.lanchonete.apllication.dto.categoria;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -14,14 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstoqueDto  {
+public class CategoriaDto  {
 
     public long id;
 
-    @Size(min = 1)
-    public long quantidade;
-    public LocalDateTime data;
-
     @NotNull(message = MessageError.IS_MANDATORY)
-    public EstoqueProdutoDto produto;
+    @Size(max = 150, message = MessageError.MAX_LIMITE)
+    public String nome;
 }
