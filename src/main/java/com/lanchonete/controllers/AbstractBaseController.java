@@ -1,5 +1,7 @@
 package com.lanchonete.controllers;
 
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
+import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.apllication.validations.Validations;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,4 +19,10 @@ public abstract class AbstractBaseController {
     public Object handlerError(MethodArgumentNotValidException ex) {
         return validations.by(ex.getBindingResult().getTarget()).getErros();
     }
+
+    @ExceptionHandler(RegraNegocioException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String regraNegocioException(RegraNegocioException ex) {
+        return ex.getMessage();
+    }    
 }
