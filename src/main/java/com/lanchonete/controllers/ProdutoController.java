@@ -8,8 +8,10 @@ import javax.validation.Valid;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.MessageError;
@@ -32,13 +34,16 @@ public class ProdutoController extends AbstractBaseController {
 
     private final ProdutoService _service;
     private final EstoqueService _serviceEstoque;
+    private final CategoriaService _serviceCategoria;
 
     @Autowired
     public ProdutoController(
         ProdutoService service,
-        EstoqueService serviceEstoque) {
+        EstoqueService serviceEstoque,
+        CategoriaService serviceCategoria) {
         _service = service;
         _serviceEstoque = serviceEstoque;
+        _serviceCategoria = serviceCategoria;
     }
 
     // TODO: INCOMPLETO
@@ -97,11 +102,16 @@ public class ProdutoController extends AbstractBaseController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid ProdutoDto entityDto) {
+        Categoria categoria = this._serviceCategoria.find(entityDto.categoria.id);
+        
+        if (!Objects.nonNull(categoria))
+            return ResponseEntity.badRequest().body("Categoria" + MessageError.IS_MANDATORY);
 
         Produto entity = Mapper.map(entityDto);
         
         entity.setCodigo(UUID.randomUUID());
-
+        entity.setCategoria(categoria);
+        
         this._service.save(entity);
 
         if (!Objects.nonNull(entity))

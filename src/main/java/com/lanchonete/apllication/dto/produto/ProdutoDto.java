@@ -1,6 +1,7 @@
 package com.lanchonete.apllication.dto.produto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.utils.MessageError;
@@ -15,8 +16,10 @@ import lombok.NoArgsConstructor;
 public class ProdutoDto  {
 
     public long id;
+    public boolean ativo;
 
     @NotNull(message =  MessageError.IS_MANDATORY)
+    @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String nome;
 
     @NotNull(message =  MessageError.IS_MANDATORY)

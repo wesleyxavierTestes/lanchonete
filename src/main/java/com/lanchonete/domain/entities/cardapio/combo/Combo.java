@@ -27,6 +27,7 @@ public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCa
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
     private Set<IProdutoCombo> composicao = new HashSet<IProdutoCombo>();
 
-    private BigDecimal valorDesconto;
+    private UUID codigoCombo;
+    private BigDecimal custo;
     private BigDecimal valorTotal;
 }

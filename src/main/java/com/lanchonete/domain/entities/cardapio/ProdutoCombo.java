@@ -8,6 +8,6 @@ import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
 @Entity
-public class Bebida extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
+public class ProdutoCombo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
     
 }

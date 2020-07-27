@@ -13,7 +13,7 @@ public class ProdutoListDto {
     public String nome;
     public String valor;
     public String custo;
-    public String codigo;
+    // public String codigo;
     public String estoqueAtual;
     public String categoriaNome;
 }

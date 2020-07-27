@@ -6,13 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.net.URL;
+import java.time.LocalDateTime;
 
+import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
+import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
+import com.lanchonete.infra.repositorys.categoria.ICategoriaRepository;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.ProdutoUtilsPageMock;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -39,7 +43,10 @@ public class ProdutoTest {
     private TestRestTemplate restTemplate;
     
     @Autowired
-    protected ProdutoService _repository;
+    protected ProdutoService _service;
+
+    @Autowired
+    private ICategoriaRepository _serviceRepository;
 
     @Test
     public void converter() throws Exception {
@@ -112,5 +119,83 @@ public class ProdutoTest {
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
+    }
+
+    @Nested
+    @DisplayName(value = "Testes de integração produtos")
+    class ProdutoValid {
+
+        @Test
+        @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
+        public void save_ok() throws Exception {
+
+            CategoriaDto categoriaDto = CategoriaDto.builder().nome("teste"+LocalDateTime.now()).build();
+            Categoria categoria = _serviceRepository.save(Mapper.map(categoriaDto));
+            
+            // SAVE
+            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
+            ProdutoDto entity = ProdutoMock.dto();
+            entity.categoria = Mapper.map(categoria);
+
+            HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(entity, null);
+            ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
+                    HttpMethod.POST,
+                    requestSave, Object.class);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
+            assertNotNull(response.getBody());
+
+            // LIST
+            String urlList = String.format(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
+
+            ResponseEntity<ProdutoUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+                    ProdutoUtilsPageMock.class);
+
+            ProdutoUtilsPageMock page = responselist.getBody();
+            assertEquals(HttpStatus.OK, responselist.getStatusCode(), "LIST expect Error");
+            assertTrue(page.totalElements > 0);
+            assertEquals(1, page.totalPages);
+
+            // FIND
+            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
+
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    ProdutoDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND expect Error");
+            assertEquals(entity.nome, responseFind.getBody().nome);
+
+            // DESACTIVE
+            String urlDesactive = String.format(URL_CONSTANTS_TEST.ProdutoDesactive + "/?id=" + page.content.get(0).id,
+                    port);
+
+            HttpEntity<ProdutoDto> responseurl = new HttpEntity<>(null, null);
+            ResponseEntity<String> responseDesactive = restTemplate.exchange(new URL(urlDesactive).toString(),
+                    HttpMethod.DELETE, responseurl, String.class);
+
+            assertEquals(HttpStatus.OK, responseDesactive.getStatusCode(), "DESACTIVE expect Error");
+            // FIND DESACTIVE
+
+            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ProdutoDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND DESACTIVE expect Error");
+            assertEquals(false, responseFind.getBody().ativo);
+
+            // ACTIVE
+            String urlActive = String.format(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + page.content.get(0).id, port);
+
+            ResponseEntity<String>  responseActive = restTemplate.exchange(new URL(urlActive).toString(), HttpMethod.DELETE, responseurl,
+                    String.class);
+
+            assertEquals(HttpStatus.OK, responseActive.getStatusCode(), "ACTIVE expect Error");
+            // FIND ACTIVE
+
+            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ProdutoDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND ACTIVE expect Error");
+            assertEquals(true, responseFind.getBody().ativo);
+
+        }
+    
     }
 }

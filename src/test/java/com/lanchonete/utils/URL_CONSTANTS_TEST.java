@@ -17,6 +17,12 @@ public final class URL_CONSTANTS_TEST {
     public final static String CategoriaSave = "http://localhost:%s/api/categoria/save";
     public final static String CategoriaUpdate = "http://localhost:%s/api/categoria/update";
     public final static String CategoriaDelete = "http://localhost:%s/api/categoria/delete";
+
+    public final static String LancheList = "http://localhost:%s/api/lanche/list";
+    public final static String LancheFind = "http://localhost:%s/api/lanche/find";
+    public final static String LancheSave = "http://localhost:%s/api/lanche/save";
+    public final static String LancheActive = "http://localhost:%s/api/lanche/active";
+    public final static String LancheDesactive = "http://localhost:%s/api/lanche/desactive";
     
     public final static String EnderecoList = "http://localhost:%s/api/endereco/list";
     public final static String EnderecoFind = "http://localhost:%s/api/endereco/find";
@@ -28,5 +34,6 @@ public final class URL_CONSTANTS_TEST {
     public final static String ProdutoFind = "http://localhost:%s/api/produto/find";
     public final static String ProdutoSave = "http://localhost:%s/api/produto/save";
     public final static String ProdutoUpdate = "http://localhost:%s/api/produto/update";
-    public final static String ProdutoDelete = "http://localhost:%s/api/produto/delete";
+    public final static String ProdutoActive = "http://localhost:%s/api/produto/active";
+    public final static String ProdutoDesactive = "http://localhost:%s/api/produto/desactive";
 }

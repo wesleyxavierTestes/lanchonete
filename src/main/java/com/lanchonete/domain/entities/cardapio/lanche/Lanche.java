@@ -1,7 +1,9 @@
 package com.lanchonete.domain.entities.cardapio.lanche;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,5 +33,8 @@ IProdutoPedido, IProdutoCardapio, IProdutoCombo {
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
     private Set<IProdutoComposicao> ingredientesLanche = new HashSet<IProdutoComposicao>();
 
+    private UUID codigoLanche;
+    
+    private BigDecimal valorTotal;
     
 }

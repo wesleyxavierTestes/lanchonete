@@ -1,7 +1,6 @@
 package com.lanchonete.domain.services.produto;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;

@@ -88,21 +88,6 @@ public class LancheController extends AbstractBaseController {
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
-    @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() @Valid LancheDto entityDto) {
-
-        Lanche entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        this._service.update(Mapper.map(entityDto, entity));
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
-        return ResponseEntity.ok(Mapper.map(entity));
-    }
-
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
         Lanche entity = this._service.find(id);
@@ -134,5 +119,4 @@ public class LancheController extends AbstractBaseController {
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
-
 }
