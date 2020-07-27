@@ -47,6 +47,12 @@ public class ProdutoController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/estoque/zero")
+    public ResponseEntity<Page<ProdutoListDto>> listEstoqueZero(@RequestParam(name = "page") int page) {
+        Page<ProdutoListDto> list = this._service.listEstoqueZero(page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("list/name")
     public ResponseEntity<Page<ProdutoListDto>> listByName(
         @RequestParam(name = "page") int page,   

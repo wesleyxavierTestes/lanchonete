@@ -27,5 +27,24 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
         nativeQuery = true, 
         value = "SELECT (c.*) FROM produto as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM produto as c where c.ativo = false")
-	Page<Produto> listDesactive(PageRequest of);
+    Page<Produto> listDesactive(PageRequest of);
+    
+    @Query(
+        nativeQuery = true, 
+            value = "SELECT (p.*) "
+                    +"FROM public.produto as p "
+                    +"join public.estoque as e "
+                    +"on e.produto_id = p.id "
+                    +"where p.ativo = true "
+                    +"GROUP BY p.id "
+                    +"HAVING SUM(e.quantidade) < 1",
+                    
+        countQuery = "SELECT (p.*) "
+                    +"FROM public.produto as p "
+                    +"join public.estoque as e "
+                    +"on e.produto_id = p.id "
+                    +"where p.ativo = true "
+                    +"GROUP BY p.id "
+                    +"HAVING SUM(e.quantidade) < 1")
+    Page<Produto> listEstoqueZero(PageRequest pageRequest);
 }

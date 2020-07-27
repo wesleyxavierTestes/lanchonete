@@ -45,4 +45,9 @@ public class ProdutoService extends BaseService<Produto> {
         return _repository.listByName(name, PageRequest.of((page - 1), 10))
         .map(Mapper.pageMap(ProdutoListDto.class));
 	}
+
+	public Page<ProdutoListDto> listEstoqueZero(int page) {
+		return _repository.listEstoqueZero(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ProdutoListDto.class));
+	}
 }

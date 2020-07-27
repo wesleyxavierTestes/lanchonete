@@ -38,5 +38,5 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Long>  {
         nativeQuery = true, 
         value = "SELECT (c.*) FROM pedido as c where c.cliente_id = ?1",
         countQuery = "SELECT (c.*) FROM pedido as c where c.cliente_id = ?1")
-	Page<Pedido> listClient(long id, PageRequest pageRequest);
+    Page<Pedido> listClient(long id, PageRequest pageRequest);
 }
