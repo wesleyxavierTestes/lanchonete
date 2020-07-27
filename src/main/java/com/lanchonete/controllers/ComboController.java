@@ -42,8 +42,16 @@ public class ComboController extends AbstractBaseController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<Combo>> list(@RequestParam(name = "page") int page) {
-        Page<Combo> list = this._service.list(page);
+    public ResponseEntity<Page<ComboListDto>> list(@RequestParam(name = "page") int page) {
+        Page<ComboListDto> list = this._service.listDto(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("list/name")
+    public ResponseEntity<Page<ComboListDto>> listByName(
+        @RequestParam(name = "page") int page,   
+        @RequestParam(name = "name") String name) {
+        Page<ComboListDto> list = this._service.listByName(name, page);
         return ResponseEntity.ok(list);
     }
 

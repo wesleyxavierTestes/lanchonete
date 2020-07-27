@@ -47,6 +47,14 @@ public class CardapioController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/name")
+    public ResponseEntity<Page<CardapioListDto>> listByName(
+        @RequestParam(name = "page") int page,   
+        @RequestParam(name = "name") String name) {
+        Page<CardapioListDto> list = this._service.listByName(name, page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("list/active")
     public ResponseEntity<Page<CardapioListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<CardapioListDto> list = this._service.listActiveDto(page);

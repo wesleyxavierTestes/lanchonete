@@ -72,6 +72,14 @@ public class ClienteController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/name")
+    public ResponseEntity<Page<ClienteListDto>> listByName(
+        @RequestParam(name = "page") int page,   
+        @RequestParam(name = "name") String name) {
+        Page<ClienteListDto> list = this._service.listByName(name, page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("list/active")
     public ResponseEntity<Page<ClienteListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<ClienteListDto> list = this._service.listActiveDto(page);

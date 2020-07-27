@@ -19,6 +19,11 @@ public interface ILancheRepository extends JpaRepository<Lanche, Long>  {
         value = "SELECT (c.*) FROM lanche as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = true")
     Page<Lanche> listActive(PageRequest of);
+
+    @Query(nativeQuery = true, 
+    value = "SELECT * FROM lanche WHERE lower(nome) like lower(concat ('%',?1,'%'))",
+    countQuery = "SELECT * FROM lanche WHERE lower(nome) like lower(concat ('%',?1,'%'))")
+    Page<Lanche> listByName(String nome, PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 

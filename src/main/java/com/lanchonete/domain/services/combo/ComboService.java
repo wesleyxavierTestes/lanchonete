@@ -1,7 +1,5 @@
 package com.lanchonete.domain.services.combo;
 
-import java.util.function.Function;
-
 import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
@@ -36,6 +34,11 @@ public class ComboService extends BaseService<Combo> {
 
 	public Page<ComboListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ComboListDto.class));
+	}
+
+	public Page<ComboListDto> listByName(String name, int page) {
+        return _repository.listByName(name, PageRequest.of((page - 1), 10))
         .map(Mapper.pageMap(ComboListDto.class));
 	}
 }

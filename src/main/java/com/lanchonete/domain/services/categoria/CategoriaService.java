@@ -28,11 +28,6 @@ public class CategoriaService extends BaseService<Categoria> {
         return this._repository.findAll(PageRequest.of((page - 1), 10));
     }
 
-    public Categoria findByName(String nome) {
-        Categoria entity = _repository.findByName(nome);
-        return (Objects.nonNull(entity)) ? entity : null;
-    }
-
     public Page<CategoriaListDto> listDto(int page) {
         return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CategoriaListDto.class));
     }
@@ -44,4 +39,9 @@ public class CategoriaService extends BaseService<Categoria> {
     public Page<CategoriaListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CategoriaListDto.class));
     }
+
+	public Page<CategoriaListDto> listByName(String name, int page) {
+        return _repository.listByName(name, PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(CategoriaListDto.class));
+	}
 }

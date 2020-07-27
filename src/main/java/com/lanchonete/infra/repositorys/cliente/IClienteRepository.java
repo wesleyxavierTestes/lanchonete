@@ -17,7 +17,39 @@ public interface IClienteRepository extends JpaRepository<Cliente, Long>  {
         nativeQuery = true, 
         value = "SELECT * FROM cliente WHERE tipo_cliente like ?1 limit 1")
     Cliente findByTipoCliente(String tipoCliente);
-    
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT * FROM cliente WHERE lower(nome) like lower(concat ('%',?1,'%'))",
+        countQuery = "SELECT * FROM cliente WHERE lower(nome) like lower(concat ('%',?1,'%'))")
+    Page<Cliente> listByName(String nome, PageRequest pageRequest);
+
+    /**
+     * Listagem dos clientes que mais gastam
+     * @param pageRequest
+     * @return
+     */
+    @Query(
+        nativeQuery = true, 
+            value = "SELECT c.id, c.nome, Sum(v.valor_total) as valor "
+                    +"FROM public.cliente c "
+                    +"join public.venda as v "
+                    +"on v.cliente_id = c.id "
+                    +"where v.cancelado = false "
+                    +"and c.ativo = true"
+                    +"group by c.id "
+                    +"order by valor desc",
+                    
+        countQuery = "SELECT c.id, c.nome, Sum(v.valor_total) as valor "
+                    +"FROM public.cliente c "
+                    +"join public.venda as v "
+                    +"on v.cliente_id = c.id "
+                    +"where v.cancelado = false "
+                    +"and c.ativo = true"
+                    +"group by c.id "
+                    +"order by valor desc")
+    Page<Cliente> listSpendMore(PageRequest pageRequest);
+
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM cliente as c where c.ativo = true",

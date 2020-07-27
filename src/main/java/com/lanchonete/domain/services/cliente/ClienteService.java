@@ -77,7 +77,12 @@ public class ClienteService extends BaseService<Cliente> {
 	}
 
 	public Page<ClienteListDto> listSpendMore(int page) {
-        
-        return null;
+        return _repository.listSpendMore(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ClienteListDto.class));
+	}
+
+	public Page<ClienteListDto> listByName(String name, int page) {
+		return _repository.listByName(name, PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ClienteListDto.class));
 	}
 }

@@ -40,4 +40,9 @@ public class LancheService extends BaseService<Lanche> {
         return _repository.listActive(PageRequest.of((page - 1), 10))
         .map(Mapper.pageMap(LancheListDto.class));
     }
+
+	public Page<LancheListDto> listByName(String name, int page) {
+        return _repository.listByName(name, PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(LancheListDto.class));
+	}
 }

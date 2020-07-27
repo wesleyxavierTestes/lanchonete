@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/pedido")
 public class PedidoController extends AbstractBaseController {
-    
+
     private final PedidoService _service;
 
     @Autowired
@@ -45,6 +45,19 @@ public class PedidoController extends AbstractBaseController {
     @GetMapping("list")
     public ResponseEntity<Page<PedidoListDto>> list(@RequestParam(name = "page") int page) {
         Page<PedidoListDto> list = this._service.listDto(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("list/day")
+    public ResponseEntity<Page<PedidoListDto>> listDay(@RequestParam(name = "page") int page) {
+        Page<PedidoListDto> list = this._service.listDay(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("list/client")
+    public ResponseEntity<Page<PedidoListDto>> listClient(@RequestParam(name = "page") int page,
+            @RequestParam(name = "id") long id) {
+        Page<PedidoListDto> list = this._service.listClient(id, page);
         return ResponseEntity.ok(list);
     }
 

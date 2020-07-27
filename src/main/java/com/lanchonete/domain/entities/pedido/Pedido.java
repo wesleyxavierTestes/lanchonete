@@ -11,11 +11,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.BaseEntity;
+import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.enuns.pedidos.EnumEstadoPedido;
@@ -39,6 +41,9 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
     private BigDecimal valorTotal;
 
     private EnumEstadoPedido estado = EnumEstadoPedido.Novo;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Cliente cliente;
 
     @OneToMany
     private List<EstadoPedido> estadosPedido;

@@ -47,6 +47,14 @@ public class ProdutoController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/name")
+    public ResponseEntity<Page<ProdutoListDto>> listByName(
+        @RequestParam(name = "page") int page,   
+        @RequestParam(name = "name") String name) {
+        Page<ProdutoListDto> list = this._service.listByName(name, page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("list/active")
     public ResponseEntity<Page<ProdutoListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<ProdutoListDto> list = this._service.listActiveDto(page);

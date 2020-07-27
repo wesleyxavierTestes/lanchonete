@@ -16,6 +16,12 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
         value = "SELECT (c.*) FROM produto as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM produto as c where c.ativo = true")
     Page<Produto> listActive(PageRequest of);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT * FROM produto WHERE lower(nome) like lower(concat ('%',?1,'%'))",
+        countQuery = "SELECT * FROM produto WHERE lower(nome) like lower(concat ('%',?1,'%'))")
+    Page<Produto> listByName(String nome, PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 

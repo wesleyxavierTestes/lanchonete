@@ -40,4 +40,9 @@ public class ProdutoService extends BaseService<Produto> {
         return _repository.listDesactive(PageRequest.of((page - 1), 10))
         .map(Mapper.pageMap(ProdutoListDto.class));
     }
+
+	public Page<ProdutoListDto> listByName(String name, int page) {
+        return _repository.listByName(name, PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(ProdutoListDto.class));
+	}
 }

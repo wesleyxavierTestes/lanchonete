@@ -48,6 +48,14 @@ public class CategoriaController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/name")
+    public ResponseEntity<Page<CategoriaListDto>> listByName(
+        @RequestParam(name = "page") int page,   
+        @RequestParam(name = "name") String name) {
+        Page<CategoriaListDto> list = this._service.listByName(name, page);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("list/active")
     public ResponseEntity<Page<CategoriaListDto>> listActive(@RequestParam(name = "page") int page) {
         Page<CategoriaListDto> list = this._service.listActiveDto(page);

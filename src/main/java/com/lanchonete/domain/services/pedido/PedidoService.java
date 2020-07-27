@@ -1,5 +1,9 @@
 package com.lanchonete.domain.services.pedido;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.pedido.Pedido;
@@ -29,6 +33,22 @@ public class PedidoService extends BaseService<Pedido> {
 
 	public Page<PedidoListDto> listCancelDto(int page) {
         return _repository.listCancel(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(PedidoListDto.class));
+    }
+    
+    public Page<PedidoListDto> listActive(int page) {
+        return _repository.listActive(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(PedidoListDto.class));
+    }
+    
+    public Page<PedidoListDto> listDay(int page) {
+        LocalDateTime data = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+        return _repository.listDay(data.toString(), PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(PedidoListDto.class));
+    }
+    
+    public Page<PedidoListDto> listClient(long id, int page) {
+        return _repository.listClient(id, PageRequest.of((page - 1), 10))
         .map(Mapper.pageMap(PedidoListDto.class));
 	}
 }

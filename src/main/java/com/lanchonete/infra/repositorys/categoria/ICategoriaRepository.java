@@ -12,9 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ICategoriaRepository extends JpaRepository<Categoria, Long>  {
 
-    @Query(nativeQuery = true, 
-            value = "SELECT * FROM categoria WHERE nome like *?1* limit 1")
-    Categoria findByName(String tipoCategoria);
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT * FROM categoria WHERE lower(nome) like lower(concat ('%',?1,'%'))",
+        countQuery = "SELECT * FROM categoria WHERE lower(nome) like lower(concat ('%',?1,'%'))")
+    Page<Categoria> listByName(String nome, PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 

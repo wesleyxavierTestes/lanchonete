@@ -20,5 +20,23 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Long>  {
         nativeQuery = true, 
         value = "SELECT (c.*) FROM pedido as c where c.estado = 'Cancelado' and c.ativo = false",
         countQuery = "SELECT (c.*) FROM pedido as c where c.estado = 'Cancelado' and c.ativo = false")
-	Page<Pedido> listCancel(PageRequest pageRequest);
+    Page<Pedido> listCancel(PageRequest pageRequest);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM pedido as c where c.ativo = true",
+        countQuery = "SELECT (c.*) FROM pedido as c where c.ativo = true")
+    Page<Pedido> listActive(PageRequest pageRequest);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM pedido as c where c.data_cadastro > ?1",
+        countQuery = "SELECT (c.*) FROM pedido as c where c.data_cadastro > ?1")
+    Page<Pedido> listDay(String data, PageRequest pageRequest);
+    
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM pedido as c where c.cliente_id = ?1",
+        countQuery = "SELECT (c.*) FROM pedido as c where c.cliente_id = ?1")
+	Page<Pedido> listClient(long id, PageRequest pageRequest);
 }
