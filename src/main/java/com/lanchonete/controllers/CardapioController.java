@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.utils.MessageError;
@@ -24,12 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/cardapio")
-public class CardapioController {
+public class CardapioController extends AbstractBaseController {
 
     private final CardapioService _service;
-
-    @Autowired
-    private Validations validations;
 
     @Autowired
     public CardapioController(CardapioService service) {
@@ -72,9 +70,7 @@ public class CardapioController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() CardapioDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid CardapioDto entityDto) {
 
         Cardapio entity = this._service.save(Mapper.map(entityDto));
 
@@ -85,9 +81,7 @@ public class CardapioController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() CardapioDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> update(@RequestBody() @Valid CardapioDto entityDto) {
 
         Cardapio entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))

@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.MessageError;
@@ -24,17 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/produto")
-public class ProdutoController {
+public class ProdutoController extends AbstractBaseController {
 
     private final ProdutoService _service;
 
     @Autowired
-    private Validations validations;
-
-    @Autowired
     public ProdutoController(ProdutoService service) {
         _service = service;
-
     }
 
     // TODO: INCOMPLETO
@@ -72,9 +69,7 @@ public class ProdutoController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() ProdutoDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid ProdutoDto entityDto) {
 
         Produto entity = this._service.save(Mapper.map(entityDto));
 
@@ -85,9 +80,7 @@ public class ProdutoController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() ProdutoDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> update(@RequestBody() @Valid ProdutoDto entityDto) {
 
         Produto entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))

@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.services.lanche.LancheService;
 import com.lanchonete.utils.MessageError;
@@ -24,17 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/lanche")
-public class LancheController {
+public class LancheController extends AbstractBaseController {
 
     private final LancheService _service;
 
     @Autowired
-    private Validations validations;
-
-    @Autowired
     public LancheController(LancheService service) {
         _service = service;
-
     }
 
     // TODO: INCOMPLETO
@@ -73,9 +70,7 @@ public class LancheController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() LancheDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid LancheDto entityDto) {
 
         Lanche entity = this._service.save(Mapper.map(entityDto));
 
@@ -86,7 +81,7 @@ public class LancheController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() LancheDto entityDto) {
+    public ResponseEntity<Object> update(@RequestBody() @Valid LancheDto entityDto) {
 
         Lanche entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))

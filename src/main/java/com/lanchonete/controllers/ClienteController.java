@@ -2,6 +2,8 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.ClienteListDto;
@@ -12,8 +14,6 @@ import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.utils.HttpBase;
 import com.lanchonete.utils.MessageError;
 import com.lanchonete.utils.UrlConstants;
-import com.lanchonete.apllication.validations.Validations;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/cliente")
-public class ClienteController {
+public class ClienteController extends AbstractBaseController {
 
     private final ClienteService _service;
 
     @Autowired
-    private Validations validations;
+    private HttpBase httpBase;
 
     @Autowired
     public ClienteController(ClienteService service) {
@@ -50,7 +50,7 @@ public class ClienteController {
     @GetMapping("cep")
     public ResponseEntity<Object> getMethodName(@RequestParam String cep) {
         try {
-            HttpBase.HttpGet(UrlConstants.getViaCep(cep), EnderecoDto.class);
+            httpBase.HttpGet(UrlConstants.getViaCep(cep), EnderecoDto.class);
             return ResponseEntity.badRequest().body(" ");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new EnderecoDto());
@@ -103,9 +103,7 @@ public class ClienteController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() ClienteDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid ClienteDto entityDto) {
 
         Cliente entity = this._service.save(Mapper.map(entityDto));
 
@@ -116,9 +114,7 @@ public class ClienteController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() ClienteDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> update(@RequestBody() @Valid ClienteDto entityDto) {
 
         Cliente entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))

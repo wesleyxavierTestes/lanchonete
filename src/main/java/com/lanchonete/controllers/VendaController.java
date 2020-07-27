@@ -1,15 +1,13 @@
 package com.lanchonete.controllers;
 
 import java.util.Objects;
-
+import javax.validation.Valid;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.venda.VendaService;
 import com.lanchonete.utils.MessageError;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/venda")
-public class VendaController {
+public class VendaController extends AbstractBaseController {
 
     private final VendaService _service;
-
-    @Autowired
-    private Validations validations;
 
     @Autowired
     public VendaController(VendaService service) {
@@ -65,9 +60,7 @@ public class VendaController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() VendaDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid VendaDto entityDto) {
 
         Venda entity = this._service.save(Mapper.map(entityDto));
 

@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 import com.lanchonete.domain.services.combo.ComboService;
 import com.lanchonete.utils.MessageError;
@@ -24,12 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/combo")
-public class ComboController {
+public class ComboController extends AbstractBaseController {
 
     private final ComboService _service;
-
-    @Autowired
-    private Validations validations;
 
     @Autowired
     public ComboController(ComboService service) {
@@ -71,9 +69,7 @@ public class ComboController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() ComboDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid ComboDto entityDto) {
 
         Combo entity = this._service.save(Mapper.map(entityDto));
 
@@ -84,9 +80,7 @@ public class ComboController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() ComboDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> update(@RequestBody() @Valid ComboDto entityDto) {
 
         Combo entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))

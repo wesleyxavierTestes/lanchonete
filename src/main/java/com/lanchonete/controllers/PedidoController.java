@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.services.pedido.PedidoService;
 import com.lanchonete.utils.MessageError;
@@ -23,11 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/pedido")
-public class PedidoController {
+public class PedidoController extends AbstractBaseController {
+    
     private final PedidoService _service;
-
-    @Autowired
-    private Validations validations;
 
     @Autowired
     public PedidoController(PedidoService service) {
@@ -66,9 +65,7 @@ public class PedidoController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() PedidoDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> save(@RequestBody() @Valid PedidoDto entityDto) {
 
         Pedido entity = this._service.save(Mapper.map(entityDto));
 

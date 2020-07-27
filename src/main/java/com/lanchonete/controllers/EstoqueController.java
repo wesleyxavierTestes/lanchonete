@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
@@ -27,13 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/estoque")
-public class EstoqueController {
+public class EstoqueController extends AbstractBaseController {
 
     private final EstoqueService _serviceEstoque;
     private final ProdutoService _serviceProduto;
-
-    @Autowired
-    private Validations validations;
 
     @Autowired
     public EstoqueController(EstoqueService serviceEstoque, ProdutoService serviceProduto) {
@@ -86,9 +84,7 @@ public class EstoqueController {
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
     @PostMapping("save/add")
-    public ResponseEntity<Object> saveAdicionar(@RequestBody() EstoqueDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> saveAdicionar(@RequestBody() @Valid EstoqueDto entityDto) {
 
         Produto produto = this._serviceProduto.find(entityDto.produto.id);
         if (!Objects.nonNull(produto))
@@ -107,9 +103,7 @@ public class EstoqueController {
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
     @PostMapping("save/remove")
-    public ResponseEntity<Object> saveRemover(@RequestBody() EstoqueDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
+    public ResponseEntity<Object> saveRemover(@RequestBody() @Valid EstoqueDto entityDto) {
 
         Produto produto = this._serviceProduto.find(entityDto.produto.id);
         if (!Objects.nonNull(produto))

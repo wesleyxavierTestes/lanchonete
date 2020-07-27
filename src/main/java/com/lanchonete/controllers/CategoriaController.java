@@ -2,10 +2,11 @@ package com.lanchonete.controllers;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.Validations;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.utils.MessageError;
@@ -20,16 +21,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/categoria")
-public class CategoriaController {
+public class CategoriaController extends AbstractBaseController {
 
     private final CategoriaService _service;
-
-    @Autowired
-    private Validations validations;
 
     @Autowired
     public CategoriaController(CategoriaService service) {
@@ -72,10 +71,7 @@ public class CategoriaController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Object> save(@RequestBody() CategoriaDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
-
+    public ResponseEntity<Object> save(@RequestBody() @Valid CategoriaDto entityDto) {
         Categoria entity = this._service.save(Mapper.map(entityDto));
 
         if (!Objects.nonNull(entity))
@@ -85,47 +81,12 @@ public class CategoriaController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Object> update(@RequestBody() CategoriaDto entityDto) {
-        if (!validations.by(entityDto).isValid())
-            return ResponseEntity.badRequest().body(validations.getErros());
-
+    public ResponseEntity<Object> update(@RequestBody() @Valid CategoriaDto entityDto) {
         Categoria entity = this._service.find(entityDto.id);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         this._service.update(Mapper.map(entityDto, entity));
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
-        return ResponseEntity.ok(Mapper.map(entity));
-    }
-
-    @DeleteMapping("active")
-    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        Categoria entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(true);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
-        return ResponseEntity.ok(Mapper.map(entity));
-    }
-
-    @DeleteMapping("desactive")
-    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        Categoria entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(false);
-        this._service.update(entity);
 
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
@@ -147,5 +108,4 @@ public class CategoriaController {
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
-
 }
