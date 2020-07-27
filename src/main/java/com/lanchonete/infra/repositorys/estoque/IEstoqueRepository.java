@@ -1,12 +1,8 @@
 package com.lanchonete.infra.repositorys.estoque;
 
-import java.util.List;
-
-import com.lanchonete.apllication.dto.estoque.EstoqueListDto;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
-import com.lanchonete.domain.entities.estoque.IEstoque;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

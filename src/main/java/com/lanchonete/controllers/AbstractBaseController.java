@@ -1,10 +1,12 @@
 package com.lanchonete.controllers;
 
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
-import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.apllication.validations.Validations;
+import com.lanchonete.utils.MessageError;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,5 +26,17 @@ public abstract class AbstractBaseController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String regraNegocioException(RegraNegocioException ex) {
         return ex.getMessage();
-    }    
+    }   
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String dataIntegrityViolationException(DataIntegrityViolationException ex)  {
+        String typeName = ex.getCause().getClass().getTypeName();
+        String typeName2 = ConstraintViolationException.class.getTypeName();
+        if (typeName.equals(typeName2) 
+        && ex.getCause().getCause().getMessage().toLowerCase().contains("unique")) {
+            return "Duplicação de item não permitida no banco";
+        }
+        return MessageError.ERROS_DATABASE;
+    }
 }

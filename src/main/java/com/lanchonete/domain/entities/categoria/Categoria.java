@@ -19,6 +19,6 @@ import lombok.Setter;
 @Entity
 public class Categoria extends BaseEntity {
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, unique = true, length = 150)
     private String nome;
 }

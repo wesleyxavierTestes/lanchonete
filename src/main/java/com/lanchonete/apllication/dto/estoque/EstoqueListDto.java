@@ -1,5 +1,8 @@
 package com.lanchonete.apllication.dto.estoque;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -9,5 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EstoqueListDto {
 
-    public String nome;
+    public long id;
+    public long quantidade;
+    public String data;
+
+    @JsonIgnore
+    public EstoqueProdutoDto produto;
+
+    @JsonGetter("produtoNome")
+    public String produtoNome() {
+        return this.produto.nome;
+    }
+
 }

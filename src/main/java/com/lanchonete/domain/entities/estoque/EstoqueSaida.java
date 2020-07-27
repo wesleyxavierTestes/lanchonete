@@ -19,13 +19,12 @@ import lombok.Setter;
 @DiscriminatorValue("S")
 public class EstoqueSaida extends AbstractEstoque {
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Venda venda;
 
     @Override
     public void configureSave() {
         if (this.quantidade > 0)
-        this.quantidade = this.quantidade *= -1;
+            this.quantidade *= -1;
     }
 }

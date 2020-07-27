@@ -86,7 +86,7 @@ public class EstoqueController extends AbstractBaseController {
     @PostMapping("save/add")
     public ResponseEntity<Object> saveAdicionar(@RequestBody() @Valid EstoqueDto entityDto) {
 
-        Produto produto = this._serviceProduto.find(entityDto.produto.id);
+        Produto produto = this._serviceProduto.findByEstoque(entityDto.produto.id);
         if (!Objects.nonNull(produto))
             return ResponseEntity.badRequest().body(MessageError.PRODUTO_EXISTS);
 
@@ -97,7 +97,7 @@ public class EstoqueController extends AbstractBaseController {
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body("");
 
-        return ResponseEntity.ok(entityDto);
+        return ResponseEntity.ok(entity);
     }
 
     // TODO: INCOMPLETO
@@ -105,9 +105,12 @@ public class EstoqueController extends AbstractBaseController {
     @PostMapping("save/remove")
     public ResponseEntity<Object> saveRemover(@RequestBody() @Valid EstoqueDto entityDto) {
 
-        Produto produto = this._serviceProduto.find(entityDto.produto.id);
+        Produto produto = this._serviceProduto.findByEstoque(entityDto.produto.id);
         if (!Objects.nonNull(produto))
             return ResponseEntity.badRequest().body(MessageError.PRODUTO_EXISTS);
+
+        if (produto.getEstoqueAtual() <= 0)
+            return ResponseEntity.badRequest().body(MessageError.PRODUTO_STOCK_EMPTY);
 
         EstoqueSaida entity = (EstoqueSaida) this._serviceEstoque
                 .configureSave(Mapper.map(entityDto, EstoqueSaida.class), produto);
@@ -117,19 +120,14 @@ public class EstoqueController extends AbstractBaseController {
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
-        return ResponseEntity.ok(entityDto);
+        return ResponseEntity.ok(entity);
     }
 
     // TODO: INCOMPLETO
     // TODO: NECESSITA DE TESTES
     @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
-        AbstractEstoque entity = this._serviceEstoque.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity = this._serviceEstoque.delete(id);
+    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) throws Exception {
+        AbstractEstoque entity = this._serviceEstoque.delete(id);
 
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);

@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import com.lanchonete.domain.entities.produto.entities.Produto;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +21,13 @@ public class EstoqueEntrada extends AbstractEstoque {
   @Override
   public void configureSave() {
     if (this.quantidade < 0)
-      this.quantidade = this.quantidade *= 1;
+      this.quantidade *= 1;
+  }
+
+  public static EstoqueEntrada ProdutoSave(Produto entity) {
+    EstoqueEntrada entityEstoque = new EstoqueEntrada();
+    entityEstoque.setProduto(entity);
+    entityEstoque.setQuantidade(0);
+    return entityEstoque;
   }
 }

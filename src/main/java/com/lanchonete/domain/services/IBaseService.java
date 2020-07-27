@@ -1,5 +1,4 @@
 package com.lanchonete.domain.services;
-
 import com.lanchonete.domain.entities.BaseEntity;
 import org.springframework.data.domain.Page;
 
@@ -9,5 +8,5 @@ public interface IBaseService<T extends BaseEntity> {
     T find(long id);
     T save(T entity);
     T update(T entity);
-    T delete(long id);
+    T delete(long id) throws Exception;
 }

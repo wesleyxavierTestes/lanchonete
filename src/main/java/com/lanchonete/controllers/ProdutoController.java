@@ -1,13 +1,16 @@
 package com.lanchonete.controllers;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.MessageError;
 
@@ -28,10 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProdutoController extends AbstractBaseController {
 
     private final ProdutoService _service;
+    private final EstoqueService _serviceEstoque;
 
     @Autowired
-    public ProdutoController(ProdutoService service) {
+    public ProdutoController(
+        ProdutoService service,
+        EstoqueService serviceEstoque) {
         _service = service;
+        _serviceEstoque = serviceEstoque;
     }
 
     // TODO: INCOMPLETO
@@ -50,6 +57,12 @@ public class ProdutoController extends AbstractBaseController {
     @GetMapping("list/estoque/zero")
     public ResponseEntity<Page<ProdutoListDto>> listEstoqueZero(@RequestParam(name = "page") int page) {
         Page<ProdutoListDto> list = this._service.listEstoqueZero(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("list/estoque")
+    public ResponseEntity<Page<ProdutoListDto>> listEstoque(@RequestParam(name = "page") int page) {
+        Page<ProdutoListDto> list = this._service.listEstoque(page);
         return ResponseEntity.ok(list);
     }
 
@@ -85,10 +98,16 @@ public class ProdutoController extends AbstractBaseController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid ProdutoDto entityDto) {
 
-        Produto entity = this._service.save(Mapper.map(entityDto));
+        Produto entity = Mapper.map(entityDto);
+        
+        entity.setCodigo(UUID.randomUUID());
+
+        this._service.save(entity);
 
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        this._serviceEstoque.save(EstoqueEntrada.ProdutoSave(entity));
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

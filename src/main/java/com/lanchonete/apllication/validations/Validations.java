@@ -181,7 +181,7 @@ public class Validations {
      * @return
      */
     private <T> List<Field> getDeclaredFields(final T entity) {
-        final List<Field> declaredFields = Arrays.asList(entity.getClass().getDeclaredFields());
+        final List<Field> declaredFields = Arrays.asList(entity.getClass().getFields());
         return declaredFields;
     }
 

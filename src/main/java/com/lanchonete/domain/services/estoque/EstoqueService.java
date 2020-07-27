@@ -3,7 +3,6 @@ package com.lanchonete.domain.services.estoque;
 import com.lanchonete.apllication.dto.estoque.EstoqueListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
-import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.BaseService;
@@ -26,7 +25,8 @@ public class EstoqueService extends BaseService<AbstractEstoque> {
     }
 
     public Page<EstoqueListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(EstoqueListDto.class));
+        return _repository.findAll(PageRequest.of((page - 1), 10))
+        .map(Mapper.pageMap(EstoqueListDto.class));
     }
 
     public Page<EstoqueListDto> listLeave(int page) {

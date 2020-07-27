@@ -13,7 +13,6 @@ import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,10 +31,10 @@ public class Cliente extends BaseEntity {
     @Column(nullable = true, length = 100)
     private String email;
 
-    @Column(nullable = true, precision = 9)
+    @Column(nullable = true, length = 9)
     private String rg;
 
-    @Column(nullable = true, precision = 11)
+    @Column(nullable = true, length = 11)
     private String cpf;
     
     @Column(nullable = true, length = 14)

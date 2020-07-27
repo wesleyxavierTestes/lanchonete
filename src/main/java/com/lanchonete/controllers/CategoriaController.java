@@ -103,7 +103,7 @@ public class CategoriaController extends AbstractBaseController {
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
+    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) throws Exception {
         Categoria entity = this._service.find(id);
 
         if (!Objects.nonNull(entity))

@@ -31,20 +31,33 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
     
     @Query(
         nativeQuery = true, 
-            value = "SELECT (p.*) "
+            value = "SELECT (p.*), SUM(e.quantidade) as estoque_atual "
                     +"FROM public.produto as p "
                     +"join public.estoque as e "
                     +"on e.produto_id = p.id "
                     +"where p.ativo = true "
                     +"GROUP BY p.id "
-                    +"HAVING SUM(e.quantidade) < 1",
+                    +"HAVING SUM(e.quantidade) >= ?1 and SUM(e.quantidade) < ?2",
                     
-        countQuery = "SELECT (p.*) "
+        countQuery = "SELECT (p.*), SUM(e.quantidade) as estoque_atual "
                     +"FROM public.produto as p "
                     +"join public.estoque as e "
                     +"on e.produto_id = p.id "
                     +"where p.ativo = true "
                     +"GROUP BY p.id "
-                    +"HAVING SUM(e.quantidade) < 1")
-    Page<Produto> listEstoqueZero(PageRequest pageRequest);
+                    +"HAVING SUM(e.quantidade) >= ?1 and SUM(e.quantidade) < ?2")
+    Page<Produto> listEstoque(
+    int inicio, int fim,    
+    PageRequest pageRequest);
+
+    @Query(
+        nativeQuery = true, 
+            value = "SELECT SUM(e.quantidade) "
+                    +"FROM public.produto as p "
+                    +"join public.estoque as e "
+                    +"on e.produto_id = p.id "
+                    +"where p.ativo = true "
+                    +"and p.id = ?1 "
+                    +"GROUP BY p.id ")
+    double countEstoqueById(long id);
 }

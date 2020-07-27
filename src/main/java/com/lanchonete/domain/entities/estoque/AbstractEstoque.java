@@ -29,6 +29,4 @@ public abstract class AbstractEstoque extends BaseEntity implements IEstoque {
   protected Produto produto;
 
   protected long quantidade;
-
-  public abstract void configureSave();
 }

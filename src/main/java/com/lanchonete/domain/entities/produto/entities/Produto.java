@@ -8,11 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
+
+import org.hibernate.annotations.Formula;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +34,11 @@ public class Produto extends AbstractProduto implements IProduto {
     /**
      * Estoques FindAllByProdutoId
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = AbstractEstoque.class)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, targetEntity = AbstractEstoque.class)
     private List<IEstoque> estoque;
+
+    @Transient
+    private double estoqueAtual;
 
     @Column(nullable = false)
     private BigDecimal custo;

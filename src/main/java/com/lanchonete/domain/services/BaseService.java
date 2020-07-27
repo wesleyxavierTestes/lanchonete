@@ -4,7 +4,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.domain.entities.BaseEntity;
+import com.lanchonete.utils.MessageError;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,23 +35,21 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
         return null;
     }
 
+    @Transactional
     @Override
     public T save(T entity) {
-        try {
-            boolean exists = this._repository.existsById(entity.getId());            
-            if (exists)
-                return null;
-
-            entity.setDataCadastro(LocalDateTime.now());
-            entity.setAtivo(true);
-
-            T entitySave = _repository.save(entity);
-            return entitySave;
-        } catch (Exception e) {
+        boolean exists = this._repository.existsById(entity.getId());
+        if (exists)
             return null;
-        }
+
+        entity.setDataCadastro(LocalDateTime.now());
+        entity.setAtivo(true);
+
+        T entitySave = _repository.save(entity);
+        return entitySave;
     }
 
+    @Transactional
     @Override
     public T update(T entity) {
         T exists = this.find(entity.getId());
@@ -55,25 +57,21 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
             return null;
 
         entity.setDataCadastro(exists.getDataCadastro());
-        
-        try {
-            T entitySave = _repository.save(entity);
-            return entitySave;
-        } catch (Exception e) {
-            return null;
-        }
+
+        T entitySave = _repository.save(entity);
+        return entitySave;
     }
 
     @Override
-    public T delete(long id) {
-        T exists = this.find(id);
-        if (!Objects.nonNull(exists))
-            return null;
+    public T delete(long id) throws Exception {
         try {
+            T exists = this.find(id);
+            if (!Objects.nonNull(exists))
+                throw new RegraNegocioException(null);
             _repository.deleteById(id);
             return exists;
-        } catch (Exception e) {
-            return null;
+        } catch (RegraNegocioException e) {
+            throw new RegraNegocioException(MessageError.NOT_EXISTS);
         }
     }
 }

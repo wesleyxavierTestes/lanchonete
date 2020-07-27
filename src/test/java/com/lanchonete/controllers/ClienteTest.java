@@ -145,8 +145,7 @@ public class ClienteTest {
         @DisplayName("Deve listar todos clientes com lista vazia")
         public void save_ok() throws Exception {
 
-            
-
+            assertTrue(true);
         }
     }
 }

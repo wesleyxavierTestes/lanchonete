@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClienteListDto  {
 
+    public long id;
+
     public String nome;
 
     @JsonIgnore

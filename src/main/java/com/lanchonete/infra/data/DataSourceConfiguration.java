@@ -13,7 +13,6 @@ import java.util.Objects;
 @Configuration
 public class DataSourceConfiguration {
     private final String ambiente = System.getenv("environment");
-
     /**
      * Configura data base port ambiente
      * Ambiente Vazio é de Test usando o h2
