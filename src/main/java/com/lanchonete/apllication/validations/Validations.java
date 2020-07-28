@@ -86,7 +86,7 @@ public class Validations {
             if ("ANNOTATION".equals(fieldName))
                 break;
 
-            final Set<ConstraintViolation<T>> constrains = getConstrains(entity, validator, field.getName());
+            final Set<ConstraintViolation<T>> constrains = getConstrains(entity, validator, fieldName);
 
             if (!constrains.isEmpty())
                 setErros(entityName, fieldName, constrains);

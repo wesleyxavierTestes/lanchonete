@@ -23,8 +23,7 @@ public class LancheDto  {
     @NotNull(message = MessageError.IS_MANDATORY)
     public String nome;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public UUID codigo;
+    public String codigo;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public CategoriaDto categoria;
@@ -35,6 +34,6 @@ public class LancheDto  {
     @NotNull(message = MessageError.IS_MANDATORY)
     public String valorTotal;
 
-    // @NotNull(message = MessageError.IS_MANDATORY)
+    @NotNull(message = MessageError.IS_MANDATORY)
     public List<IngredienteDto> ingredientesLanche;
 }

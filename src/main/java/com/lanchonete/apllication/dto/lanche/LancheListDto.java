@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +23,5 @@ public class LancheListDto {
     public String valor;
     public String valorTotal;
 
-    @JsonIgnore
-    private List<IngredienteDto> ingredientesLanche;
-
-    @JsonGetter("ingredientesLanche")
-    public int getIngredientes() {
-        return Objects.nonNull(this.ingredientesLanche) 
-        ? this.ingredientesLanche.size()
-        : 0;
-    }
+    public List<IngredienteDto> ingredientesLanche;
 }

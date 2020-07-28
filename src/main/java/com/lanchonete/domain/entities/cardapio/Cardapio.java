@@ -3,6 +3,7 @@ package com.lanchonete.domain.entities.cardapio;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +19,8 @@ public class Cardapio extends BaseEntity {
     @Column(unique = true)
     private String nome;
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
+    cascade = CascadeType.DETACH)
     @Column(name = "Itens_disponiveis")
     private Set<IProdutoCardapio> ItensDisponiveis = new HashSet<IProdutoCardapio>();
 }

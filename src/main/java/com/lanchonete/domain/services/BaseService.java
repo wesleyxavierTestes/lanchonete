@@ -31,15 +31,9 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     }
 
     @Override
-    public Page<T>  listFilter(T entity, int page) {
-        Example<T> example = Example.of(entity, 
-                                    ExampleMatcher
-                                        .matching()
-                                        .withIgnoreCase()
-                                        .withIgnoreNullValues()
-                                        .withStringMatcher(
-                                            StringMatcher.CONTAINING
-                                        ));
+    public Page<T> listFilter(T entity, int page) {
+        Example<T> example = Example.of(entity, ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues()
+                .withStringMatcher(StringMatcher.CONTAINING));
         return _repository.findAll(example, PageRequest.of((page - 1), 10));
     }
 

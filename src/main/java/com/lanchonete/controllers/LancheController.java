@@ -1,6 +1,7 @@
 package com.lanchonete.controllers;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -8,6 +9,8 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.categoria.Categoria;
+import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.lanche.LancheService;
 import com.lanchonete.utils.MessageError;
 
@@ -17,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,10 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class LancheController extends AbstractBaseController {
 
     private final LancheService _service;
+    private final CategoriaService _serviceCategoria;
 
     @Autowired
-    public LancheController(LancheService service) {
+    public LancheController(LancheService service, CategoriaService serviceCategoria) {
         _service = service;
+        _serviceCategoria = serviceCategoria;
     }
 
     // TODO: INCOMPLETO
@@ -86,7 +90,17 @@ public class LancheController extends AbstractBaseController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid LancheDto entityDto) {
 
-        Lanche entity = this._service.save(Mapper.map(entityDto));
+        Categoria categoria = this._serviceCategoria.find(entityDto.categoria.id);
+        
+        if (!Objects.nonNull(categoria))
+            return ResponseEntity.badRequest().body("Categoria" + MessageError.IS_MANDATORY);
+
+            Lanche entity = Mapper.map(entityDto);
+        
+        entity.setCodigo(UUID.randomUUID());
+        entity.setCategoria(categoria);
+
+        this._service.save(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

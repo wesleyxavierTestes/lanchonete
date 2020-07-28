@@ -1,5 +1,10 @@
 package com.lanchonete.apllication.mappers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,12 +14,14 @@ import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
+import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
+import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.cliente.Cliente;
@@ -24,8 +31,10 @@ import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.entities.venda.Venda;
+import com.lanchonete.utils.ObjectMapperUtils;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
@@ -36,23 +45,34 @@ public final class Mapper {
         super();
     }
 
-
-    public static <T, Y> Function<T, Y> pageMap(Class<Y> ref) {
-        Function<T, Y> converter = new Function<T, Y>() {
+    public static <T, Y> Function<T, Y> pageMap(final Class<Y> ref) {
+        final Function<T, Y> converter = new Function<T, Y>() {
             @Override
-            public Y apply(T entity) {
+            public Y apply(final T entity) {
                 return Mapper.map(entity, ref);
             }
         };
         return converter;
     }
 
+    public static <Y, T> T mapByJson(final Y o, final Class<T> ref) {
+        try {
+            final String json = ObjectMapperUtils.toJson(o);
+
+            final T entity = ObjectMapperUtils.jsonTo(json, ref);
+
+            return entity;
+        } catch (final Exception e) {
+            return null;
+        }
+    }
+
     public static <Y, T> T map(final Y o, final Class<T> ref) {
         try {
-            ModelMapper mapper = new ModelMapper();
+            final ModelMapper mapper = new ModelMapper();
             mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(AccessLevel.PRIVATE);
             return mapper.map(o, ref);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -158,8 +178,24 @@ public final class Mapper {
         return LancheMapper.update(entityDto, entity);
     }
 
-    public static Lanche map(final LancheDto entity) {
-        return Mapper.map(entity, Lanche.class);
+    public static Lanche map(LancheDto entity) {
+        Set<IProdutoComposicao> ingredientes = new HashSet<>();
+        List<IngredienteDto> copy = null;
+        
+        if (Objects.nonNull(entity.ingredientesLanche)) {
+            entity.ingredientesLanche.stream().forEach(c -> ingredientes.add(Mapper.map(c, Ingrediente.class)));
+
+            copy = new ArrayList<>(entity.ingredientesLanche);
+            entity.ingredientesLanche = null;
+        }
+
+        Lanche lancheMap = Mapper.map(entity, Lanche.class);
+        if (Objects.nonNull(lancheMap))
+            lancheMap.setIngredientesLanche(ingredientes);
+
+        entity.ingredientesLanche = copy;
+
+        return lancheMap;
     }
 
     public static LancheDto map(final Lanche entity) {
@@ -188,5 +224,13 @@ public final class Mapper {
 
     public static ProdutoDto map(final Produto entity) {
         return Mapper.map(entity, ProdutoDto.class);
+    }
+
+    public static Ingrediente map(final IngredienteDto entity) {
+        return Mapper.map(entity, Ingrediente.class);
+    }
+
+    public static IngredienteDto map(final Ingrediente entity) {
+        return Mapper.map(entity, IngredienteDto.class);
     }
 }

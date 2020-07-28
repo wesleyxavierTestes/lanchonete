@@ -2,9 +2,12 @@ package com.lanchonete.domain.entities.cardapio.lanche;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -27,14 +30,25 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lanche extends AbstractProduto implements 
-IProdutoPedido, IProdutoCardapio, IProdutoCombo {
+public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
-    private Set<IProdutoComposicao> ingredientesLanche = new HashSet<IProdutoComposicao>();
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, cascade = CascadeType.DETACH)
+    private Set<IProdutoComposicao> ingredientesLanche = new HashSet<>();
 
-    private UUID codigoLanche;
-    
+    @Column(nullable = true)
+    private BigDecimal desconto;
+
+    @Column(nullable = false)
     private BigDecimal valorTotal;
-    
+
+    public void calcularValorTotal() {
+        this.setValor(BigDecimal.ZERO);
+        if (!Objects.nonNull(this.desconto))
+            this.setDesconto(BigDecimal.ZERO);
+
+        for (IProdutoComposicao i : ingredientesLanche)
+            this.setValor(this.getValor().add(i.getValor()));
+
+        this.valorTotal = this.getValor().subtract(this.desconto);
+    }
 }

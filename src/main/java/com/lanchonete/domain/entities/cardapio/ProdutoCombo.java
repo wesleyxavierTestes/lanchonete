@@ -9,5 +9,5 @@ import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
 @Entity
 public class ProdutoCombo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
-    
+
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -37,7 +38,8 @@ import lombok.Setter;
 public abstract class Pedido extends BaseEntity implements IPedidoState {
     
     @NotNull(message = "Itens são obrigatório")
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
+    cascade = CascadeType.DETACH)
     private Set<IProdutoPedido> ItensVenda = new HashSet<IProdutoPedido>();
 
     private BigDecimal valorDesconto;

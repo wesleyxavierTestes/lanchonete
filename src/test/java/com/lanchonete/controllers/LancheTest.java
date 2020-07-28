@@ -4,16 +4,39 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
 
+import com.lanchonete.apllication.dto.categoria.CategoriaDto;
+import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
+import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
+import com.lanchonete.domain.entities.BaseEntity;
+import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.categoria.Categoria;
+import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
+import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.lanche.LancheService;
+import com.lanchonete.infra.repositorys.categoria.ICategoriaRepository;
+import com.lanchonete.infra.repositorys.estoque.IEstoqueRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
+import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.LancheMock;
+import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.LancheUtilsPageMock;
+import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +47,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -40,6 +64,12 @@ public class LancheTest {
 
     @Autowired
     protected LancheService _service;
+
+    @Autowired
+    private ICategoriaRepository _categoriaRepository;
+
+    @Autowired
+    private IEstoqueRepository _estoqueRepository;
 
     @Test
     @DisplayName("Deve converter uma LancheDto para Lanche incluindo Endereco")
@@ -123,9 +153,16 @@ public class LancheTest {
         private LancheUtilsPageMock page;
         private LancheDto entity;
 
-        // @Test
+        private CategoriaDto categoria1;
+        private CategoriaDto categoria2;
+        private ProdutoDto produto1;
+        private ProdutoDto produto2;
+
+        @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() throws Exception {
+            SetCategoria();
+            SetProduto();
             SAVE();
             LIST();
             FIND();
@@ -134,6 +171,67 @@ public class LancheTest {
             ACTIVE();
             FIND_ACTIVE();
         }
+
+        private void SetProduto() throws MalformedURLException {
+            produto1 = ProdutoMock.dto();
+            produto1.categoria = categoria1;
+            produto2 = ProdutoMock.dto();
+            produto2.categoria = categoria2;
+
+            List<ProdutoDto> list = new ArrayList<ProdutoDto>() {{
+                add(produto1);
+                add(produto2);
+            }};
+            List<ProdutoDto> listNew = new ArrayList<>();
+            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
+
+            for (ProdutoDto produto : list) {
+                HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
+                ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
+                        HttpMethod.POST,
+                        requestSave, Object.class);
+
+                assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
+                assertNotNull(response.getBody());
+                            
+                String json = ObjectMapperUtils.toJson(response.getBody());
+                produto = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
+
+                assertNotNull(produto.codigo);
+                listNew.add(produto);
+
+                // ADD ESTOQUE
+                EstoqueEntrada estoqueEntrada = EstoqueEntrada.ProdutoSave(Mapper.map(produto));
+                estoqueEntrada.setQuantidade(1);
+                _estoqueRepository.save(estoqueEntrada);
+            }
+            
+            produto1.id = listNew.get(0).id;
+            produto2.id = listNew.get(1).id;
+
+            produto1.codigo = listNew.get(0).codigo;
+            produto2.codigo = listNew.get(1).codigo;
+        }
+
+        private <T extends BaseEntity, Y extends JpaRepository<T, Long>> List<T> SaveGeneric(Object[] list, Y repository, Class<T> ref) throws MalformedURLException {
+            List<T> objetoNew = new ArrayList<>();
+            for (Object objeto : list) {
+              Object resposta = repository.save((T)objeto);
+                objetoNew.add((T)resposta);
+            }
+            return objetoNew;
+        }
+
+        private void SetCategoria() throws MalformedURLException {
+            categoria1 = CategoriaMock.dto();
+            categoria2 = CategoriaMock.dto();
+
+            Categoria[] list = { Mapper.map(categoria1), Mapper.map(categoria2) };
+
+            List<Categoria> listNew = SaveGeneric(list, _categoriaRepository, Categoria.class);
+            categoria1.id = listNew.get(0).getId();
+            categoria2.id = listNew.get(1).getId();
+        }        
 
         private void ACTIVE() throws MalformedURLException {
             // ACTIVE
@@ -158,9 +256,10 @@ public class LancheTest {
 
         private void FIND_ACTIVE() throws MalformedURLException {
             String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + page.content.get(0).id, port);
-            
+
             // FIND DESACTIVE
-            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
+            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    LancheDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(true, responseFind.getBody().ativo);
@@ -204,15 +303,43 @@ public class LancheTest {
 
         private void SAVE() throws MalformedURLException {
             // SAVE
-            String urlSave = String.format(URL_CONSTANTS_TEST.LancheSave, port);
-            entity = LancheMock.dto();
+            ConfiguratEntity();
 
-            HttpEntity<LancheDto> requestSave = new HttpEntity<>(entity, null);
-            ResponseEntity<LancheDto> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
-                    requestSave, LancheDto.class);
+            ResponseEntity<Object> response = restTemplate
+            .exchange(new URL(String.format(URL_CONSTANTS_TEST.LancheSave, port)).toString(), 
+                HttpMethod.POST,
+                new HttpEntity<>(entity, null), 
+                Object.class);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
+
+            String json = ObjectMapperUtils.toJson(response.getBody());
+            entity = ObjectMapperUtils.jsonTo(json, LancheDto.class);
+
+            assertNotNull(entity.codigo);
+        }
+
+        private void ConfiguratEntity() {
+            entity = (LancheDto)LancheMock.dto();
+            entity.categoria = categoria1;
+            entity.ingredientesLanche = new ArrayList<>();
+
+            IngredienteDto ingrediente1 = Mapper.map(produto1, IngredienteDto.class);
+            assertNotNull(ingrediente1);
+            entity.ingredientesLanche.add(ingrediente1);
+            IngredienteDto ingrediente2 = Mapper.map(produto2, IngredienteDto.class);
+            assertNotNull(ingrediente2);
+            entity.ingredientesLanche.add(ingrediente2);
+
+            BigDecimal valorCalculo = new BigDecimal(ingrediente1.valor).add(new BigDecimal(ingrediente2.valor));
+
+            Lanche map = Mapper.map(entity);
+            map.calcularValorTotal();
+            BigDecimal valorCalculoMap = map.getValor();            
+            assertEquals(valorCalculoMap, valorCalculo);
+
+            entity.valor = valorCalculo.toString();
         }
 
     }
