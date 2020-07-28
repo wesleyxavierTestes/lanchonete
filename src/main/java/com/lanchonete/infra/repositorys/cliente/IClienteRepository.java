@@ -18,12 +18,6 @@ public interface IClienteRepository extends JpaRepository<Cliente, Long>  {
         value = "SELECT * FROM cliente WHERE tipo_cliente like ?1 limit 1")
     Cliente findByTipoCliente(String tipoCliente);
 
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT * FROM cliente WHERE lower(nome) like lower(concat ('%',?1,'%'))",
-        countQuery = "SELECT * FROM cliente WHERE lower(nome) like lower(concat ('%',?1,'%'))")
-    Page<Cliente> listByName(String nome, PageRequest pageRequest);
-
     /**
      * Listagem dos clientes que mais gastam
      * @param pageRequest

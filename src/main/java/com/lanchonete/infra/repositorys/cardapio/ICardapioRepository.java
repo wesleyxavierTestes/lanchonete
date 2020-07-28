@@ -10,12 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ICardapioRepository extends JpaRepository<Cardapio, Long>  {
-
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT * FROM cardapio WHERE lower(nome) like lower(concat ('%',?1,'%'))",
-        countQuery = "SELECT * FROM cardapio WHERE lower(nome) like lower(concat ('%',?1,'%'))")
-    Page<Cardapio> listByName(String nome, PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 

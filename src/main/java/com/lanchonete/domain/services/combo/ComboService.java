@@ -22,23 +22,19 @@ public class ComboService extends BaseService<Combo> {
         _repository = repository;
     }
 
-    public Page<ComboListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ComboListDto.class));
+    public Page<ComboListDto>  listFilterDto(Combo entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(ComboListDto.class));
     }
 
-	public Page<ComboListDto> listActiveDto(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ComboListDto.class));
-	}
+    public Page<ComboListDto> listDto(int page) {
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ComboListDto.class));
+    }
 
-	public Page<ComboListDto> listDesactiveDto(int page) {
-        return _repository.listDesactive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ComboListDto.class));
-	}
+    public Page<ComboListDto> listActiveDto(int page) {
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ComboListDto.class));
+    }
 
-	public Page<ComboListDto> listByName(String name, int page) {
-        return _repository.listByName(name, PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ComboListDto.class));
-	}
+    public Page<ComboListDto> listDesactiveDto(int page) {
+        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ComboListDto.class));
+    }
 }

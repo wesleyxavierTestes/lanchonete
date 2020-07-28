@@ -20,7 +20,7 @@ public class EnderecoService extends BaseService<Endereco> {
         _repository = repository;
     }
 
-    public Page<Endereco> listFilter(int page) {
+    public Page<Endereco>  listFilter(int page) {
         return this._repository.findAll(PageRequest.of((page - 1), 10));
     }
 }

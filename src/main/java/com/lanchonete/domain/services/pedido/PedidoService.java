@@ -26,29 +26,29 @@ public class PedidoService extends BaseService<Pedido> {
         _repository = repository;
     }
 
-    public Page<PedidoListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(PedidoListDto.class));
+    public Page<PedidoListDto>  listFilterDto(Pedido entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(PedidoListDto.class));
     }
 
-	public Page<PedidoListDto> listCancelDto(int page) {
-        return _repository.listCancel(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(PedidoListDto.class));
+    public Page<PedidoListDto> listDto(int page) {
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(PedidoListDto.class));
     }
-    
+
+    public Page<PedidoListDto> listCancelDto(int page) {
+        return _repository.listCancel(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(PedidoListDto.class));
+    }
+
     public Page<PedidoListDto> listActive(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(PedidoListDto.class));
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(PedidoListDto.class));
     }
-    
+
     public Page<PedidoListDto> listDay(int page) {
         LocalDateTime data = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
         return _repository.listDay(data.toString(), PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(PedidoListDto.class));
+                .map(Mapper.pageMap(PedidoListDto.class));
     }
-    
+
     public Page<PedidoListDto> listClient(long id, int page) {
-        return _repository.listClient(id, PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(PedidoListDto.class));
-	}
+        return _repository.listClient(id, PageRequest.of((page - 1), 10)).map(Mapper.pageMap(PedidoListDto.class));
+    }
 }

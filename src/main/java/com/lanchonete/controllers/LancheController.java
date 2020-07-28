@@ -48,10 +48,10 @@ public class LancheController extends AbstractBaseController {
     }
 
     @GetMapping("list/name")
-    public ResponseEntity<Page<LancheListDto>> listByName(
+    public ResponseEntity<Page<LancheListDto>> listFilter(
         @RequestParam(name = "page") int page,   
-        @RequestParam(name = "name") String name) {
-        Page<LancheListDto> list = this._service.listByName(name, page);
+        @RequestBody LancheDto filter) {
+        Page<LancheListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
         return ResponseEntity.ok(list);
     }
 

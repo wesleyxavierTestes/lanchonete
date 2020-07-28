@@ -2,17 +2,20 @@ package com.lanchonete.domain.services;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.utils.MessageError;
-
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 public abstract class BaseService<T extends BaseEntity> implements IBaseService<T> {
 
@@ -28,11 +31,23 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     }
 
     @Override
+    public Page<T>  listFilter(T entity, int page) {
+        Example<T> example = Example.of(entity, 
+                                    ExampleMatcher
+                                        .matching()
+                                        .withIgnoreCase()
+                                        .withIgnoreNullValues()
+                                        .withStringMatcher(
+                                            StringMatcher.CONTAINING
+                                        ));
+        return _repository.findAll(example, PageRequest.of((page - 1), 10));
+    }
+
+    @Override
     public T find(long id) {
-        Optional<T> entity = _repository.findById(id);
-        if (entity.isPresent())
-            return entity.get();
-        return null;
+        T entity = _repository.findById(id).map(mapper -> mapper)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        return entity;
     }
 
     @Transactional
@@ -40,12 +55,13 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     public T save(T entity) {
         boolean exists = this._repository.existsById(entity.getId());
         if (exists)
-            return null;
+            throw new RegraNegocioException(MessageError.EXISTS);
 
         entity.setDataCadastro(LocalDateTime.now());
         entity.setAtivo(true);
 
         T entitySave = _repository.save(entity);
+
         return entitySave;
     }
 
@@ -54,24 +70,23 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     public T update(T entity) {
         T exists = this.find(entity.getId());
         if (!Objects.nonNull(exists))
-            return null;
+            throw new RegraNegocioException(MessageError.NOT_EXISTS);
 
         entity.setDataCadastro(exists.getDataCadastro());
 
         T entitySave = _repository.save(entity);
+
         return entitySave;
     }
 
     @Override
-    public T delete(long id) throws Exception {
-        try {
-            T exists = this.find(id);
-            if (!Objects.nonNull(exists))
-                throw new RegraNegocioException(null);
-            _repository.deleteById(id);
-            return exists;
-        } catch (RegraNegocioException e) {
+    public T delete(long id) {
+        T exists = this.find(id);
+        if (!Objects.nonNull(exists))
             throw new RegraNegocioException(MessageError.NOT_EXISTS);
-        }
+
+        _repository.deleteById(id);
+
+        return exists;
     }
 }

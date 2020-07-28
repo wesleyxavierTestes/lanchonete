@@ -73,10 +73,10 @@ public class ClienteController extends AbstractBaseController {
     }
 
     @GetMapping("list/name")
-    public ResponseEntity<Page<ClienteListDto>> listByName(
+    public ResponseEntity<Page<ClienteListDto>> listFilter(
         @RequestParam(name = "page") int page,   
-        @RequestParam(name = "name") String name) {
-        Page<ClienteListDto> list = this._service.listByName(name, page);
+        @RequestBody ClienteDto filter) {
+        Page<ClienteListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
         return ResponseEntity.ok(list);
     }
 

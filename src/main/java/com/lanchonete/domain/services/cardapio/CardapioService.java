@@ -24,12 +24,12 @@ public class CardapioService extends BaseService<Cardapio> {
         _repository = repository;
     }
 
-    public Page<Cardapio> listFilter(int page) {
-        return this._repository.findAll(PageRequest.of((page - 1), 10));
+    public Page<CardapioListDto>  listFilterDto(Cardapio entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(CardapioListDto.class));
     }
 
     public Page<CardapioListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CardapioListDto.class));
+        return this.list(page).map(Mapper.pageMap(CardapioListDto.class));
     }
 
     public Page<CardapioListDto> listActiveDto(int page) {
@@ -37,12 +37,6 @@ public class CardapioService extends BaseService<Cardapio> {
     }
 
     public Page<CardapioListDto> listDesactiveDto(int page) {
-        return _repository.listDesactive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(CardapioListDto.class));
+        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CardapioListDto.class));
     }
-
-	public Page<CardapioListDto> listByName(String name, int page) {
-        return _repository.listByName(name, PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(CardapioListDto.class));
-	}
 }

@@ -34,8 +34,8 @@ public class ProdutoService extends BaseService<Produto> {
         return null;
     }
 
-    public Page<Produto> listFilter(int page) {
-        return this._repository.findAll(PageRequest.of((page - 1), 10));
+    public Page<ProdutoListDto>  listFilterDto(Produto entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDto(int page) {
@@ -48,10 +48,6 @@ public class ProdutoService extends BaseService<Produto> {
 
     public Page<ProdutoListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ProdutoListDto.class));
-    }
-
-    public Page<ProdutoListDto> listByName(String name, int page) {
-        return _repository.listByName(name, PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoqueZero(int page) {

@@ -48,10 +48,10 @@ public class CardapioController extends AbstractBaseController {
     }
 
     @GetMapping("list/name")
-    public ResponseEntity<Page<CardapioListDto>> listByName(
+    public ResponseEntity<Page<CardapioListDto>> listFilter(
         @RequestParam(name = "page") int page,   
-        @RequestParam(name = "name") String name) {
-        Page<CardapioListDto> list = this._service.listByName(name, page);
+        @RequestBody CardapioDto filter) {
+        Page<CardapioListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
         return ResponseEntity.ok(list);
     }
 

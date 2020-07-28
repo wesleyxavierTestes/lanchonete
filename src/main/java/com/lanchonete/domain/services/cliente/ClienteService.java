@@ -28,8 +28,8 @@ public class ClienteService extends BaseService<Cliente> {
         _repository = repository;
     }
 
-    public Page<Cliente> listFilter(int page) {
-        return this._repository.findAll(PageRequest.of((page - 1), 10));
+    public Page<ClienteListDto>  listFilterDto(Cliente entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(ClienteListDto.class));
     }
 
     public void createClienteDefault(Cliente entity) {
@@ -39,7 +39,7 @@ public class ClienteService extends BaseService<Cliente> {
                 .gia("1004").ibge("3550308").localidade("São Paulo").logradouro("Praça da Sé").uf("SP")
                 .unidade("unidade").build();
 
-        if (!Objects.nonNull(entity.getNome())|| entity.getNome().isEmpty()) {
+        if (!Objects.nonNull(entity.getNome()) || entity.getNome().isEmpty()) {
             nome = "Consumidor final";
         }
 
@@ -55,34 +55,25 @@ public class ClienteService extends BaseService<Cliente> {
         Cliente entity = this.findDefault();
         return Objects.nonNull(entity);
     }
-    
+
     public Page<ClienteListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ClienteListDto.class));
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ClienteListDto.class));
     }
 
-	public Page<ClienteListDto> listActiveDto(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ClienteListDto.class));
-	}
+    public Page<ClienteListDto> listActiveDto(int page) {
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ClienteListDto.class));
+    }
 
-	public Page<ClienteListDto> listDesactiveDto(int page) {
-        return _repository.listDesactive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ClienteListDto.class));
-	}
+    public Page<ClienteListDto> listDesactiveDto(int page) {
+        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ClienteListDto.class));
+    }
 
-	public Cliente findDefault() {
+    public Cliente findDefault() {
         Cliente entity = _repository.findByTipoCliente("ConsumidorFinal");
         return entity;
-	}
+    }
 
-	public Page<ClienteListDto> listSpendMore(int page) {
-        return _repository.listSpendMore(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ClienteListDto.class));
-	}
-
-	public Page<ClienteListDto> listByName(String name, int page) {
-		return _repository.listByName(name, PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(ClienteListDto.class));
-	}
+    public Page<ClienteListDto> listSpendMore(int page) {
+        return _repository.listSpendMore(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ClienteListDto.class));
+    }
 }

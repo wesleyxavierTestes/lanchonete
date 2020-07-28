@@ -22,27 +22,19 @@ public class LancheService extends BaseService<Lanche> {
         _repository = repository;
     }
 
-    public Page<Lanche> listFilter(int page) {
-        return this._repository.findAll(PageRequest.of((page - 1), 10));
+    public Page<LancheListDto>  listFilterDto(Lanche entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(LancheListDto.class));
     }
 
     public Page<LancheListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(LancheListDto.class));
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(LancheListDto.class));
     }
 
-	public Page<LancheListDto> listActiveDto(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(LancheListDto.class));
+    public Page<LancheListDto> listActiveDto(int page) {
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(LancheListDto.class));
     }
 
-	public Page<LancheListDto> listDesactiveDto(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(LancheListDto.class));
+    public Page<LancheListDto> listDesactiveDto(int page) {
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(LancheListDto.class));
     }
-
-	public Page<LancheListDto> listByName(String name, int page) {
-        return _repository.listByName(name, PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(LancheListDto.class));
-	}
 }

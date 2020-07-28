@@ -22,13 +22,15 @@ public class VendaService extends BaseService<Venda> {
         _repository = repository;
     }
 
-    public Page<VendaListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(VendaListDto.class));
+    public Page<VendaListDto>  listFilterDto(Venda entity, int page) {
+        return super. listFilter(entity, page).map(Mapper.pageMap(VendaListDto.class));
     }
 
-	public Page<VendaListDto> listCancelDto(int page) {
-        return _repository.listCancel(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(VendaListDto.class));
-	}
+    public Page<VendaListDto> listDto(int page) {
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(VendaListDto.class));
+    }
+
+    public Page<VendaListDto> listCancelDto(int page) {
+        return _repository.listCancel(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(VendaListDto.class));
+    }
 }

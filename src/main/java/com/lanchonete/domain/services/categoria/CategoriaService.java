@@ -24,8 +24,9 @@ public class CategoriaService extends BaseService<Categoria> {
         _repository = repository;
     }
 
-    public Page<Categoria> listFilter(int page) {
-        return this._repository.findAll(PageRequest.of((page - 1), 10));
+    public Page<CategoriaListDto>  listFilterDto(Categoria entity, int page) {
+        return super. listFilter(entity, page)
+        .map(Mapper.pageMap(CategoriaListDto.class));
     }
 
     public Page<CategoriaListDto> listDto(int page) {
@@ -39,9 +40,4 @@ public class CategoriaService extends BaseService<Categoria> {
     public Page<CategoriaListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CategoriaListDto.class));
     }
-
-	public Page<CategoriaListDto> listByName(String name, int page) {
-        return _repository.listByName(name, PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(CategoriaListDto.class));
-	}
 }

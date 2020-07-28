@@ -72,10 +72,10 @@ public class ProdutoController extends AbstractBaseController {
     }
 
     @GetMapping("list/name")
-    public ResponseEntity<Page<ProdutoListDto>> listByName(
+    public ResponseEntity<Page<ProdutoListDto>> listFilter(
         @RequestParam(name = "page") int page,   
-        @RequestParam(name = "name") String name) {
-        Page<ProdutoListDto> list = this._service.listByName(name, page);
+        @RequestBody ProdutoDto filter) {
+        Page<ProdutoListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
         return ResponseEntity.ok(list);
     }
 

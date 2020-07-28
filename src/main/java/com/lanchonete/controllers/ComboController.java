@@ -48,10 +48,10 @@ public class ComboController extends AbstractBaseController {
     }
 
     @GetMapping("list/name")
-    public ResponseEntity<Page<ComboListDto>> listByName(
+    public ResponseEntity<Page<ComboListDto>> listFilter(
         @RequestParam(name = "page") int page,   
-        @RequestParam(name = "name") String name) {
-        Page<ComboListDto> list = this._service.listByName(name, page);
+        @RequestBody ComboDto filter) {
+        Page<ComboListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
         return ResponseEntity.ok(list);
     }
 

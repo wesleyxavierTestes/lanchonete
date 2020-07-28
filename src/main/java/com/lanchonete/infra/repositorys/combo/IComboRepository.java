@@ -18,12 +18,6 @@ public interface IComboRepository extends JpaRepository<Combo, Long>  {
         value = "SELECT (c.*) FROM combo as c where c.ativo = true",
         countQuery = "SELECT (c.*) FROM combo as c where c.ativo = true")
     Page<Combo> listActive(PageRequest pageRequest);
-
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT * FROM combo WHERE lower(nome) like lower(concat ('%',?1,'%'))",
-        countQuery = "SELECT * FROM combo WHERE lower(nome) like lower(concat ('%',?1,'%'))")
-    Page<Combo> listByName(String nome, PageRequest pageRequest);
     
     @Query(
         nativeQuery = true, 

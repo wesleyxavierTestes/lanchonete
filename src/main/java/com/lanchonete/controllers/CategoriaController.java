@@ -49,10 +49,10 @@ public class CategoriaController extends AbstractBaseController {
     }
 
     @GetMapping("list/name")
-    public ResponseEntity<Page<CategoriaListDto>> listByName(
+    public ResponseEntity<Page<CategoriaListDto>> listFilter(
         @RequestParam(name = "page") int page,   
-        @RequestParam(name = "name") String name) {
-        Page<CategoriaListDto> list = this._service.listByName(name, page);
+        @RequestBody CategoriaDto filter) {
+        Page<CategoriaListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
         return ResponseEntity.ok(list);
     }
 
