@@ -39,10 +39,6 @@ public class EstoqueController extends AbstractBaseController {
         _serviceProduto = serviceProduto;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new EstoqueDto());
@@ -54,24 +50,18 @@ public class EstoqueController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("list/entrance")
     public ResponseEntity<Object> listEntrance(@RequestParam(name = "page") int page) {
         Page<EstoqueListDto> list = this._serviceEstoque.listEntrance(page);
         return ResponseEntity.ok(list);
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("list/leave")
     public ResponseEntity<Object> findLeave(@RequestParam(name = "page") int page) {
         Page<EstoqueListDto> list = this._serviceEstoque.listLeave(page);
         return ResponseEntity.ok(list);
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         
@@ -80,8 +70,6 @@ public class EstoqueController extends AbstractBaseController {
         return ResponseEntity.ok(Mapper.map(entity, AbstractEstoque.class));
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @PostMapping("save/add")
     public ResponseEntity<Object> saveAdicionar(@RequestBody() @Valid EstoqueDto entityDto) {
 
@@ -97,8 +85,6 @@ public class EstoqueController extends AbstractBaseController {
         return ResponseEntity.ok(entity);
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @PostMapping("save/remove")
     public ResponseEntity<Object> saveRemover(@RequestBody() @Valid EstoqueDto entityDto) {
 
@@ -117,10 +103,8 @@ public class EstoqueController extends AbstractBaseController {
         return ResponseEntity.ok(entity);
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) throws Exception {
+    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
         
         AbstractEstoque entity = this._serviceEstoque.delete(id);
 

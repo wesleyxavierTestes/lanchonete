@@ -1,7 +1,5 @@
 package com.lanchonete.infra.repositorys.cliente;
 
-import java.util.List;
-
 import com.lanchonete.domain.entities.cliente.Cliente;
 
 import org.springframework.data.domain.Page;

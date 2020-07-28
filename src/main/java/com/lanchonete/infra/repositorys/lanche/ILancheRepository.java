@@ -1,7 +1,5 @@
 package com.lanchonete.infra.repositorys.lanche;
 
-import java.util.List;
-
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 

@@ -1,14 +1,13 @@
 package com.lanchonete.domain.services.cliente;
 
-import java.util.List;
 import java.util.Objects;
 
 import com.lanchonete.apllication.dto.cliente.ClienteListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
-import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
+import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.cliente.IClienteRepository;
 

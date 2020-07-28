@@ -178,22 +178,23 @@ public class LancheTest {
             produto2 = ProdutoMock.dto();
             produto2.categoria = categoria2;
 
-            List<ProdutoDto> list = new ArrayList<ProdutoDto>() {{
-                add(produto1);
-                add(produto2);
-            }};
+            List<ProdutoDto> list = new ArrayList<ProdutoDto>() {
+                {
+                    add(produto1);
+                    add(produto2);
+                }
+            };
             List<ProdutoDto> listNew = new ArrayList<>();
             String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
 
             for (ProdutoDto produto : list) {
                 HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
-                ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
-                        HttpMethod.POST,
+                ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
                         requestSave, Object.class);
 
                 assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
                 assertNotNull(response.getBody());
-                            
+
                 String json = ObjectMapperUtils.toJson(response.getBody());
                 produto = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
 
@@ -205,7 +206,7 @@ public class LancheTest {
                 estoqueEntrada.setQuantidade(1);
                 _estoqueRepository.save(estoqueEntrada);
             }
-            
+
             produto1.id = listNew.get(0).id;
             produto2.id = listNew.get(1).id;
 
@@ -213,25 +214,28 @@ public class LancheTest {
             produto2.codigo = listNew.get(1).codigo;
         }
 
-        private <T extends BaseEntity, Y extends JpaRepository<T, Long>> List<T> SaveGeneric(Object[] list, Y repository, Class<T> ref) throws MalformedURLException {
-            List<T> objetoNew = new ArrayList<>();
-            for (Object objeto : list) {
-              Object resposta = repository.save((T)objeto);
-                objetoNew.add((T)resposta);
-            }
-            return objetoNew;
-        }
-
         private void SetCategoria() throws MalformedURLException {
             categoria1 = CategoriaMock.dto();
             categoria2 = CategoriaMock.dto();
 
-            Categoria[] list = { Mapper.map(categoria1), Mapper.map(categoria2) };
+            CategoriaDto[] list = { (categoria1), (categoria2) };
 
-            List<Categoria> listNew = SaveGeneric(list, _categoriaRepository, Categoria.class);
-            categoria1.id = listNew.get(0).getId();
-            categoria2.id = listNew.get(1).getId();
-        }        
+            String urlSave = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
+            List<CategoriaDto> listNew = new ArrayList<>();
+            for (CategoriaDto categoria : list) {
+
+                HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
+                ResponseEntity<CategoriaDto> response = restTemplate.exchange(new URL(urlSave).toString(),
+                        HttpMethod.POST, requestSave, CategoriaDto.class);
+                String json = ObjectMapperUtils.toJson(response.getBody());
+                categoria = ObjectMapperUtils.jsonTo(json, CategoriaDto.class);
+
+                listNew.add(categoria);
+            }
+
+            categoria1.id = listNew.get(0).id;
+            categoria2.id = listNew.get(1).id;
+        }
 
         private void ACTIVE() throws MalformedURLException {
             // ACTIVE
@@ -305,11 +309,9 @@ public class LancheTest {
             // SAVE
             ConfiguratEntity();
 
-            ResponseEntity<Object> response = restTemplate
-            .exchange(new URL(String.format(URL_CONSTANTS_TEST.LancheSave, port)).toString(), 
-                HttpMethod.POST,
-                new HttpEntity<>(entity, null), 
-                Object.class);
+            ResponseEntity<Object> response = restTemplate.exchange(
+                    new URL(String.format(URL_CONSTANTS_TEST.LancheSave, port)).toString(), HttpMethod.POST,
+                    new HttpEntity<>(entity, null), Object.class);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -321,7 +323,7 @@ public class LancheTest {
         }
 
         private void ConfiguratEntity() {
-            entity = (LancheDto)LancheMock.dto();
+            entity = (LancheDto) LancheMock.dto();
             entity.categoria = categoria1;
             entity.ingredientesLanche = new ArrayList<>();
 
@@ -336,7 +338,7 @@ public class LancheTest {
 
             Lanche map = Mapper.map(entity);
             map.calcularValorTotal();
-            BigDecimal valorCalculoMap = map.getValor();            
+            BigDecimal valorCalculoMap = map.getValor();
             assertEquals(valorCalculoMap, valorCalculo);
 
             entity.valor = valorCalculo.toString();

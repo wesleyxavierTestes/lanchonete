@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;

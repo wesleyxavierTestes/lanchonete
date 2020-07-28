@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 
 import com.lanchonete.domain.entities.produto.entities.Produto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -3,7 +3,6 @@ package com.lanchonete.domain.entities.cardapio.combo;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,7 +15,11 @@ import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
 @Getter

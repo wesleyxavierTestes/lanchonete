@@ -1,7 +1,5 @@
 package com.lanchonete.infra.repositorys.combo;
 
-import java.util.List;
-
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 
 import org.springframework.data.domain.Page;

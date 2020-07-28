@@ -1,7 +1,5 @@
 package com.lanchonete.domain.services.cardapio;
 
-import java.util.Objects;
-
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;

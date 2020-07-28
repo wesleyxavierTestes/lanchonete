@@ -1,7 +1,5 @@
 package com.lanchonete.domain.services.categoria;
 
-import java.util.Objects;
-
 import com.lanchonete.apllication.dto.categoria.CategoriaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.categoria.Categoria;

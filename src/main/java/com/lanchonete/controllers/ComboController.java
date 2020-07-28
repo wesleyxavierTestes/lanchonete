@@ -1,7 +1,5 @@
 package com.lanchonete.controllers;
 
-import java.util.Objects;
-
 import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.combo.ComboDto;
@@ -9,7 +7,6 @@ import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
 import com.lanchonete.domain.services.combo.ComboService;
-import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

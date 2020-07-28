@@ -1,11 +1,7 @@
 package com.lanchonete.apllication.dto.combo;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
