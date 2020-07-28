@@ -69,9 +69,8 @@ public class ComboController extends AbstractBaseController {
     
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         Combo entity = this._service.find(id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -81,40 +80,21 @@ public class ComboController extends AbstractBaseController {
 
         Combo entity = this._service.save(Mapper.map(entityDto));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
     
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        Combo entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(true);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        Combo entity = this._service.ative(id, true);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        Combo entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(false);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        Combo entity = this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

@@ -11,6 +11,8 @@ public final class URL_CONSTANTS_TEST {
     public final static String ClienteSaveDefault = "http://localhost:%s/api/cliente/save/default";
     public final static String ClienteUpdate = "http://localhost:%s/api/cliente/update";
     public final static String ClienteDelete = "http://localhost:%s/api/cliente/delete";
+    public final static String ClienteActive = "http://localhost:%s/api/cliente/active";
+    public final static String ClienteDesactive = "http://localhost:%s/api/cliente/desactive";
 
     public final static String CategoriaList = "http://localhost:%s/api/categoria/list";
     public final static String CategoriaFind = "http://localhost:%s/api/categoria/find";

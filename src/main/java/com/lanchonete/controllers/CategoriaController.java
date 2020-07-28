@@ -35,8 +35,6 @@ public class CategoriaController extends AbstractBaseController {
         _service = service;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new CategoriaDto());
@@ -70,21 +68,17 @@ public class CategoriaController extends AbstractBaseController {
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         Categoria entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid CategoriaDto entityDto) {
+        
         Categoria entity = this._service.save(Mapper.map(entityDto));
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
+        
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
@@ -96,23 +90,13 @@ public class CategoriaController extends AbstractBaseController {
 
         this._service.update(Mapper.map(entityDto, entity));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) throws Exception {
-        Categoria entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity = this._service.delete(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
+        
+        Categoria entity = this._service.delete(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

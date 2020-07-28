@@ -60,9 +60,9 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
         entity.setDataCadastro(LocalDateTime.now());
         entity.setAtivo(true);
 
-        T entitySave = _repository.save(entity);
+        _repository.save(entity);
 
-        return entitySave;
+        return entity;
     }
 
     @Transactional
@@ -74,9 +74,23 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
         entity.setDataCadastro(exists.getDataCadastro());
 
-        T entitySave = _repository.save(entity);
+        _repository.save(entity);
 
-        return entitySave;
+        return entity;
+    }
+
+    @Transactional
+    @Override
+    public T ative(long id, boolean ative) {
+        T entity = this.find(id);
+        if (!Objects.nonNull(entity))
+            throw new RegraNegocioException(MessageError.NOT_EXISTS);
+
+        entity.setAtivo(ative);
+
+        _repository.save(entity);
+
+        return entity;
     }
 
     @Override

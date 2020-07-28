@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
@@ -124,47 +125,57 @@ public class ProdutoTest {
     @Nested
     @DisplayName(value = "Testes de integração produtos")
     class ProdutoValid {
+        private Categoria categoria;
+        private ProdutoDto entity;
+        private ProdutoUtilsPageMock page;
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() throws Exception {
+            CATEGORIA();            
+            SAVE();
+            LIST();
+            FIND();
+            DESACTIVE();
+            FIND_DESACTIVE();
+            ACTIVE();
+            FIND_ACTIVE();
+        }
 
-            CategoriaDto categoriaDto = CategoriaDto.builder().nome("teste"+LocalDateTime.now()).build();
-            Categoria categoria = _serviceRepository.save(Mapper.map(categoriaDto));
-            
-            // SAVE
-            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
-            ProdutoDto entity = ProdutoMock.dto();
-            entity.categoria = Mapper.map(categoria);
+        private void FIND_ACTIVE() throws MalformedURLException {
+            // FIND ACTIVE
 
-            HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(entity, null);
-            ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
-                    HttpMethod.POST,
-                    requestSave, Object.class);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ProdutoDto.class);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
-            assertNotNull(response.getBody());
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND ACTIVE expect Error");
+            assertEquals(true, responseFind.getBody().ativo);
+        }
 
-            // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
+        private void ACTIVE() throws MalformedURLException {
+            // ACTIVE
+            String urlActive = String.format(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + page.content.get(0).id, port);
 
-            ResponseEntity<ProdutoUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
-                    ProdutoUtilsPageMock.class);
+            HttpEntity<ProdutoDto> responseurl = new HttpEntity<>(null, null);
+            ResponseEntity<String>  responseActive = restTemplate.exchange(new URL(urlActive).toString(), HttpMethod.DELETE, responseurl,
+                    String.class);
 
-            ProdutoUtilsPageMock page = responselist.getBody();
-            assertEquals(HttpStatus.OK, responselist.getStatusCode(), "LIST expect Error");
-            assertTrue(page.totalElements > 0);
-            assertEquals(1, page.totalPages);
+            assertEquals(HttpStatus.OK, responseActive.getStatusCode(), "ACTIVE expect Error");
+        }
 
-            // FIND
+        private String FIND_DESACTIVE() throws MalformedURLException {
+            // FIND DESACTIVE
+
             String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
 
-            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    ProdutoDto.class);
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ProdutoDto.class);
 
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND expect Error");
-            assertEquals(entity.nome, responseFind.getBody().nome);
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND DESACTIVE expect Error");
+            assertEquals(false, responseFind.getBody().ativo);
+            return urlFind;
+        }
 
+        private void DESACTIVE() throws MalformedURLException {
             // DESACTIVE
             String urlDesactive = String.format(URL_CONSTANTS_TEST.ProdutoDesactive + "/?id=" + page.content.get(0).id,
                     port);
@@ -174,27 +185,50 @@ public class ProdutoTest {
                     HttpMethod.DELETE, responseurl, String.class);
 
             assertEquals(HttpStatus.OK, responseDesactive.getStatusCode(), "DESACTIVE expect Error");
-            // FIND DESACTIVE
+        }
 
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ProdutoDto.class);
+        private void FIND() throws MalformedURLException {
+            // FIND
+            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
 
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND DESACTIVE expect Error");
-            assertEquals(false, responseFind.getBody().ativo);
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    ProdutoDto.class);
 
-            // ACTIVE
-            String urlActive = String.format(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + page.content.get(0).id, port);
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND expect Error");
+            assertEquals(entity.nome, responseFind.getBody().nome);
+        }
 
-            ResponseEntity<String>  responseActive = restTemplate.exchange(new URL(urlActive).toString(), HttpMethod.DELETE, responseurl,
-                    String.class);
+        private void LIST() throws MalformedURLException {
+            // LIST
+            String urlList = String.format(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
 
-            assertEquals(HttpStatus.OK, responseActive.getStatusCode(), "ACTIVE expect Error");
-            // FIND ACTIVE
+            ResponseEntity<ProdutoUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+                    ProdutoUtilsPageMock.class);
 
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ProdutoDto.class);
+            page = responselist.getBody();
+            assertEquals(HttpStatus.OK, responselist.getStatusCode(), "LIST expect Error");
+            assertTrue(page.totalElements > 0);
+            assertEquals(1, page.totalPages);
+        }
 
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND ACTIVE expect Error");
-            assertEquals(true, responseFind.getBody().ativo);
+        private void SAVE() throws MalformedURLException {
+            // SAVE
+            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
+            entity = ProdutoMock.dto();
+            entity.categoria = Mapper.map(categoria);
 
+            HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(entity, null);
+            ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
+                    HttpMethod.POST,
+                    requestSave, Object.class);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
+            assertNotNull(response.getBody());
+        }
+
+        private void CATEGORIA() {
+            CategoriaDto categoriaDto = CategoriaDto.builder().nome("teste"+LocalDateTime.now()).build();
+            categoria = _serviceRepository.save(Mapper.map(categoriaDto));
         }
     
     }

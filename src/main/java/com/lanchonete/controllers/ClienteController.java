@@ -57,10 +57,6 @@ public class ClienteController extends AbstractBaseController {
         }
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new ClienteDto());
@@ -94,9 +90,8 @@ public class ClienteController extends AbstractBaseController {
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         Cliente entity = this._service.find(id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -115,9 +110,6 @@ public class ClienteController extends AbstractBaseController {
 
         Cliente entity = this._service.save(Mapper.map(entityDto));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
@@ -130,40 +122,21 @@ public class ClienteController extends AbstractBaseController {
 
         this._service.update(Mapper.map(entityDto, entity));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        Cliente entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(true);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        Cliente entity  = this._service.ative(id, true);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        Cliente entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(false);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        Cliente entity  = this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -181,9 +154,6 @@ public class ClienteController extends AbstractBaseController {
         this._service.createClienteDefault(entity);
 
         this._service.save(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

@@ -113,11 +113,9 @@ public class ProdutoController extends AbstractBaseController {
         entity.setCategoria(categoria);
         
         this._service.save(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
         
-        this._serviceEstoque.save(EstoqueEntrada.ProdutoSave(entity));
+        EstoqueEntrada estoqueEntrada = EstoqueEntrada.ProdutoSave(entity);
+        this._serviceEstoque.save(estoqueEntrada);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -130,9 +128,6 @@ public class ProdutoController extends AbstractBaseController {
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         this._service.update(Mapper.map(entityDto, entity));
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

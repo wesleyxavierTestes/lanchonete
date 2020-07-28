@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
@@ -141,11 +142,99 @@ public class ClienteTest {
     @DisplayName(value = "Testes de integração clientes")
     class ClienteValid {
 
-        @Test
-        @DisplayName("Deve listar todos clientes com lista vazia")
-        public void save_ok() throws Exception {
+        private ClienteUtilsPageMock page;
+        private ClienteDto entity;
 
-            assertTrue(true);
+        @Test
+        @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
+        public void save_ok() throws Exception {
+            SAVE();
+            LIST();
+            FIND();
+            DESACTIVE();
+            FIND_DESACTIVE();
+            ACTIVE();
+            FIND_ACTIVE();
+        }
+
+        private void ACTIVE() throws MalformedURLException {
+            // ACTIVE
+            HttpEntity<ClienteDto> responseurl = new HttpEntity<>(null, null);
+            String urlActive = String.format(URL_CONSTANTS_TEST.ClienteActive + "/?id=" + page.content.get(0).id, port);
+
+            ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
+                    HttpMethod.DELETE, responseurl, String.class);
+
+            assertEquals(HttpStatus.OK, responseActive.getStatusCode());
+        }
+
+        private void FIND_DESACTIVE() throws MalformedURLException {
+            ResponseEntity<ClienteDto> responseFind;
+            // FIND DESACTIVE
+            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + page.content.get(0).id, port);
+            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ClienteDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+            assertEquals(false, responseFind.getBody().ativo);
+        }
+
+        private void FIND_ACTIVE() throws MalformedURLException {
+            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + page.content.get(0).id, port);
+            
+            // FIND DESACTIVE
+            ResponseEntity<ClienteDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ClienteDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+            assertEquals(true, responseFind.getBody().ativo);
+        }
+
+        private void DESACTIVE() throws MalformedURLException {
+            // DESACTIVE
+            String urlDesactive = String.format(URL_CONSTANTS_TEST.ClienteDesactive + "/?id=" + page.content.get(0).id,
+                    port);
+
+            HttpEntity<ClienteDto> responseurl = new HttpEntity<>(null, null);
+            ResponseEntity<String> responseDesactive = restTemplate.exchange(new URL(urlDesactive).toString(),
+                    HttpMethod.DELETE, responseurl, String.class);
+
+            assertEquals(HttpStatus.OK, responseDesactive.getStatusCode());
+        }
+
+        private void FIND() throws MalformedURLException {
+            // FIND
+            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + page.content.get(0).id, port);
+
+            ResponseEntity<ClienteDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    ClienteDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+            assertEquals(entity.nome, responseFind.getBody().nome);
+        }
+
+        private void LIST() throws MalformedURLException {
+            // LIST
+            String urlList = String.format(URL_CONSTANTS_TEST.ClienteList + "/?page=1", port);
+
+            ResponseEntity<ClienteUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+                    ClienteUtilsPageMock.class);
+
+            page = responselist.getBody();
+            assertEquals(HttpStatus.OK, responselist.getStatusCode());
+            assertTrue(page.totalElements > 0);
+            assertEquals(1, page.totalPages);
+        }
+
+        private void SAVE() throws MalformedURLException {
+            // SAVE
+            String urlSave = String.format(URL_CONSTANTS_TEST.ClienteSave, port);
+            entity = ClienteMock.dto();
+
+            HttpEntity<ClienteDto> requestSave = new HttpEntity<>(entity, null);
+            ResponseEntity<ClienteDto> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
+                    requestSave, ClienteDto.class);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
         }
     }
 }

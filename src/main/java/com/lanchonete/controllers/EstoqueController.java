@@ -74,9 +74,8 @@ public class EstoqueController extends AbstractBaseController {
     // TODO: NECESSITA DE TESTES
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         AbstractEstoque entity = this._serviceEstoque.find(id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity, AbstractEstoque.class));
     }
@@ -94,8 +93,6 @@ public class EstoqueController extends AbstractBaseController {
                 .configureSave(Mapper.map(entityDto, EstoqueEntrada.class), produto);
 
         entity = (EstoqueEntrada) this._serviceEstoque.save(entity);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
 
         return ResponseEntity.ok(entity);
     }
@@ -117,9 +114,6 @@ public class EstoqueController extends AbstractBaseController {
 
         entity = (EstoqueSaida) this._serviceEstoque.save(entity);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(entity);
     }
 
@@ -127,10 +121,8 @@ public class EstoqueController extends AbstractBaseController {
     // TODO: NECESSITA DE TESTES
     @DeleteMapping("delete")
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) throws Exception {
+        
         AbstractEstoque entity = this._serviceEstoque.delete(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

@@ -1,5 +1,6 @@
 package com.lanchonete.controllers;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.validation.Valid;
@@ -69,10 +70,8 @@ public class PedidoController extends AbstractBaseController {
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         Pedido entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -82,40 +81,22 @@ public class PedidoController extends AbstractBaseController {
 
         Pedido entity = this._service.save(Mapper.map(entityDto));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body("");
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("cancel")
     public ResponseEntity<Object> cancel(@RequestParam(name = "id") long id) {
-        Pedido entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(true);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
-        return ResponseEntity.ok(Mapper.map(entity));
-    }
-
-    @DeleteMapping("desactive")
-    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
+        
         Pedido entity = this._service.find(id);
 
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(false);
-        this._service.update(entity);
+        entity.setCancelado(true);
+        entity.setDataCancelado(LocalDateTime.now());
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        this._service.update(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

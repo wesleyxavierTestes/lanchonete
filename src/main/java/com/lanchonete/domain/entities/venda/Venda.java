@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.cliente.Cliente;
+import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
@@ -30,7 +31,7 @@ import lombok.Setter;
 public class Venda extends BaseEntity {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
-    private Set<IProdutoVenda> ItensVenda = new HashSet<IProdutoVenda>();
+    private Set<Pedido> pedidos = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Cliente cliente;
@@ -39,5 +40,5 @@ public class Venda extends BaseEntity {
     private BigDecimal valor;
     private BigDecimal valorTotal;
     private boolean cancelado;
-    private LocalDateTime dataCancelado = null;
+    private LocalDateTime dataCancelado;
 }

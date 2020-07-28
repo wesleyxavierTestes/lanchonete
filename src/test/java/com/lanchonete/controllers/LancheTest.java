@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.lanchonete.apllication.dto.lanche.LancheDto;
@@ -119,41 +120,53 @@ public class LancheTest {
     @Nested
     @DisplayName(value = "Testes de integração lanches")
     class LancheValid {
+        private LancheUtilsPageMock page;
+        private LancheDto entity;
 
-        //@Test
+        // @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() throws Exception {
-            // SAVE
-            String urlSave = String.format(URL_CONSTANTS_TEST.LancheSave, port);
-            LancheDto entity = LancheMock.dto();
+            SAVE();
+            LIST();
+            FIND();
+            DESACTIVE();
+            FIND_DESACTIVE();
+            ACTIVE();
+            FIND_ACTIVE();
+        }
 
-            HttpEntity<LancheDto> requestSave = new HttpEntity<>(entity, null);
-            ResponseEntity<LancheDto> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
-                    requestSave, LancheDto.class);
+        private void ACTIVE() throws MalformedURLException {
+            // ACTIVE
+            HttpEntity<LancheDto> responseurl = new HttpEntity<>(null, null);
+            String urlActive = String.format(URL_CONSTANTS_TEST.LancheActive + "/?id=" + page.content.get(0).id, port);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
+            ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
+                    HttpMethod.DELETE, responseurl, String.class);
 
-            // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+            assertEquals(HttpStatus.OK, responseActive.getStatusCode());
+        }
 
-            ResponseEntity<LancheUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
-                    LancheUtilsPageMock.class);
-
-            LancheUtilsPageMock page = responselist.getBody();
-            assertEquals(HttpStatus.OK, responselist.getStatusCode());
-            assertTrue(page.totalElements > 0);
-            assertEquals(1, page.totalPages);
-
-            // FIND
+        private void FIND_DESACTIVE() throws MalformedURLException {
+            ResponseEntity<LancheDto> responseFind;
+            // FIND DESACTIVE
             String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + page.content.get(0).id, port);
-
-            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    LancheDto.class);
+            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-            assertEquals(entity.nome, responseFind.getBody().nome);
+            assertEquals(false, responseFind.getBody().ativo);
+        }
 
+        private void FIND_ACTIVE() throws MalformedURLException {
+            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + page.content.get(0).id, port);
+            
+            // FIND DESACTIVE
+            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+            assertEquals(true, responseFind.getBody().ativo);
+        }
+
+        private void DESACTIVE() throws MalformedURLException {
             // DESACTIVE
             String urlDesactive = String.format(URL_CONSTANTS_TEST.LancheDesactive + "/?id=" + page.content.get(0).id,
                     port);
@@ -163,29 +176,45 @@ public class LancheTest {
                     HttpMethod.DELETE, responseurl, String.class);
 
             assertEquals(HttpStatus.OK, responseDesactive.getStatusCode());
-            // FIND DESACTIVE
-
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
-
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-            assertEquals(false, responseFind.getBody().ativo);
-
-            // ACTIVE
-            String urlActive = String.format(URL_CONSTANTS_TEST.LancheActive + "/?id=" + page.content.get(0).id, port);
-
-            ResponseEntity<String>  responseActive = restTemplate.exchange(new URL(urlActive).toString(), HttpMethod.DELETE, responseurl,
-                    String.class);
-
-            assertEquals(HttpStatus.OK, responseActive.getStatusCode());
-            // FIND ACTIVE
-
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
-
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-            assertEquals(false, responseFind.getBody().ativo);
-
         }
-    
+
+        private void FIND() throws MalformedURLException {
+            // FIND
+            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + page.content.get(0).id, port);
+
+            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    LancheDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+            assertEquals(entity.nome, responseFind.getBody().nome);
+        }
+
+        private void LIST() throws MalformedURLException {
+            // LIST
+            String urlList = String.format(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+
+            ResponseEntity<LancheUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+                    LancheUtilsPageMock.class);
+
+            page = responselist.getBody();
+            assertEquals(HttpStatus.OK, responselist.getStatusCode());
+            assertTrue(page.totalElements > 0);
+            assertEquals(1, page.totalPages);
+        }
+
+        private void SAVE() throws MalformedURLException {
+            // SAVE
+            String urlSave = String.format(URL_CONSTANTS_TEST.LancheSave, port);
+            entity = LancheMock.dto();
+
+            HttpEntity<LancheDto> requestSave = new HttpEntity<>(entity, null);
+            ResponseEntity<LancheDto> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
+                    requestSave, LancheDto.class);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+        }
+
     }
 
 }

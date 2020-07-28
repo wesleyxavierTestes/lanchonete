@@ -1,6 +1,7 @@
 package com.lanchonete.domain.entities.pedido;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,9 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
 
     private BigDecimal valorDesconto;
     private BigDecimal valorTotal;
+    
+    private boolean cancelado;
+    private LocalDateTime dataCancelado;
 
     private EnumEstadoPedido estado = EnumEstadoPedido.Novo;
     

@@ -43,7 +43,9 @@ public class LancheController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<LancheListDto>> list(@RequestParam(name = "page") int page) {
+        
         Page<LancheListDto> list = this._service.listDto(page);
+        
         return ResponseEntity.ok(list);
     }
 
@@ -51,28 +53,32 @@ public class LancheController extends AbstractBaseController {
     public ResponseEntity<Page<LancheListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody LancheDto filter) {
+
         Page<LancheListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/active")
     public ResponseEntity<Page<LancheListDto>> listActive(@RequestParam(name = "page") int page) {
+        
         Page<LancheListDto> list = this._service.listActiveDto(page);
+        
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/desactive")
     public ResponseEntity<Page<LancheListDto>> listDesactive(@RequestParam(name = "page") int page) {
+        
         Page<LancheListDto> list = this._service.listDesactiveDto(page);
+        
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         Lanche entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -82,40 +88,21 @@ public class LancheController extends AbstractBaseController {
 
         Lanche entity = this._service.save(Mapper.map(entityDto));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        Lanche entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(true);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        Lanche entity = this._service.ative(id, true);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        Lanche entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        entity.setAtivo(false);
-        this._service.update(entity);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        
+        Lanche entity = this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

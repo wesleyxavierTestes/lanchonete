@@ -37,14 +37,7 @@ public class ClienteListDto  {
         return this.cpf;
     }
 
-    @JsonIgnore
     public EnumTipoPessoa tipoPessoa;
 
-    @JsonIgnore
     public EnumTipoCliente tipoCliente;
-
-    @JsonGetter("tipoCliente")
-    public String geTtipoCliente() {
-        return tipoCliente == EnumTipoCliente.GeraFisco ? "Comum" : "Final";
-    }
 }

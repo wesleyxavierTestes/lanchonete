@@ -10,4 +10,5 @@ public interface IBaseService<T extends BaseEntity> {
     T save(T entity);
     T update(T entity);
     T delete(long id) throws Exception;
+    T ative(long id, boolean ative);
 }

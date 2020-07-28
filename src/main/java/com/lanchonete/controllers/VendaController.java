@@ -1,5 +1,6 @@
 package com.lanchonete.controllers;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.validation.Valid;
 import com.lanchonete.apllication.dto.venda.VendaDto;
@@ -64,9 +65,6 @@ public class VendaController extends AbstractBaseController {
 
         Venda entity = this._service.save(Mapper.map(entityDto));
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
-
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
@@ -78,10 +76,10 @@ public class VendaController extends AbstractBaseController {
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         entity.setAtivo(true);
-        this._service.update(entity);
+        entity.setCancelado(true);
+        entity.setDataCancelado(LocalDateTime.now());
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.ERROS_DATABASE);
+        this._service.update(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
