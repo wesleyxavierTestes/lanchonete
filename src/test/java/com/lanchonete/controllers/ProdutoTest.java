@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.print.DocFlavor.STRING;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -110,8 +112,8 @@ public class ProdutoTest {
 
             String url = String.format(URL_CONSTANTS_TEST.ProdutoUpdate, port);
 
-            ProdutoDto entity = ProdutoMock.dto();
-            entity.categoria = CategoriaMock.dto();
+            ProdutoDto entity = ProdutoMock.dto("ProdutoTest: Produto Update_error");
+            entity.categoria = CategoriaMock.dto("ProdutoTest: Produto Update_error");
             entity.id = 0;
 
             HttpEntity<ProdutoDto> requestUpdate = new HttpEntity<>(entity, null);
@@ -126,15 +128,14 @@ public class ProdutoTest {
     @Nested
     @DisplayName(value = "Testes de integração produtos")
     class ProdutoValid {
-        private Categoria categoria;
         private ProdutoDto entity;
         private ProdutoUtilsPageMock page;
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() throws Exception {
-            CATEGORIA();
-            SAVE();
+            CategoriaDto categoria = CATEGORIA("ProdutoTest: Categoria Save_ok");
+            PRODUTO("ProdutoTest: Produto Save_ok", categoria);
             LIST();
             FIND();
             DESACTIVE();
@@ -146,7 +147,7 @@ public class ProdutoTest {
         private void FIND_ACTIVE() throws MalformedURLException {
             // FIND ACTIVE
 
-            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
             ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
                     ProdutoDto.class);
 
@@ -156,7 +157,7 @@ public class ProdutoTest {
 
         private void ACTIVE() throws MalformedURLException {
             // ACTIVE
-            String urlActive = String.format(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + page.content.get(0).id, port);
+            String urlActive = String.format(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + entity.id, port);
 
             HttpEntity<ProdutoDto> responseurl = new HttpEntity<>(null, null);
             ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
@@ -168,7 +169,7 @@ public class ProdutoTest {
         private String FIND_DESACTIVE() throws MalformedURLException {
             // FIND DESACTIVE
 
-            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
 
             ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
                     ProdutoDto.class);
@@ -180,7 +181,7 @@ public class ProdutoTest {
 
         private void DESACTIVE() throws MalformedURLException {
             // DESACTIVE
-            String urlDesactive = String.format(URL_CONSTANTS_TEST.ProdutoDesactive + "/?id=" + page.content.get(0).id,
+            String urlDesactive = String.format(URL_CONSTANTS_TEST.ProdutoDesactive + "/?id=" + entity.id,
                     port);
 
             HttpEntity<ProdutoDto> responseurl = new HttpEntity<>(null, null);
@@ -192,7 +193,7 @@ public class ProdutoTest {
 
         private void FIND() throws MalformedURLException {
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
 
             ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
                     ProdutoDto.class);
@@ -212,13 +213,15 @@ public class ProdutoTest {
             assertEquals(HttpStatus.OK, responselist.getStatusCode(), "LIST expect Error");
             assertTrue(page.totalElements > 0);
             assertEquals(1, page.totalPages);
+
+            entity = Mapper.map(page.content.get(0), ProdutoDto.class);
         }
 
-        private void SAVE() throws MalformedURLException, JsonMappingException, JsonProcessingException {
+        private ProdutoDto PRODUTO(String nome, CategoriaDto categoria) throws MalformedURLException, JsonMappingException, JsonProcessingException {
             // SAVE
             String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
-            entity = ProdutoMock.dto();
-            entity.categoria = Mapper.map(categoria);
+            ProdutoDto entity = ProdutoMock.dto(nome);
+            entity.categoria = categoria;
 
             HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(entity, null);
             ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
@@ -232,11 +235,25 @@ public class ProdutoTest {
             entity = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
 
             assertNotNull(entity.codigo);
+
+            return entity;
         }
 
-        private void CATEGORIA() {
-            CategoriaDto categoriaDto = CategoriaDto.builder().nome("teste"+LocalDateTime.now()).build();
-            categoria = _serviceRepository.save(Mapper.map(categoriaDto));
+        private CategoriaDto CATEGORIA(String nome) throws MalformedURLException {
+            CategoriaDto categoria = CategoriaMock.dto(nome);
+
+            String urlSave = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
+               
+            HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
+            ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(),
+                    HttpMethod.POST, requestSave, Object.class);
+
+            assertNotNull(response.getBody());
+
+            String json = ObjectMapperUtils.toJson(response.getBody());
+            CategoriaDto categoriaNew = ObjectMapperUtils.jsonTo(json, CategoriaDto.class);
+
+            return categoriaNew;
         }
     
     }

@@ -1,13 +1,19 @@
-package com.lanchonete.domain.entities.cardapio;
+package com.lanchonete.domain.entities.cardapio.combo;
 
 import javax.persistence.Entity;
 
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Builder
+@Getter
+@Setter
 @Entity
-public class ProdutoCombo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
+public class ComboBebida extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
 
 }

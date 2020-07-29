@@ -6,14 +6,14 @@ import com.lanchonete.domain.entities.pedido.PedidoNovo;
 
 public class PedidoMock {
 
-    public static PedidoDto dto() {
+    public static PedidoDto dto(String nome) {
         PedidoDto clienteDtoMock = PedidoDto.builder()
-
+.nome(nome)
                 .build();
         return clienteDtoMock;
     }
 
-    public static IPedidoState by() {
+    public static IPedidoState by(String nome) {
         IPedidoState clienteDtoMock = new PedidoNovo();
 
         return clienteDtoMock;

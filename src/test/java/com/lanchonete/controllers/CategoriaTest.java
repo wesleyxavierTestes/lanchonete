@@ -4,14 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.services.categoria.CategoriaService;
+import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.pages.CategoriaUtilsPageMock;
+import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +33,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class CategoriaTest {
@@ -109,14 +115,13 @@ public class CategoriaTest {
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
         }
-    
+
         @Test
         @DisplayName("Deve tentar excluir categoria inexistente")
         public void delete() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.CategoriaDelete+ "/?id=100000", port);
+            String url = String.format(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=100000", port);
             HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), 
-            HttpMethod.DELETE,
+            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
                     requestUpdate, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -149,7 +154,7 @@ public class CategoriaTest {
             ResponseEntity<CategoriaUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
                     CategoriaUtilsPageMock.class);
 
-                    CategoriaUtilsPageMock page =   responselist.getBody();
+            CategoriaUtilsPageMock page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());
             assertTrue(page.totalElements > 0);
             assertEquals(1, page.totalPages);
@@ -157,34 +162,32 @@ public class CategoriaTest {
             // UPDATE
             String urlUpdate = String.format(URL_CONSTANTS_TEST.CategoriaUpdate, port);
 
-            String nomeUpdate = page.content.get(0).nome+"teste";
-            entity = CategoriaDto.builder().id(page.content.get(0).id)
-            .nome(nomeUpdate).build();
+            String nomeUpdate = page.content.get(0).nome + "teste";
+            entity = CategoriaDto.builder().id(page.content.get(0).id).nome(nomeUpdate).build();
 
             HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CategoriaDto> responseUpdate = restTemplate.exchange(new URL(urlUpdate).toString(), HttpMethod.PUT,
-                    requestUpdate, CategoriaDto.class);
+            ResponseEntity<CategoriaDto> responseUpdate = restTemplate.exchange(new URL(urlUpdate).toString(),
+                    HttpMethod.PUT, requestUpdate, CategoriaDto.class);
 
             assertEquals(HttpStatus.OK, responseUpdate.getStatusCode());
 
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.CategoriaFind + "/?id="+page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.CategoriaFind + "/?id=" + page.content.get(0).id, port);
 
-            ResponseEntity<CategoriaDto> responseFind = restTemplate
-            .getForEntity(new URL(urlFind).toString(), CategoriaDto.class);
+            ResponseEntity<CategoriaDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    CategoriaDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(nomeUpdate, responseFind.getBody().nome);
 
             // DELETE
-            String urlDelete = String.format(URL_CONSTANTS_TEST.CategoriaDelete + "/?id="+page.content.get(0).id, port);
+            String urlDelete = String.format(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=" + page.content.get(0).id,
+                    port);
 
             HttpEntity<CategoriaDto> responseurlDelete = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseDelete = restTemplate.exchange(
-                new URL(urlDelete).toString(), 
-            HttpMethod.DELETE,
-            responseurlDelete, String.class);
+            ResponseEntity<String> responseDelete = restTemplate.exchange(new URL(urlDelete).toString(),
+                    HttpMethod.DELETE, responseurlDelete, String.class);
 
             assertEquals(HttpStatus.OK, responseDelete.getStatusCode());
         }

@@ -7,9 +7,9 @@ import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 
 public class ClienteMock {
     
-    public static ClienteDto dto() {
+    public static ClienteDto dto(String nome) {
             ClienteDto clienteDtoMock = ClienteDto.builder()
-                    .nome("wesley xavier")
+                    .nome(nome)
                     .cnjp("96864231000112")
                     .cpf(null)
                     .id(1)
@@ -20,9 +20,9 @@ public class ClienteMock {
                                     return clienteDtoMock;
     }
 
-    public static Cliente by() {
+    public static Cliente by(String nome) {
         Cliente clienteDtoMock = Cliente.builder()
-                .nome("wesley xavier")
+                .nome(nome)
                 .cnjp("0000000000")
                 .cpf(null)
                 .tipoCliente(EnumTipoCliente.GeraFisco)

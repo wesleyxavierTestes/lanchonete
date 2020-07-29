@@ -26,6 +26,12 @@ public final class URL_CONSTANTS_TEST {
     public final static String LancheActive = "http://localhost:%s/api/lanche/active";
     public final static String LancheDesactive = "http://localhost:%s/api/lanche/desactive";
     
+    public final static String ComboList = "http://localhost:%s/api/combo/list";
+    public final static String ComboFind = "http://localhost:%s/api/combo/find";
+    public final static String ComboSave = "http://localhost:%s/api/combo/save";
+    public final static String ComboActive = "http://localhost:%s/api/combo/active";
+    public final static String ComboDesactive = "http://localhost:%s/api/combo/desactive";
+    
     public final static String EnderecoList = "http://localhost:%s/api/endereco/list";
     public final static String EnderecoFind = "http://localhost:%s/api/endereco/find";
     public final static String EnderecoSave = "http://localhost:%s/api/endereco/save";
@@ -38,4 +44,12 @@ public final class URL_CONSTANTS_TEST {
     public final static String ProdutoUpdate = "http://localhost:%s/api/produto/update";
     public final static String ProdutoActive = "http://localhost:%s/api/produto/active";
     public final static String ProdutoDesactive = "http://localhost:%s/api/produto/desactive";
+
+    public final static String EstoqueList = "http://localhost:%s/api/estoque/list";
+    public final static String EstoqueListEntrance = "http://localhost:%s/api/estoque/list/entrance";
+    public final static String EstoqueListLeave = "http://localhost:%s/api/estoque/list/leave";
+    public final static String EstoqueFind = "http://localhost:%s/api/estoque/find";
+    public final static String EstoqueSaveAdd = "http://localhost:%s/api/estoque/save/add";
+    public final static String EstoqueSaveRemove = "http://localhost:%s/api/estoque/save/remove";
+    public final static String EstoqueDelete = "http://localhost:%s/api/estoque/delete";
 }

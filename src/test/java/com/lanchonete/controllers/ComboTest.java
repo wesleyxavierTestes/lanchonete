@@ -7,12 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
+import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueProdutoDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
@@ -20,18 +20,16 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
-import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
-import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
-import com.lanchonete.domain.services.lanche.LancheService;
-import com.lanchonete.infra.repositorys.estoque.IEstoqueRepository;
+import com.lanchonete.domain.entities.cardapio.combo.Combo;
+import com.lanchonete.domain.services.combo.ComboService;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
-import com.lanchonete.mocks.pages.LancheUtilsPageMock;
+import com.lanchonete.mocks.pages.ComboUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
-import com.lanchonete.utils.UrlConstants;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,7 +45,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class LancheTest {
+public class ComboTest {
 
     @LocalServerPort
     private int port;
@@ -56,30 +54,28 @@ public class LancheTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    protected LancheService _service;
+    protected ComboService _service;
 
-    @Autowired
-    private IEstoqueRepository _estoqueRepository;
 
     @Test
-    @DisplayName("Deve converter uma LancheDto para Lanche incluindo Endereco")
+    @DisplayName("Deve converter uma ComboDto para Combo incluindo Endereco")
     public void converterClientDto() throws Exception {
 
-        Lanche lanche = Mapper.map(new LancheDto());
-        assertNotNull(lanche);
+        Combo combo = Mapper.map(new ComboDto());
+        assertNotNull(combo);
     }
 
     @Nested
-    @DisplayName(value = "Testes com lanches Invalidos")
-    class LancheInvalid {
+    @DisplayName(value = "Testes com combos Invalidos")
+    class ComboInvalid {
         @Test
-        @DisplayName("Deve listar todos lanches com lista vazia")
+        @DisplayName("Deve listar todos combos com lista vazia")
         public void listar() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+            String url = String.format(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
 
-            ResponseEntity<LancheUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
-                    LancheUtilsPageMock.class);
-            LancheUtilsPageMock page = response.getBody();
+            ResponseEntity<ComboUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
+                    ComboUtilsPageMock.class);
+            ComboUtilsPageMock page = response.getBody();
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(page);
@@ -87,9 +83,9 @@ public class LancheTest {
         }
 
         @Test
-        @DisplayName("Deve buscar um lanche")
+        @DisplayName("Deve buscar um combo")
         public void find_inexistente() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=100000", port);
+            String url = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=100000", port);
 
             ResponseEntity<String> response = restTemplate.getForEntity(new URL(url).toString(), String.class);
 
@@ -97,12 +93,12 @@ public class LancheTest {
         }
 
         @Test
-        @DisplayName("Deve tentar salvar lanche invalido")
+        @DisplayName("Deve tentar salvar combo invalido")
         public void save_invalid_test() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheSave, port);
+            String url = String.format(URL_CONSTANTS_TEST.ComboSave, port);
 
-            LancheDto entity = new LancheDto();
-            HttpEntity<LancheDto> requestSave = new HttpEntity<>(entity, null);
+            ComboDto entity = new ComboDto();
+            HttpEntity<ComboDto> requestSave = new HttpEntity<>(entity, null);
 
             ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
                     requestSave, CustomErro[].class);
@@ -113,10 +109,10 @@ public class LancheTest {
         }
 
         @Test
-        @DisplayName("Deve tentar alterar lanche inexistente")
+        @DisplayName("Deve tentar alterar combo inexistente")
         public void active() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheActive + "/?id=100000", port);
-            HttpEntity<LancheDto> requestActive = new HttpEntity<>(null, null);
+            String url = String.format(URL_CONSTANTS_TEST.ComboActive + "/?id=100000", port);
+            HttpEntity<ComboDto> requestActive = new HttpEntity<>(null, null);
             ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
                     requestActive, String.class);
 
@@ -125,10 +121,10 @@ public class LancheTest {
         }
 
         @Test
-        @DisplayName("Deve tentar excluir lanche inexistente")
+        @DisplayName("Deve tentar excluir combo inexistente")
         public void desactive() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheDesactive + "/?id=100000", port);
-            HttpEntity<LancheDto> requestDesactive = new HttpEntity<>(null, null);
+            String url = String.format(URL_CONSTANTS_TEST.ComboDesactive + "/?id=100000", port);
+            HttpEntity<ComboDto> requestDesactive = new HttpEntity<>(null, null);
             ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
                     requestDesactive, String.class);
 
@@ -138,33 +134,33 @@ public class LancheTest {
     }
 
     @Nested
-    @DisplayName(value = "Testes de integração lanches")
-    class LancheValid {
-        private LancheUtilsPageMock page;
-        private LancheDto entity;
+    @DisplayName(value = "Testes de integração combos")
+    class ComboValid {
+        private ComboUtilsPageMock page;
+        private ComboDto entity;
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() throws Exception {
-            CategoriaDto categoria1 = CATEGORIA("LancheTest: Categoria1 Save_ok");
-            CategoriaDto categoria2 = CATEGORIA("LancheTest: Categoria2 Save_ok");
-            ProdutoDto produto1 = PRODUTO("LancheTest: Produto1 Save_ok", categoria1);
-            ProdutoDto produto2 = PRODUTO("LancheTest: Produto2 Save_ok", categoria2);
+            CategoriaDto categoria1 = CATEGORIA("ComboTest: Categoria Save_ok");
+            ProdutoDto produto1 = PRODUTO("ComboTest: Produto1 Save_ok", categoria1);
+            ProdutoDto produto2 = PRODUTO("ComboTest: Produto2 Save_ok", categoria1);
             ESTOQUE(produto1);
-            ESTOQUE(produto2);
 
             IngredienteDto ingrediente1 = Mapper.map(produto1, IngredienteDto.class);
             IngredienteDto ingrediente2 = Mapper.map(produto2, IngredienteDto.class);
 
-            entity = LANCHE("LancheTest: Lanche Save_ok", categoria1, new ArrayList() {{
+            LancheDto lanche1 = LANCHE("ComboTest: Lanche Save_ok", categoria1, new ArrayList() {{
                 add(ingrediente1);  add(ingrediente2); 
             }});
-            LIST();
-            FIND();
-            DESACTIVE();
-            FIND_DESACTIVE();
-            ACTIVE();
-            FIND_ACTIVE();
+
+            //COMBO();
+            // LIST();
+            // FIND();
+            // DESACTIVE();
+            // FIND_DESACTIVE();
+            // ACTIVE();
+            // FIND_ACTIVE();
         }
 
         private LancheDto LANCHE(String nome, CategoriaDto categorialanche, 
@@ -249,7 +245,6 @@ public class LancheTest {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-
             assertNotNull(response);
             assertNotNull(response.getBody());
             assertEquals(HttpStatus.OK, response.getStatusCode());            
@@ -283,8 +278,8 @@ public class LancheTest {
 
         private void ACTIVE() throws MalformedURLException {
             // ACTIVE
-            HttpEntity<LancheDto> responseurl = new HttpEntity<>(null, null);
-            String urlActive = String.format(URL_CONSTANTS_TEST.LancheActive + "/?id=" + entity.id, port);
+            HttpEntity<ComboDto> responseurl = new HttpEntity<>(null, null);
+            String urlActive = String.format(URL_CONSTANTS_TEST.ComboActive + "/?id=" + entity.id, port);
 
             ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
                     HttpMethod.DELETE, responseurl, String.class);
@@ -293,21 +288,21 @@ public class LancheTest {
         }
 
         private void FIND_DESACTIVE() throws MalformedURLException {
-            ResponseEntity<LancheDto> responseFind;
+            ResponseEntity<ComboDto> responseFind;
             // FIND DESACTIVE
-            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
+            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ComboDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(false, responseFind.getBody().ativo);
         }
 
         private void FIND_ACTIVE() throws MalformedURLException {
-            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
 
             // FIND DESACTIVE
-            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    LancheDto.class);
+            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    ComboDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(true, responseFind.getBody().ativo);
@@ -315,10 +310,10 @@ public class LancheTest {
 
         private void DESACTIVE() throws MalformedURLException {
             // DESACTIVE
-            String urlDesactive = String.format(URL_CONSTANTS_TEST.LancheDesactive + "/?id=" + entity.id,
+            String urlDesactive = String.format(URL_CONSTANTS_TEST.ComboDesactive + "/?id=" + entity.id,
                     port);
 
-            HttpEntity<LancheDto> responseurl = new HttpEntity<>(null, null);
+            HttpEntity<ComboDto> responseurl = new HttpEntity<>(null, null);
             ResponseEntity<String> responseDesactive = restTemplate.exchange(new URL(urlDesactive).toString(),
                     HttpMethod.DELETE, responseurl, String.class);
 
@@ -327,10 +322,10 @@ public class LancheTest {
 
         private void FIND() throws MalformedURLException {
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
 
-            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    LancheDto.class);
+            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+                    ComboDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(entity.nome, responseFind.getBody().nome);
@@ -338,17 +333,17 @@ public class LancheTest {
 
         private void LIST() throws MalformedURLException {
             // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+            String urlList = String.format(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
 
-            ResponseEntity<LancheUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
-                    LancheUtilsPageMock.class);
+            ResponseEntity<ComboUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+                    ComboUtilsPageMock.class);
 
             page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());
             assertTrue(page.totalElements > 0);
             assertEquals(1, page.totalPages);
 
-            entity = Mapper.map(page.content.get(0), LancheDto.class);
+            entity = Mapper.map(page.content.get(0), ComboDto.class);
         }
 
     }

@@ -109,7 +109,7 @@ public class ClienteController extends AbstractBaseController {
     public ResponseEntity<Object> save(@RequestBody() @Valid ClienteDto entityDto) {
 
         Cliente entity = this._service.save(Mapper.map(entityDto));
-
+        
         return ResponseEntity.ok(Mapper.map(entity));
     }
 

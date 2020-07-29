@@ -1,7 +1,6 @@
 package com.lanchonete.apllication.dto.lanche;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 

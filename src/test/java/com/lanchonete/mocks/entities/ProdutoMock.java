@@ -8,23 +8,23 @@ import com.lanchonete.domain.entities.produto.entities.Produto;
 
 public class ProdutoMock {
     
-    public static ProdutoDto dto() {
+    public static ProdutoDto dto(String nome) {
             ProdutoDto clienteDtoMock = ProdutoDto.builder()
                                 .categoria(null)
                                 .custo("10.1")
                                 .valor("10.1")
                                 .id(0)
-                                .nome("Teste" + LocalDateTime.now().toString())
+                                .nome(nome)
                                 .build();
                                     return clienteDtoMock;
     }
 
-    public static Produto by() {
+    public static Produto by(String nome) {
         Produto clienteDtoMock = new Produto();
 
                 clienteDtoMock.setCusto(new BigDecimal("10.1"));
                 clienteDtoMock.setValor(new BigDecimal("10.1"));
-                clienteDtoMock.setNome("Teste" + LocalDateTime.now().toString());
+                clienteDtoMock.setNome(nome);
                 clienteDtoMock.setCategoria(null);
                                 return clienteDtoMock;
     }

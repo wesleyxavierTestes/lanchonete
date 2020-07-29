@@ -1,25 +1,23 @@
 package com.lanchonete.mocks.entities;
 
-import java.time.LocalDateTime;
-
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.domain.entities.categoria.Categoria;
 
 
 public class CategoriaMock {
 
-    public static CategoriaDto dto() {
+    public static CategoriaDto dto(String nome) {
 
         CategoriaDto clienteDtoMock = CategoriaDto.builder()
-            .nome("Nova" + LocalDateTime.now().toString())
+            .nome(nome)
         .build();
 
         return clienteDtoMock;
     }
 
-    public static Categoria by() {
+    public static Categoria by(String nome) {
         Categoria clienteDtoMock = new Categoria();
-        clienteDtoMock.setNome("Nova" + LocalDateTime.now().toString());
+        clienteDtoMock.setNome(nome);
         return clienteDtoMock;
     }
 }

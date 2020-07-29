@@ -15,14 +15,13 @@ import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.mocks.entities.ClienteMock;
 import com.lanchonete.mocks.pages.ClienteUtilsPageMock;
+import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 import com.lanchonete.apllication.validations.CustomErro;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -49,18 +48,18 @@ public class ClienteTest {
     @DisplayName("Deve converter uma ClienteDto para Cliente incluindo Endereco")
     public void converterClientDto() throws Exception {
 
-        Cliente cliente = Mapper.map(ClienteMock.dto());
+        Cliente cliente = Mapper.map(ClienteMock.dto("converterClientDto"));
 
-        assertEquals(ClienteMock.dto().nome, cliente.getNome());
+        assertEquals("converterClientDto", cliente.getNome());
     }
 
     @Test
     @DisplayName("Deve converter uma Cliente para ClienteDto incluindo Endereco")
     public void converterDtoClient() throws Exception {
 
-        ClienteDto cliente = Mapper.map(ClienteMock.by());
+        ClienteDto cliente = Mapper.map(ClienteMock.by("converterDtoClient"));
 
-        assertEquals(ClienteMock.by().getNome(), cliente.nome);
+        assertEquals("converterDtoClient", cliente.nome);
     }
 
     @Nested
@@ -115,7 +114,7 @@ public class ClienteTest {
 
             String url = String.format(URL_CONSTANTS_TEST.ClienteUpdate, port);
 
-            ClienteDto entity = ClienteMock.dto();
+            ClienteDto entity = ClienteMock.dto("ClienteTest: update");
             entity.id = 0;
 
             HttpEntity<ClienteDto> requestUpdate = new HttpEntity<>(entity, null);
@@ -141,14 +140,12 @@ public class ClienteTest {
     @Nested
     @DisplayName(value = "Testes de integração clientes")
     class ClienteValid {
-
-        private ClienteUtilsPageMock page;
         private ClienteDto entity;
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() throws Exception {
-            SAVE();
+            entity = CLIENTE("ClienteTest: Cliente Save_ok");
             LIST();
             FIND();
             DESACTIVE();
@@ -160,7 +157,7 @@ public class ClienteTest {
         private void ACTIVE() throws MalformedURLException {
             // ACTIVE
             HttpEntity<ClienteDto> responseurl = new HttpEntity<>(null, null);
-            String urlActive = String.format(URL_CONSTANTS_TEST.ClienteActive + "/?id=" + page.content.get(0).id, port);
+            String urlActive = String.format(URL_CONSTANTS_TEST.ClienteActive + "/?id=" + entity.id, port);
 
             ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
                     HttpMethod.DELETE, responseurl, String.class);
@@ -171,7 +168,7 @@ public class ClienteTest {
         private void FIND_DESACTIVE() throws MalformedURLException {
             ResponseEntity<ClienteDto> responseFind;
             // FIND DESACTIVE
-            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + entity.id, port);
             responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ClienteDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
@@ -179,7 +176,7 @@ public class ClienteTest {
         }
 
         private void FIND_ACTIVE() throws MalformedURLException {
-            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + entity.id, port);
             
             // FIND DESACTIVE
             ResponseEntity<ClienteDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ClienteDto.class);
@@ -190,7 +187,7 @@ public class ClienteTest {
 
         private void DESACTIVE() throws MalformedURLException {
             // DESACTIVE
-            String urlDesactive = String.format(URL_CONSTANTS_TEST.ClienteDesactive + "/?id=" + page.content.get(0).id,
+            String urlDesactive = String.format(URL_CONSTANTS_TEST.ClienteDesactive + "/?id=" + entity.id,
                     port);
 
             HttpEntity<ClienteDto> responseurl = new HttpEntity<>(null, null);
@@ -202,7 +199,7 @@ public class ClienteTest {
 
         private void FIND() throws MalformedURLException {
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + page.content.get(0).id, port);
+            String urlFind = String.format(URL_CONSTANTS_TEST.ClienteFind + "/?id=" + entity.id, port);
 
             ResponseEntity<ClienteDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
                     ClienteDto.class);
@@ -218,16 +215,18 @@ public class ClienteTest {
             ResponseEntity<ClienteUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
                     ClienteUtilsPageMock.class);
 
-            page = responselist.getBody();
+            ClienteUtilsPageMock page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());
             assertTrue(page.totalElements > 0);
             assertEquals(1, page.totalPages);
+
+            entity = Mapper.map(page.content.get(0), ClienteDto.class);
         }
 
-        private void SAVE() throws MalformedURLException {
+        private ClienteDto CLIENTE(String nome) throws MalformedURLException {
             // SAVE
             String urlSave = String.format(URL_CONSTANTS_TEST.ClienteSave, port);
-            entity = ClienteMock.dto();
+            entity = ClienteMock.dto("ClienteTest: Salvar_ok");
 
             HttpEntity<ClienteDto> requestSave = new HttpEntity<>(entity, null);
             ResponseEntity<ClienteDto> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
@@ -235,6 +234,13 @@ public class ClienteTest {
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
+
+            String json = ObjectMapperUtils.toJson(response.getBody());
+            ClienteDto clienteSave = ObjectMapperUtils.jsonTo(json, ClienteDto.class);
+
+            assertNotNull(clienteSave.id);
+
+            return clienteSave;
         }
     }
 }

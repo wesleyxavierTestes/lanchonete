@@ -2,6 +2,7 @@ package com.lanchonete.domain.services;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -39,9 +40,10 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
     @Override
     public T find(long id) {
-        T entity = _repository.findById(id).map(mapper -> mapper)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-        return entity;
+        Optional<T> entity = _repository.findById(id);
+        if (!entity.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return entity.get();
     }
 
     @Transactional
