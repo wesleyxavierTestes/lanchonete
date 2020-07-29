@@ -46,7 +46,7 @@ public class CategoriaController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/filter")
+    @PostMapping("list/filter")
     public ResponseEntity<Page<CategoriaListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody CategoriaDto filter) {

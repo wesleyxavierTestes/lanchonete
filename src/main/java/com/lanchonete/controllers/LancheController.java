@@ -53,7 +53,7 @@ public class LancheController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/filter")
+    @PostMapping("list/filter")
     public ResponseEntity<Page<LancheListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody LancheDto filter) {

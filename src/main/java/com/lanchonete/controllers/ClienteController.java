@@ -66,7 +66,7 @@ public class ClienteController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/filter")
+    @PostMapping("list/filter")
     public ResponseEntity<Page<ClienteListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody ClienteDto filter) {
