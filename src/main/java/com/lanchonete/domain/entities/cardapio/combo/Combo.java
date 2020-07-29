@@ -1,5 +1,9 @@
 package com.lanchonete.domain.entities.cardapio.combo;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -28,7 +32,15 @@ public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCa
     @OneToOne
     private ComboBebida bebida;
 
+    @Column(nullable = false)
+    private BigDecimal valorTotal;
+
+    private String observacao;
+
     public void calcularValor() {
+        if (!Objects.nonNull(this.getValor()))
+            this.setValor(BigDecimal.ZERO);
+
         this.setValor(this.lanche.getValorTotal().add(this.bebida.getValor()));
     }
 }

@@ -1,8 +1,23 @@
 package com.lanchonete.utils;
 
+import java.net.MalformedURLException;
+
+import java.net.URL;
+import org.springframework.web.client.RestClientException;
+
 public final class URL_CONSTANTS_TEST {
 
     private URL_CONSTANTS_TEST() {
+    }
+
+    public static String getUrl(String url, int port) {
+        String urlnew = "";
+        try {
+            urlnew = new URL(String.format(url, port)).toString();
+        } catch (RestClientException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return urlnew;
     }
 
     public final static String ClienteList = "http://localhost:%s/api/cliente/list";

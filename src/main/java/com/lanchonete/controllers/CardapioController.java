@@ -47,7 +47,7 @@ public class CardapioController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/name")
+    @GetMapping("list/filter")
     public ResponseEntity<Page<CardapioListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody CardapioDto filter) {

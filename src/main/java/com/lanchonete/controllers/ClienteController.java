@@ -1,7 +1,5 @@
 package com.lanchonete.controllers;
 
-import java.util.Objects;
-
 import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
@@ -68,7 +66,7 @@ public class ClienteController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/name")
+    @GetMapping("list/filter")
     public ResponseEntity<Page<ClienteListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody ClienteDto filter) {
@@ -98,9 +96,8 @@ public class ClienteController extends AbstractBaseController {
 
     @GetMapping("find/default")
     public ResponseEntity<Object> findefault() {
+        
         Cliente entity = this._service.findDefault();
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -117,8 +114,6 @@ public class ClienteController extends AbstractBaseController {
     public ResponseEntity<Object> update(@RequestBody() @Valid ClienteDto entityDto) {
 
         Cliente entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         this._service.update(Mapper.map(entityDto, entity));
 

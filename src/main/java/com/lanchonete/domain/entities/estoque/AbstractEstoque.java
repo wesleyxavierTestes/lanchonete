@@ -1,8 +1,5 @@
 package com.lanchonete.domain.entities.estoque;
 
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

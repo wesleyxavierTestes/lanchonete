@@ -12,7 +12,6 @@ import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
-import com.lanchonete.apllication.dto.combo.ComboBebida;
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
@@ -31,7 +30,6 @@ import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.pedido.Pedido;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.entities.venda.Venda;
@@ -47,12 +45,7 @@ public final class Mapper {
     }
 
     public static <T, Y> Function<T, Y> pageMap(final Class<Y> ref) {
-        final Function<T, Y> converter = new Function<T, Y>() {
-            @Override
-            public Y apply(final T entity) {
-                return Mapper.map(entity, ref);
-            }
-        };
+        final Function<T, Y> converter = entity -> Mapper.map(entity, ref);
         return converter;
     }
 

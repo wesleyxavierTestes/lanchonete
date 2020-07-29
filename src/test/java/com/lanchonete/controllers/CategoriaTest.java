@@ -5,16 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.services.categoria.CategoriaService;
-import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.pages.CategoriaUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -33,7 +29,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class CategoriaTest {
@@ -61,9 +56,9 @@ public class CategoriaTest {
         @Test
         @DisplayName("Deve listar todos categorias com lista vazia")
         public void listar() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.CategoriaList + "/?page=1", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaList + "/?page=1", port);
 
-            ResponseEntity<CategoriaUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
+            ResponseEntity<CategoriaUtilsPageMock> response = restTemplate.getForEntity(url,
                     CategoriaUtilsPageMock.class);
             CategoriaUtilsPageMock page = response.getBody();
 
@@ -75,9 +70,9 @@ public class CategoriaTest {
         @Test
         @DisplayName("Deve buscar um categoria")
         public void find_inexistente() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.CategoriaFind + "/?id=100000", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaFind + "/?id=100000", port);
 
-            ResponseEntity<String> response = restTemplate.getForEntity(new URL(url).toString(), String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
@@ -85,12 +80,12 @@ public class CategoriaTest {
         @Test
         @DisplayName("Deve tentar salvar categoria invalido")
         public void save_invalid_test() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
 
             CategoriaDto entity = new CategoriaDto();
             HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
+            ResponseEntity<CustomErro[]> response = restTemplate.exchange(url, HttpMethod.POST,
                     requestUpdate, CustomErro[].class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -103,13 +98,13 @@ public class CategoriaTest {
         @DisplayName("Deve tentar alterar categoria inexistente")
         public void update(String parametro) throws Exception {
 
-            String url = String.format(URL_CONSTANTS_TEST.CategoriaUpdate, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaUpdate, port);
 
             CategoriaDto entity = CategoriaDto.builder().id(0).nome(parametro).build();
 
             HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT,
                     requestUpdate, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -119,9 +114,9 @@ public class CategoriaTest {
         @Test
         @DisplayName("Deve tentar excluir categoria inexistente")
         public void delete() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=100000", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=100000", port);
             HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE,
                     requestUpdate, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -132,64 +127,95 @@ public class CategoriaTest {
     @Nested
     @DisplayName(value = "Testes de integração categorias")
     class CategoriaValid {
+        CategoriaDto entity;
 
         @ParameterizedTest
         @ValueSource(strings = { "bebida", "alimentacao" })
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok(String parametro) throws Exception {
-            // SAVE
-            String urlSave = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
-            CategoriaDto entity = CategoriaDto.builder().id(0).nome(parametro).build();
+            entity = SAVE(parametro);
 
-            HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(entity, null);
-            ResponseEntity<CategoriaDto> response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
-                    requestSave, CategoriaDto.class);
+            CategoriaUtilsPageMock page = LIST();
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
+            String nomeUpdate = UPDATE(page);
 
-            // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.CategoriaList + "/?page=1", port);
+            FIND(page, nomeUpdate);
 
-            ResponseEntity<CategoriaUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
-                    CategoriaUtilsPageMock.class);
+            DELETE(page);
+        }
 
-            CategoriaUtilsPageMock page = responselist.getBody();
-            assertEquals(HttpStatus.OK, responselist.getStatusCode());
-            assertTrue(page.totalElements > 0);
-            assertEquals(1, page.totalPages);
+        private void DELETE(CategoriaUtilsPageMock page) {
+            // DELETE
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=" + page.content.get(0).id,
+                    port);
 
+            HttpEntity<CategoriaDto> responseurl = new HttpEntity<>(null, null);
+            ResponseEntity<String> responseDelete = restTemplate.exchange(url,
+                    HttpMethod.DELETE, responseurl, String.class);
+
+            assertEquals(HttpStatus.OK, responseDelete.getStatusCode());
+        }
+
+        private void FIND(CategoriaUtilsPageMock page, String nomeUpdate) {
+            // FIND
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaFind + "/?id=" + page.content.get(0).id, port);
+
+            ResponseEntity<CategoriaDto> responseFind = restTemplate.getForEntity(url,
+                    CategoriaDto.class);
+
+            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+            assertEquals(nomeUpdate, responseFind.getBody().nome);
+        }
+
+        private String UPDATE(CategoriaUtilsPageMock page) throws MalformedURLException {
             // UPDATE
-            String urlUpdate = String.format(URL_CONSTANTS_TEST.CategoriaUpdate, port);
+            
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaUpdate, port);
 
             String nomeUpdate = page.content.get(0).nome + "teste";
             entity = CategoriaDto.builder().id(page.content.get(0).id).nome(nomeUpdate).build();
 
             HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CategoriaDto> responseUpdate = restTemplate.exchange(new URL(urlUpdate).toString(),
+            ResponseEntity<CategoriaDto> responseUpdate = restTemplate.exchange(url,
                     HttpMethod.PUT, requestUpdate, CategoriaDto.class);
 
             assertEquals(HttpStatus.OK, responseUpdate.getStatusCode());
+            return nomeUpdate;
+        }
 
-            // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.CategoriaFind + "/?id=" + page.content.get(0).id, port);
+        private CategoriaUtilsPageMock LIST() {
+            // LIST
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaList + "/?page=1", port);
 
-            ResponseEntity<CategoriaDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    CategoriaDto.class);
+            ResponseEntity<CategoriaUtilsPageMock> responselist = restTemplate.getForEntity(url,
+                    CategoriaUtilsPageMock.class);
 
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-            assertEquals(nomeUpdate, responseFind.getBody().nome);
+            CategoriaUtilsPageMock page = responselist.getBody();
+            assertEquals(HttpStatus.OK, responselist.getStatusCode());
+            assertTrue(page.totalElements > 0);
+            assertEquals(1, page.totalPages);
+            return page;
+        }
 
-            // DELETE
-            String urlDelete = String.format(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=" + page.content.get(0).id,
-                    port);
+        private CategoriaDto SAVE(String parametro) {
+            // SAVE
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
+            CategoriaDto entity = CategoriaDto.builder().id(0).nome(parametro).build();
 
-            HttpEntity<CategoriaDto> responseurlDelete = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseDelete = restTemplate.exchange(new URL(urlDelete).toString(),
-                    HttpMethod.DELETE, responseurlDelete, String.class);
+            HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(entity, null);
+            ResponseEntity<CategoriaDto> response = restTemplate.exchange(url, HttpMethod.POST,
+                    requestSave, CategoriaDto.class);
 
-            assertEquals(HttpStatus.OK, responseDelete.getStatusCode());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+
+            String json = ObjectMapperUtils.toJson(response.getBody());
+            CategoriaDto categoriaSave = ObjectMapperUtils.jsonTo(json, CategoriaDto.class);
+
+            assertNotNull(categoriaSave.id);
+
+            return categoriaSave;
         }
     }
 

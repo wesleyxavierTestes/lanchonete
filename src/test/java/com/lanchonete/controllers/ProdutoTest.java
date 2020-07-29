@@ -3,28 +3,20 @@ package com.lanchonete.controllers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
-import javax.print.DocFlavor.STRING;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
-import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
-import com.lanchonete.infra.repositorys.categoria.ICategoriaRepository;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.ProdutoUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -50,11 +42,8 @@ public class ProdutoTest {
     @Autowired
     protected ProdutoService _service;
 
-    @Autowired
-    private ICategoriaRepository _serviceRepository;
-
     @Test
-    public void converter() throws Exception {
+    public void converter()  {
         Produto produto = new Produto();
         produto.setNome("Marcelo");
         Ingrediente i = Mapper.map(produto, Ingrediente.class);
@@ -67,10 +56,10 @@ public class ProdutoTest {
     class ProdutoInvalid {
         @Test
         @DisplayName("Deve listar todos clientes com lista vazia")
-        public void listar() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
+        public void listar()  {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
 
-            ResponseEntity<ProdutoUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
+            ResponseEntity<ProdutoUtilsPageMock> response = restTemplate.getForEntity(url,
                     ProdutoUtilsPageMock.class);
             ProdutoUtilsPageMock page = response.getBody();
 
@@ -81,24 +70,24 @@ public class ProdutoTest {
 
         @Test
         @DisplayName("Deve buscar um cliente")
-        public void find_inexistente() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=100000", port);
+        public void find_inexistente()  {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoFind + "/?id=100000", port);
 
-            ResponseEntity<String> response = restTemplate.getForEntity(new URL(url).toString(), String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
 
         @Test
         @DisplayName("Deve tentar salvar cliente invalido")
-        public void save_invalid_test() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
+        public void save_invalid_test()  {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);
 
             ProdutoDto entity = new ProdutoDto();
             entity.nome = "teste1";
             HttpEntity<ProdutoDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
+            ResponseEntity<CustomErro[]> response = restTemplate.exchange(url, HttpMethod.POST,
                     requestUpdate, CustomErro[].class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -108,9 +97,9 @@ public class ProdutoTest {
 
         @Test
         @DisplayName("Deve tentar alterar cliente inexistente")
-        public void update() throws Exception {
+        public void update()  {
 
-            String url = String.format(URL_CONSTANTS_TEST.ProdutoUpdate, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoUpdate, port);
 
             ProdutoDto entity = ProdutoMock.dto("ProdutoTest: Produto Update_error");
             entity.categoria = CategoriaMock.dto("ProdutoTest: Produto Update_error");
@@ -118,7 +107,7 @@ public class ProdutoTest {
 
             HttpEntity<ProdutoDto> requestUpdate = new HttpEntity<>(entity, null);
 
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.PUT,
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT,
                     requestUpdate, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -133,7 +122,7 @@ public class ProdutoTest {
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
-        public void save_ok() throws Exception {
+        public void save_ok()  {
             CategoriaDto categoria = CATEGORIA("ProdutoTest: Categoria Save_ok");
             PRODUTO("ProdutoTest: Produto Save_ok", categoria);
             LIST();
@@ -144,69 +133,69 @@ public class ProdutoTest {
             FIND_ACTIVE();
         }
 
-        private void FIND_ACTIVE() throws MalformedURLException {
+        private void FIND_ACTIVE() {
             // FIND ACTIVE
 
-            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
-            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(url,
                     ProdutoDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND ACTIVE expect Error");
             assertEquals(true, responseFind.getBody().ativo);
         }
 
-        private void ACTIVE() throws MalformedURLException {
+        private void ACTIVE() {
             // ACTIVE
-            String urlActive = String.format(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoActive + "/?id=" + entity.id, port);
 
             HttpEntity<ProdutoDto> responseurl = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
+            ResponseEntity<String> responseActive = restTemplate.exchange(url,
                     HttpMethod.DELETE, responseurl, String.class);
 
             assertEquals(HttpStatus.OK, responseActive.getStatusCode(), "ACTIVE expect Error");
         }
 
-        private String FIND_DESACTIVE() throws MalformedURLException {
+        private String FIND_DESACTIVE() {
             // FIND DESACTIVE
 
-            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
 
-            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(url,
                     ProdutoDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND DESACTIVE expect Error");
             assertEquals(false, responseFind.getBody().ativo);
-            return urlFind;
+            return url;
         }
 
-        private void DESACTIVE() throws MalformedURLException {
+        private void DESACTIVE() {
             // DESACTIVE
-            String urlDesactive = String.format(URL_CONSTANTS_TEST.ProdutoDesactive + "/?id=" + entity.id,
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoDesactive + "/?id=" + entity.id,
                     port);
 
             HttpEntity<ProdutoDto> responseurl = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseDesactive = restTemplate.exchange(new URL(urlDesactive).toString(),
+            ResponseEntity<String> responseDesactive = restTemplate.exchange(url,
                     HttpMethod.DELETE, responseurl, String.class);
 
             assertEquals(HttpStatus.OK, responseDesactive.getStatusCode(), "DESACTIVE expect Error");
         }
 
-        private void FIND() throws MalformedURLException {
+        private void FIND() {
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoFind + "/?id=" + entity.id, port);
 
-            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
+            ResponseEntity<ProdutoDto> responseFind = restTemplate.getForEntity(url,
                     ProdutoDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode(), "FIND expect Error");
             assertEquals(entity.nome, responseFind.getBody().nome);
         }
 
-        private void LIST() throws MalformedURLException {
+        private void LIST() {
             // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
 
-            ResponseEntity<ProdutoUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+            ResponseEntity<ProdutoUtilsPageMock> responselist = restTemplate.getForEntity(url,
                     ProdutoUtilsPageMock.class);
 
             page = responselist.getBody();
@@ -217,14 +206,14 @@ public class ProdutoTest {
             entity = Mapper.map(page.content.get(0), ProdutoDto.class);
         }
 
-        private ProdutoDto PRODUTO(String nome, CategoriaDto categoria) throws MalformedURLException, JsonMappingException, JsonProcessingException {
+        private ProdutoDto PRODUTO(String nome, CategoriaDto categoria) {
             // SAVE
-            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);
             ProdutoDto entity = ProdutoMock.dto(nome);
             entity.categoria = categoria;
 
             HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(entity, null);
-            ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(), 
+            ResponseEntity<Object> response = restTemplate.exchange(url, 
                     HttpMethod.POST,
                     requestSave, Object.class);
 
@@ -239,13 +228,13 @@ public class ProdutoTest {
             return entity;
         }
 
-        private CategoriaDto CATEGORIA(String nome) throws MalformedURLException {
+        private CategoriaDto CATEGORIA(String nome) {
             CategoriaDto categoria = CategoriaMock.dto(nome);
 
-            String urlSave = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
                
             HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
-            ResponseEntity<Object> response = restTemplate.exchange(new URL(urlSave).toString(),
+            ResponseEntity<Object> response = restTemplate.exchange(url,
                     HttpMethod.POST, requestSave, Object.class);
 
             assertNotNull(response.getBody());

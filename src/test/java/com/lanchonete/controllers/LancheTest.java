@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +18,7 @@ import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
-import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.services.lanche.LancheService;
-import com.lanchonete.infra.repositorys.estoque.IEstoqueRepository;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
@@ -31,7 +26,7 @@ import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.LancheUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
-import com.lanchonete.utils.UrlConstants;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,7 +39,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class LancheTest {
@@ -58,12 +52,9 @@ public class LancheTest {
     @Autowired
     protected LancheService _service;
 
-    @Autowired
-    private IEstoqueRepository _estoqueRepository;
-
     @Test
     @DisplayName("Deve converter uma LancheDto para Lanche incluindo Endereco")
-    public void converterClientDto() throws Exception {
+    public void converterClientDto() {
 
         Lanche lanche = Mapper.map(new LancheDto());
         assertNotNull(lanche);
@@ -74,11 +65,10 @@ public class LancheTest {
     class LancheInvalid {
         @Test
         @DisplayName("Deve listar todos lanches com lista vazia")
-        public void listar() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+        public void listar() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
 
-            ResponseEntity<LancheUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
-                    LancheUtilsPageMock.class);
+            ResponseEntity<LancheUtilsPageMock> response = restTemplate.getForEntity(url, LancheUtilsPageMock.class);
             LancheUtilsPageMock page = response.getBody();
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -88,24 +78,24 @@ public class LancheTest {
 
         @Test
         @DisplayName("Deve buscar um lanche")
-        public void find_inexistente() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=100000", port);
+        public void find_inexistente() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheFind + "/?id=100000", port);
 
-            ResponseEntity<String> response = restTemplate.getForEntity(new URL(url).toString(), String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
 
         @Test
         @DisplayName("Deve tentar salvar lanche invalido")
-        public void save_invalid_test() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheSave, port);
+        public void save_invalid_test() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheSave, port);
 
             LancheDto entity = new LancheDto();
             HttpEntity<LancheDto> requestSave = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
-                    requestSave, CustomErro[].class);
+            ResponseEntity<CustomErro[]> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
+                    CustomErro[].class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -114,11 +104,11 @@ public class LancheTest {
 
         @Test
         @DisplayName("Deve tentar alterar lanche inexistente")
-        public void active() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheActive + "/?id=100000", port);
+        public void active() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheActive + "/?id=100000", port);
             HttpEntity<LancheDto> requestActive = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
-                    requestActive, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestActive,
+                    String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -126,11 +116,11 @@ public class LancheTest {
 
         @Test
         @DisplayName("Deve tentar excluir lanche inexistente")
-        public void desactive() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.LancheDesactive + "/?id=100000", port);
+        public void desactive() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheDesactive + "/?id=100000", port);
             HttpEntity<LancheDto> requestDesactive = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
-                    requestDesactive, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestDesactive,
+                    String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -145,7 +135,7 @@ public class LancheTest {
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
-        public void save_ok() throws Exception {
+        public void save_ok() {
             CategoriaDto categoria1 = CATEGORIA("LancheTest: Categoria1 Save_ok");
             CategoriaDto categoria2 = CATEGORIA("LancheTest: Categoria2 Save_ok");
             ProdutoDto produto1 = PRODUTO("LancheTest: Produto1 Save_ok", categoria1);
@@ -153,12 +143,11 @@ public class LancheTest {
             ESTOQUE(produto1);
             ESTOQUE(produto2);
 
-            IngredienteDto ingrediente1 = Mapper.map(produto1, IngredienteDto.class);
-            IngredienteDto ingrediente2 = Mapper.map(produto2, IngredienteDto.class);
+            List<IngredienteDto> ingredientes = new ArrayList<>();
+            ingredientes.add(Mapper.map(produto1, IngredienteDto.class));
+            ingredientes.add(Mapper.map(produto2, IngredienteDto.class));
 
-            entity = LANCHE("LancheTest: Lanche Save_ok", categoria1, new ArrayList() {{
-                add(ingrediente1);  add(ingrediente2); 
-            }});
+            entity = LANCHE("LancheTest: Lanche Save_ok", categoria1, ingredientes);
             LIST();
             FIND();
             DESACTIVE();
@@ -167,8 +156,7 @@ public class LancheTest {
             FIND_ACTIVE();
         }
 
-        private LancheDto LANCHE(String nome, CategoriaDto categorialanche, 
-        List<IngredienteDto> ingredientes) {
+        private LancheDto LANCHE(String nome, CategoriaDto categorialanche, List<IngredienteDto> ingredientes) {
             // SAVE
             LancheDto lanche = (LancheDto) LancheMock.dto(nome);
             lanche.categoria = categorialanche;
@@ -177,19 +165,13 @@ public class LancheTest {
             BigDecimal valorCalculo = BigDecimal.ZERO;
 
             for (IngredienteDto ingredienteDto : ingredientes)
-                valorCalculo =  new BigDecimal(ingredienteDto.valor).add(valorCalculo);
+                valorCalculo = new BigDecimal(ingredienteDto.valor).add(valorCalculo);
 
             lanche.valor = valorCalculo.toString();
 
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(new URL(String.format(URL_CONSTANTS_TEST.LancheSave, port)).toString(),
-                        HttpMethod.POST, new HttpEntity<>(lanche, null), Object.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheSave, port);
+            HttpEntity<LancheDto> httpEntity = new HttpEntity<>(lanche, null);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Object.class);
 
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -209,20 +191,13 @@ public class LancheTest {
             produto.categoria = categoria;
 
             HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
-            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST, requestSave,
-                        Object.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
+
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
             assertNotNull(response.getBody());
-                        
+
             String json = ObjectMapperUtils.toJson(response.getBody());
             ProdutoDto produtoSave = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
 
@@ -239,37 +214,22 @@ public class LancheTest {
 
             HttpEntity<EstoqueDto> requestSave = new HttpEntity<>(estoque, null);
 
-            String urlSave = String.format(URL_CONSTANTS_TEST.EstoqueSaveAdd, port);
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
-                        requestSave, Object.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.EstoqueSaveAdd, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
 
             assertNotNull(response);
             assertNotNull(response.getBody());
-            assertEquals(HttpStatus.OK, response.getStatusCode());            
+            assertEquals(HttpStatus.OK, response.getStatusCode());
         }
 
         private CategoriaDto CATEGORIA(String nome) {
             CategoriaDto categoria = CategoriaMock.dto(nome);
 
-            String urlSave = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
 
             HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
-            ResponseEntity<CategoriaDto> response = null;
-            try {
-                response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST, requestSave,
-                        CategoriaDto.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            ResponseEntity<CategoriaDto> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
+                    CategoriaDto.class);
 
             assertNotNull(response);
             assertNotNull(response.getBody());
@@ -281,66 +241,63 @@ public class LancheTest {
             return categoriaNew;
         }
 
-        private void ACTIVE() throws MalformedURLException {
+        private void ACTIVE() {
             // ACTIVE
             HttpEntity<LancheDto> responseurl = new HttpEntity<>(null, null);
-            String urlActive = String.format(URL_CONSTANTS_TEST.LancheActive + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheActive + "/?id=" + entity.id, port);
 
-            ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
-                    HttpMethod.DELETE, responseurl, String.class);
+            ResponseEntity<String> responseActive = restTemplate.exchange(url, HttpMethod.DELETE, responseurl,
+                    String.class);
 
             assertEquals(HttpStatus.OK, responseActive.getStatusCode());
         }
 
-        private void FIND_DESACTIVE() throws MalformedURLException {
+        private void FIND_DESACTIVE() {
             ResponseEntity<LancheDto> responseFind;
             // FIND DESACTIVE
-            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), LancheDto.class);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
+            responseFind = restTemplate.getForEntity(url, LancheDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(false, responseFind.getBody().ativo);
         }
 
-        private void FIND_ACTIVE() throws MalformedURLException {
-            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
+        private void FIND_ACTIVE() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
 
             // FIND DESACTIVE
-            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    LancheDto.class);
+            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(url, LancheDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(true, responseFind.getBody().ativo);
         }
 
-        private void DESACTIVE() throws MalformedURLException {
+        private void DESACTIVE() {
             // DESACTIVE
-            String urlDesactive = String.format(URL_CONSTANTS_TEST.LancheDesactive + "/?id=" + entity.id,
-                    port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheDesactive + "/?id=" + entity.id, port);
 
             HttpEntity<LancheDto> responseurl = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseDesactive = restTemplate.exchange(new URL(urlDesactive).toString(),
-                    HttpMethod.DELETE, responseurl, String.class);
+            ResponseEntity<String> responseDesactive = restTemplate.exchange(url, HttpMethod.DELETE, responseurl,
+                    String.class);
 
             assertEquals(HttpStatus.OK, responseDesactive.getStatusCode());
         }
 
-        private void FIND() throws MalformedURLException {
+        private void FIND() {
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheFind + "/?id=" + entity.id, port);
 
-            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    LancheDto.class);
+            ResponseEntity<LancheDto> responseFind = restTemplate.getForEntity(url, LancheDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(entity.nome, responseFind.getBody().nome);
         }
 
-        private void LIST() throws MalformedURLException {
+        private void LIST() {
             // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
 
-            ResponseEntity<LancheUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
+            ResponseEntity<LancheUtilsPageMock> responselist = restTemplate.getForEntity(url,
                     LancheUtilsPageMock.class);
 
             page = responselist.getBody();

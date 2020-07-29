@@ -1,8 +1,7 @@
 package com.lanchonete.apllication.dto.combo;
 
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
@@ -39,4 +38,8 @@ public class ComboDto  {
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public LancheDto lanche;
+
+    @Size(max = 200, message = MessageError.MAX_LIMITE)
+    private String observacao;
+
 }

@@ -34,24 +34,44 @@ public class ProdutoService extends BaseService<Produto> {
         return null;
     }
 
-    public Page<ProdutoListDto>  listFilterDto(Produto entity, int page) {
-        return super. listFilter(entity, page).map(Mapper.pageMap(ProdutoListDto.class));
+    public Page<ProdutoListDto> listFilterDto(Produto entity, int page) {
+        return super.listFilter(entity, page).map(c -> {
+            double count = this._repository.countEstoqueById(c.getId());
+            c.setEstoqueAtual(count);
+            return c;
+        }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ProdutoListDto.class));
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(c -> {
+            double count = this._repository.countEstoqueById(c.getId());
+            c.setEstoqueAtual(count);
+            return c;
+        }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listActiveDto(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ProdutoListDto.class));
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(c -> {
+            double count = this._repository.countEstoqueById(c.getId());
+            c.setEstoqueAtual(count);
+            return c;
+        }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDesactiveDto(int page) {
-        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ProdutoListDto.class));
+        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(c -> {
+            double count = this._repository.countEstoqueById(c.getId());
+            c.setEstoqueAtual(count);
+            return c;
+        }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoqueZero(int page) {
-        return _repository.listEstoque(0, 1, PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ProdutoListDto.class));
+        return _repository.listEstoque(0, 1, PageRequest.of((page - 1), 10)).map(c -> {
+            double count = this._repository.countEstoqueById(c.getId());
+            c.setEstoqueAtual(count);
+            return c;
+        }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoque(int page) {

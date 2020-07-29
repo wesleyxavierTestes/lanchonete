@@ -53,7 +53,7 @@ public class LancheController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/name")
+    @GetMapping("list/filter")
     public ResponseEntity<Page<LancheListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody LancheDto filter) {
@@ -95,10 +95,11 @@ public class LancheController extends AbstractBaseController {
         if (!Objects.nonNull(categoria))
             return ResponseEntity.badRequest().body("Categoria" + MessageError.IS_MANDATORY);
 
-            Lanche entity = Mapper.map(entityDto);
+        Lanche entity = Mapper.map(entityDto);
         
-        entity.setCodigo(UUID.randomUUID());
-        entity.setCategoria(categoria);
+        this._service.criarLanche(entity, categoria);
+
+        // fabrica lanche
 
         this._service.save(entity);
 

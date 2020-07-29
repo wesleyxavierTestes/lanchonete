@@ -56,10 +56,9 @@ public class ComboTest {
     @Autowired
     protected ComboService _service;
 
-
     @Test
     @DisplayName("Deve converter uma ComboDto para Combo incluindo Endereco")
-    public void converterClientDto() throws Exception {
+    public void converterClientDto() {
 
         Combo combo = Mapper.map(new ComboDto());
         assertNotNull(combo);
@@ -70,11 +69,10 @@ public class ComboTest {
     class ComboInvalid {
         @Test
         @DisplayName("Deve listar todos combos com lista vazia")
-        public void listar() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
+        public void listar() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
 
-            ResponseEntity<ComboUtilsPageMock> response = restTemplate.getForEntity(new URL(url).toString(),
-                    ComboUtilsPageMock.class);
+            ResponseEntity<ComboUtilsPageMock> response = restTemplate.getForEntity(url, ComboUtilsPageMock.class);
             ComboUtilsPageMock page = response.getBody();
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -84,24 +82,24 @@ public class ComboTest {
 
         @Test
         @DisplayName("Deve buscar um combo")
-        public void find_inexistente() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=100000", port);
+        public void find_inexistente() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=100000", port);
 
-            ResponseEntity<String> response = restTemplate.getForEntity(new URL(url).toString(), String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         }
 
         @Test
         @DisplayName("Deve tentar salvar combo invalido")
-        public void save_invalid_test() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ComboSave, port);
+        public void save_invalid_test() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
 
             ComboDto entity = new ComboDto();
             HttpEntity<ComboDto> requestSave = new HttpEntity<>(entity, null);
 
-            ResponseEntity<CustomErro[]> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.POST,
-                    requestSave, CustomErro[].class);
+            ResponseEntity<CustomErro[]> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
+                    CustomErro[].class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -110,11 +108,11 @@ public class ComboTest {
 
         @Test
         @DisplayName("Deve tentar alterar combo inexistente")
-        public void active() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ComboActive + "/?id=100000", port);
+        public void active() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboActive + "/?id=100000", port);
             HttpEntity<ComboDto> requestActive = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
-                    requestActive, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestActive,
+                    String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -122,11 +120,11 @@ public class ComboTest {
 
         @Test
         @DisplayName("Deve tentar excluir combo inexistente")
-        public void desactive() throws Exception {
-            String url = String.format(URL_CONSTANTS_TEST.ComboDesactive + "/?id=100000", port);
+        public void desactive() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboDesactive + "/?id=100000", port);
             HttpEntity<ComboDto> requestDesactive = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(new URL(url).toString(), HttpMethod.DELETE,
-                    requestDesactive, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestDesactive,
+                    String.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -141,20 +139,19 @@ public class ComboTest {
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
-        public void save_ok() throws Exception {
+        public void save_ok() {
             CategoriaDto categoria1 = CATEGORIA("ComboTest: Categoria Save_ok");
             ProdutoDto produto1 = PRODUTO("ComboTest: Produto1 Save_ok", categoria1);
             ProdutoDto produto2 = PRODUTO("ComboTest: Produto2 Save_ok", categoria1);
             ESTOQUE(produto1);
 
-            IngredienteDto ingrediente1 = Mapper.map(produto1, IngredienteDto.class);
-            IngredienteDto ingrediente2 = Mapper.map(produto2, IngredienteDto.class);
+            List<IngredienteDto> ingredientes = new ArrayList<>();
+            ingredientes.add(Mapper.map(produto1, IngredienteDto.class));
+            ingredientes.add(Mapper.map(produto2, IngredienteDto.class));
 
-            LancheDto lanche1 = LANCHE("ComboTest: Lanche Save_ok", categoria1, new ArrayList() {{
-                add(ingrediente1);  add(ingrediente2); 
-            }});
+            LancheDto lanche1 = LANCHE("ComboTest: Lanche Save_ok", categoria1, ingredientes);
 
-            //COMBO();
+            // COMBO();
             // LIST();
             // FIND();
             // DESACTIVE();
@@ -163,8 +160,7 @@ public class ComboTest {
             // FIND_ACTIVE();
         }
 
-        private LancheDto LANCHE(String nome, CategoriaDto categorialanche, 
-        List<IngredienteDto> ingredientes) {
+        private LancheDto LANCHE(String nome, CategoriaDto categorialanche, List<IngredienteDto> ingredientes) {
             // SAVE
             LancheDto lanche = (LancheDto) LancheMock.dto(nome);
             lanche.categoria = categorialanche;
@@ -173,19 +169,13 @@ public class ComboTest {
             BigDecimal valorCalculo = BigDecimal.ZERO;
 
             for (IngredienteDto ingredienteDto : ingredientes)
-                valorCalculo =  new BigDecimal(ingredienteDto.valor).add(valorCalculo);
+                valorCalculo = new BigDecimal(ingredienteDto.valor).add(valorCalculo);
 
             lanche.valor = valorCalculo.toString();
 
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(new URL(String.format(URL_CONSTANTS_TEST.LancheSave, port)).toString(),
-                        HttpMethod.POST, new HttpEntity<>(lanche, null), Object.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheSave, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST,
+                    new HttpEntity<>(lanche, null), Object.class);
 
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -205,20 +195,13 @@ public class ComboTest {
             produto.categoria = categoria;
 
             HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
-            String urlSave = String.format(URL_CONSTANTS_TEST.ProdutoSave, port);
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST, requestSave,
-                        Object.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
+
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
             assertNotNull(response.getBody());
-                        
+
             String json = ObjectMapperUtils.toJson(response.getBody());
             ProdutoDto produtoSave = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
 
@@ -235,36 +218,23 @@ public class ComboTest {
 
             HttpEntity<EstoqueDto> requestSave = new HttpEntity<>(estoque, null);
 
-            String urlSave = String.format(URL_CONSTANTS_TEST.EstoqueSaveAdd, port);
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST,
-                        requestSave, Object.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.EstoqueSaveAdd, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
+
             assertNotNull(response);
             assertNotNull(response.getBody());
-            assertEquals(HttpStatus.OK, response.getStatusCode());            
+            assertEquals(HttpStatus.OK, response.getStatusCode());
         }
 
         private CategoriaDto CATEGORIA(String nome) {
             CategoriaDto categoria = CategoriaMock.dto(nome);
 
-            String urlSave = String.format(URL_CONSTANTS_TEST.CategoriaSave, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
 
             HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
-            ResponseEntity<CategoriaDto> response = null;
-            try {
-                response = restTemplate.exchange(new URL(urlSave).toString(), HttpMethod.POST, requestSave,
-                        CategoriaDto.class);
-            } catch (RestClientException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+
+            ResponseEntity<CategoriaDto> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
+                    CategoriaDto.class);
 
             assertNotNull(response);
             assertNotNull(response.getBody());
@@ -276,67 +246,63 @@ public class ComboTest {
             return categoriaNew;
         }
 
-        private void ACTIVE() throws MalformedURLException {
+        private void ACTIVE() {
             // ACTIVE
             HttpEntity<ComboDto> responseurl = new HttpEntity<>(null, null);
-            String urlActive = String.format(URL_CONSTANTS_TEST.ComboActive + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboActive + "/?id=" + entity.id, port);
 
-            ResponseEntity<String> responseActive = restTemplate.exchange(new URL(urlActive).toString(),
-                    HttpMethod.DELETE, responseurl, String.class);
+            ResponseEntity<String> responseActive = restTemplate.exchange(url, HttpMethod.DELETE, responseurl,
+                    String.class);
 
             assertEquals(HttpStatus.OK, responseActive.getStatusCode());
         }
 
-        private void FIND_DESACTIVE() throws MalformedURLException {
+        private void FIND_DESACTIVE() {
             ResponseEntity<ComboDto> responseFind;
             // FIND DESACTIVE
-            String urlFind = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
-            responseFind = restTemplate.getForEntity(new URL(urlFind).toString(), ComboDto.class);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
+            responseFind = restTemplate.getForEntity(url, ComboDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(false, responseFind.getBody().ativo);
         }
 
-        private void FIND_ACTIVE() throws MalformedURLException {
-            String urlFind = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
+        private void FIND_ACTIVE() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
 
             // FIND DESACTIVE
-            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    ComboDto.class);
+            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(url, ComboDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(true, responseFind.getBody().ativo);
         }
 
-        private void DESACTIVE() throws MalformedURLException {
+        private void DESACTIVE() {
             // DESACTIVE
-            String urlDesactive = String.format(URL_CONSTANTS_TEST.ComboDesactive + "/?id=" + entity.id,
-                    port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboDesactive + "/?id=" + entity.id, port);
 
             HttpEntity<ComboDto> responseurl = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseDesactive = restTemplate.exchange(new URL(urlDesactive).toString(),
-                    HttpMethod.DELETE, responseurl, String.class);
+            ResponseEntity<String> responseDesactive = restTemplate.exchange(url, HttpMethod.DELETE, responseurl,
+                    String.class);
 
             assertEquals(HttpStatus.OK, responseDesactive.getStatusCode());
         }
 
-        private void FIND() throws MalformedURLException {
+        private void FIND() {
             // FIND
-            String urlFind = String.format(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
 
-            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(new URL(urlFind).toString(),
-                    ComboDto.class);
+            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(url, ComboDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(entity.nome, responseFind.getBody().nome);
         }
 
-        private void LIST() throws MalformedURLException {
+        private void LIST() {
             // LIST
-            String urlList = String.format(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
 
-            ResponseEntity<ComboUtilsPageMock> responselist = restTemplate.getForEntity(new URL(urlList).toString(),
-                    ComboUtilsPageMock.class);
+            ResponseEntity<ComboUtilsPageMock> responselist = restTemplate.getForEntity(url, ComboUtilsPageMock.class);
 
             page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());

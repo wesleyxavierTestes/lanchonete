@@ -5,9 +5,6 @@ import org.springframework.web.client.RestTemplate;
 
 public final class HttpBase {
 
-    public HttpBase() {
-    }
-
     public <T> ResponseEntity<T> HttpGet(String url, Class<T> type) {
         return HttpGet(url, type, null);
     }

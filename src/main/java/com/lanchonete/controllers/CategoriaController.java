@@ -46,7 +46,7 @@ public class CategoriaController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("list/name")
+    @GetMapping("list/filter")
     public ResponseEntity<Page<CategoriaListDto>> listFilter(
         @RequestParam(name = "page") int page,   
         @RequestBody CategoriaDto filter) {
@@ -93,10 +93,18 @@ public class CategoriaController extends AbstractBaseController {
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
+    @DeleteMapping("active")
+    public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
+
+        Categoria entity = this._service.ative(id, true);
+
+        return ResponseEntity.ok(Mapper.map(entity));
+    }
+
+    @DeleteMapping("desactive")
+    public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
         
-        Categoria entity = this._service.delete(id);
+        Categoria entity = this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

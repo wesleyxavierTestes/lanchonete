@@ -3,6 +3,7 @@ package com.lanchonete.apllication.dto.lanche;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.utils.MessageError;
@@ -35,4 +36,7 @@ public class LancheDto  {
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public List<IngredienteDto> ingredientesLanche;
+
+    @Size(max = 200, message = MessageError.MAX_LIMITE)
+    private String observacao;
 }

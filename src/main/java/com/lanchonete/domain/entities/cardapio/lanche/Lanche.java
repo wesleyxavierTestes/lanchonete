@@ -33,20 +33,16 @@ public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoC
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, cascade = CascadeType.DETACH)
     private Set<IProdutoComposicao> ingredientesLanche = new HashSet<>();
 
-    @Column(nullable = true)
-    private BigDecimal desconto;
-
     @Column(nullable = false)
     private BigDecimal valorTotal;
 
-    public void calcularValorTotal() {
-        this.setValor(BigDecimal.ZERO);
-        if (!Objects.nonNull(this.desconto))
-            this.setDesconto(BigDecimal.ZERO);
+    private String observacao;
+
+    public void calcularValor() {
+        if (!Objects.nonNull(this.getValor()))
+            this.setValor(BigDecimal.ZERO);
 
         for (IProdutoComposicao i : ingredientesLanche)
             this.setValor(this.getValor().add(i.getValor()));
-
-        this.valorTotal = this.getValor().subtract(this.desconto);
     }
 }
