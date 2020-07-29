@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 
+import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
@@ -17,6 +18,6 @@ import lombok.*;
 @Entity
 public class ItemVenda extends AbstractProduto implements IProdutoVenda {
 
-    private BigDecimal valorDesconto;
+    private Pedido pedido;
     private BigDecimal valorTotal;
 }

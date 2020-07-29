@@ -20,6 +20,7 @@ import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cardapio.combo.Combo;
+import com.lanchonete.domain.entities.cardapio.combo.ComboBebida;
 import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.entities.categoria.Categoria;
@@ -45,7 +46,12 @@ public final class Mapper {
     }
 
     public static <T, Y> Function<T, Y> pageMap(final Class<Y> ref) {
-        final Function<T, Y> converter = entity -> Mapper.map(entity, ref);
+        final Function<T, Y> converter = new Function<T, Y>() {
+            @Override
+            public Y apply(final T entity) {
+                return Mapper.map(entity, ref);
+            }
+        };
         return converter;
     }
 
@@ -175,7 +181,7 @@ public final class Mapper {
     public static Lanche map(LancheDto entity) {
         Set<IProdutoComposicao> ingredientes = new HashSet<>();
         List<IngredienteDto> copy = null;
-        
+
         if (Objects.nonNull(entity.ingredientesLanche)) {
             entity.ingredientesLanche.stream().forEach(c -> ingredientes.add(Mapper.map(c, Ingrediente.class)));
 
@@ -226,5 +232,13 @@ public final class Mapper {
 
     public static IngredienteDto map(final Ingrediente entity) {
         return Mapper.map(entity, IngredienteDto.class);
+    }
+
+    public static ComboBebida map(Combo entity, Produto bebida) {
+        try {
+            return Mapper.map(bebida, ComboBebida.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -8,7 +8,6 @@ import java.util.UUID;
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
@@ -59,13 +58,13 @@ public class LancheService extends BaseService<Lanche> {
         entity.setCategoria(categoria);
 
         for (IProdutoComposicao ingrediente : entity.getIngredientesLanche()) {
-            Set<IProdutoComposicao> ingredientes = new HashSet<>();
             Produto produto = _produtoRepository.findByIdAtive(ingrediente.getId());
             if (!Objects.nonNull(produto))
                 throw new RegraNegocioException(String.format("Produto %s", ingrediente.getNome()) 
                 + MessageError.EXISTS);
-                produto.setId(0);
-                ingredientes.add(Mapper.map(produto, Ingrediente.class));   
+                ingrediente.setId(0);
+                ingrediente.setCategoria(produto.getCategoria());
+                ingrediente.setCodigo(produto.getCodigo());
         } 
 
         entity.calcularValor();

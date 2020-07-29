@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
+import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 
 @Entity
 public class Cardapio extends BaseEntity {
@@ -22,5 +22,5 @@ public class Cardapio extends BaseEntity {
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
     @Column(name = "Itens_disponiveis")
-    private Set<IProdutoCardapio> ItensDisponiveis = new HashSet<IProdutoCardapio>();
+    private Set<IProduto> ItensDisponiveis = new HashSet<IProduto>();
 }

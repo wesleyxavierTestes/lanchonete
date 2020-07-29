@@ -99,9 +99,11 @@ public class LancheController extends AbstractBaseController {
         
         this._service.criarLanche(entity, categoria);
 
-        // fabrica lanche
-
-        this._service.save(entity);
+        try {
+            this._service.save(entity);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

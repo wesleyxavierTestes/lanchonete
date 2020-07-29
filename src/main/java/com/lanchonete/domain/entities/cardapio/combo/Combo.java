@@ -3,13 +3,13 @@ package com.lanchonete.domain.entities.cardapio.combo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
 import lombok.AllArgsConstructor;
@@ -24,12 +24,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
+public class Combo extends AbstractProduto implements IProdutoPedido {
 
     @OneToOne
     private Lanche lanche;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private ComboBebida bebida;
 
     @Column(nullable = false)

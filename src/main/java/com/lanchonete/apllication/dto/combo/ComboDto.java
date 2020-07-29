@@ -34,10 +34,10 @@ public class ComboDto  {
     public String valorTotal;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public ComboBebida bebida;
+    public ComboItem bebida;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public LancheDto lanche;
+    public ComboItem lanche;
 
     @Size(max = 200, message = MessageError.MAX_LIMITE)
     private String observacao;

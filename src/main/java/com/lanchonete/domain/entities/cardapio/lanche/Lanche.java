@@ -12,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
@@ -28,9 +27,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
+public class Lanche extends AbstractProduto implements IProdutoPedido {
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, cascade = CascadeType.DETACH)
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, 
+    cascade = CascadeType.ALL)
     private Set<IProdutoComposicao> ingredientesLanche = new HashSet<>();
 
     @Column(nullable = false)

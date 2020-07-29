@@ -55,13 +55,9 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
                     +"and p.id = ?1 "
                     +"GROUP BY p.id ")
     double countEstoqueById(long id);
-
-
-    
     
     @Query(
         nativeQuery = true, 
-        value = "SELECT (c.*) FROM produto as c where c.ativo = true and c.id = ?1 limit 1",
-        countQuery = "SELECT (c.*) FROM produto as c where c.ativo = true and c.id = ?1 limit 1")
+        value = "SELECT (c.*) FROM produto as c where c.ativo = true and c.id = ?1 limit 1")
     Produto findByIdAtive(long id);
 }

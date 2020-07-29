@@ -23,4 +23,9 @@ public interface ILancheRepository extends JpaRepository<Lanche, Long>  {
         value = "SELECT (c.*) FROM lanche as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = false")
 	Page<LancheListDto> listDesactive(PageRequest of);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM lanche as c where c.ativo = true and c.id = ?1 limit 1")
+        Lanche findByIdAtive(long id);
 }

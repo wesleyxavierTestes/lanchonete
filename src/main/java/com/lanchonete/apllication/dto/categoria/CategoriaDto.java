@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class CategoriaDto  {
 
     public long id;
+    public boolean ativo;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     @Size(max = 150, message = MessageError.MAX_LIMITE)

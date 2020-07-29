@@ -18,6 +18,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import net.bytebuddy.dynamic.scaffold.TypeWriter.MethodPool.Record.ForDefinedMethod.WithoutBody;
+
 public abstract class BaseService<T extends BaseEntity> implements IBaseService<T> {
 
     private final JpaRepository<T, Long> _repository;
@@ -33,7 +35,12 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
     @Override
     public Page<T> listFilter(T entity, int page) {
-        Example<T> example = Example.of(entity, ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues()
+        Example<T> example = Example.of(entity, 
+        ExampleMatcher.matching().withIgnoreCase()
+        .withIgnorePaths("id")
+        .withIgnorePaths("dataCadastro")
+        .withIgnorePaths("ativo")
+        .withIgnoreNullValues()
                 .withStringMatcher(StringMatcher.CONTAINING));
         return _repository.findAll(example, PageRequest.of((page - 1), 10));
     }

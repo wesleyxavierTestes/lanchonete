@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoriaListDto {
     public long id;
+    public boolean ativo;
     public String nome;
 }

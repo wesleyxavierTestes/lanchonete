@@ -110,18 +110,6 @@ public class CategoriaTest {
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
         }
-
-        @Test
-        @DisplayName("Deve tentar excluir categoria inexistente")
-        public void delete() throws Exception {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=100000", port);
-            HttpEntity<CategoriaDto> requestUpdate = new HttpEntity<>(null, null);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE,
-                    requestUpdate, String.class);
-
-            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-            assertNotNull(response.getBody());
-        }
     }
 
     @Nested
@@ -141,20 +129,59 @@ public class CategoriaTest {
 
             FIND(page, nomeUpdate);
 
-            DELETE(page);
+            DESACTIVE();
+            FIND_DESACTIVE();
+            ACTIVE();
+            FIND_ACTIVE();
         }
 
-        private void DELETE(CategoriaUtilsPageMock page) {
-            // DELETE
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaDelete + "/?id=" + page.content.get(0).id,
-                    port);
+        private void ACTIVE() {
+            // ACTIVE
+            HttpEntity<CategoriaDto> responseurl = new HttpEntity<>(null, null);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaActive + "/?id=" + entity.id, port);
+
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, responseurl, String.class);
+
+            assertNotNull(response);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
+
+        private void FIND_DESACTIVE() {
+
+            // FIND DESACTIVE
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaFind + "/?id=" + entity.id, port);
+
+            ResponseEntity<CategoriaDto> response = restTemplate.getForEntity(url, CategoriaDto.class);
+
+            assertNotNull(response);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(false, response.getBody().ativo);
+        }
+
+        private void FIND_ACTIVE() {
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaFind + "/?id=" + entity.id, port);
+
+            // FIND DESACTIVE
+            ResponseEntity<CategoriaDto> response = restTemplate.getForEntity(url, CategoriaDto.class);
+
+            assertNotNull(response);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(true, response.getBody().ativo);
+        }
+
+        private void DESACTIVE() {
+            // DESACTIVE
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaDesactive + "/?id=" + entity.id, port);
 
             HttpEntity<CategoriaDto> responseurl = new HttpEntity<>(null, null);
-            ResponseEntity<String> responseDelete = restTemplate.exchange(url,
-                    HttpMethod.DELETE, responseurl, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, responseurl, String.class);
 
-            assertEquals(HttpStatus.OK, responseDelete.getStatusCode());
+            assertNotNull(response);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
         }
+
 
         private void FIND(CategoriaUtilsPageMock page, String nomeUpdate) {
             // FIND

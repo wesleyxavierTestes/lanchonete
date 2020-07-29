@@ -13,4 +13,6 @@ public class ComboListDto {
     public String nome;
     public String valor;
     public String valorTotal;
+    public String lancheNome;
+    public String bebidaNome;
 }

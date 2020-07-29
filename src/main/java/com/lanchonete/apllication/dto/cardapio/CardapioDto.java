@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class CardapioDto  {
 
     public long id;
+    public boolean ativo;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public String nome;
