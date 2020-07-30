@@ -84,8 +84,7 @@ public class Validations {
         for (final Field field : getDeclaredFields(entity)) {
             String fieldName = field.getName();
             if ("ANNOTATION".equals(fieldName)
-            || field.getType().isAnnotation() 
-            || field.getType().getPackageName().contains("java.time") )
+            || field.getType().isAnnotation() )
                 break;
 
             final Set<ConstraintViolation<T>> constrains = getConstrains(entity, validator, fieldName);

@@ -14,7 +14,6 @@ import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.ProdutoUtilsPageMock;
-import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
 import org.junit.jupiter.api.DisplayName;
@@ -123,8 +122,11 @@ public class ProdutoTest {
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok()  {
-            CategoriaDto categoria = CATEGORIA("ProdutoTest: Categoria Save_ok");
-            PRODUTO("ProdutoTest: Produto Save_ok", categoria);
+            CategoriaMock mock = new CategoriaMock(restTemplate, port);
+            CategoriaDto categoria = mock.CATEGORIA("ProdutoTest: Categoria Save_ok");
+
+            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
+            produtoMock.PRODUTO("ProdutoTest: Produto Save_ok", categoria);
             LIST();
             FIND();
             DESACTIVE();
@@ -205,45 +207,5 @@ public class ProdutoTest {
 
             entity = Mapper.map(page.content.get(0), ProdutoDto.class);
         }
-
-        private ProdutoDto PRODUTO(String nome, CategoriaDto categoria) {
-            // SAVE
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);
-            ProdutoDto entity = ProdutoMock.dto(nome);
-            entity.categoria = categoria;
-
-            HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(entity, null);
-            ResponseEntity<Object> response = restTemplate.exchange(url, 
-                    HttpMethod.POST,
-                    requestSave, Object.class);
-
-            assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
-            assertNotNull(response.getBody());
-                        
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            entity = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
-
-            assertNotNull(entity.codigo);
-
-            return entity;
-        }
-
-        private CategoriaDto CATEGORIA(String nome) {
-            CategoriaDto categoria = CategoriaMock.dto(nome);
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
-               
-            HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
-            ResponseEntity<Object> response = restTemplate.exchange(url,
-                    HttpMethod.POST, requestSave, Object.class);
-
-            assertNotNull(response.getBody());
-
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            CategoriaDto categoriaNew = ObjectMapperUtils.jsonTo(json, CategoriaDto.class);
-
-            return categoriaNew;
-        }
-    
-    }
+ }
 }

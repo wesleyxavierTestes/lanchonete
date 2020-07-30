@@ -1,5 +1,7 @@
 package com.lanchonete.apllication.dto.venda;
 
+import java.util.List;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
@@ -13,38 +15,36 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VendaDto  {
+public class VendaDto {
 
-    public long id;
+  public long id;
 
-    @Max(value = 30, message = MessageError.MAX_LIMITE)
-    public String dataCadastro;
+  @Max(value = 30, message = MessageError.MAX_LIMITE)
+  public String dataCadastro;
 
-    public boolean ativo;
+  public boolean ativo;
 
+  @NotNull(message = MessageError.IS_MANDATORY)
+  public List<VendaItemDto> vendaItens;
 
-  public Set<IProdutoVenda> pedidos = new HashSet<>();
+  @NotNull(message = MessageError.IS_MANDATORY)
+  @Max(value = 150, message = MessageError.MAX_LIMITE)
+  public String valorDesconto;
 
+  @NotNull(message = MessageError.IS_MANDATORY)
+  @Max(value = 150, message = MessageError.MAX_LIMITE)
+  public String valor;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String valorDesconto;
+  @NotNull(message = MessageError.IS_MANDATORY)
+  @Max(value = 150, message = MessageError.MAX_LIMITE)
+  public String valorTotal;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String valor;
+  @NotNull(message = MessageError.IS_MANDATORY)
+  public boolean cancelado;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String valorTotal;
+  @Max(value = 150, message = MessageError.MAX_LIMITE)
+  public String dataCancelado;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public boolean cancelado;
-
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String dataCancelado;
-
-
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public ClienteGenericDto cliente;
+  @NotNull(message = MessageError.IS_MANDATORY)
+  public ClienteGenericDto cliente;
 }

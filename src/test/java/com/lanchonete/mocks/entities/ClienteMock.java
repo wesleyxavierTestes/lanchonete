@@ -5,12 +5,22 @@ import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 
+import org.springframework.boot.test.web.client.TestRestTemplate;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClienteMock {
-    
+    private TestRestTemplate restTemplate;
+    private int port;
+
     public static ClienteDto dto(String nome) {
             ClienteDto clienteDtoMock = ClienteDto.builder()
                     .nome(nome)
                     .cnjp("96864231000112")
+                    .email("teste@gmail.com")
                     .cpf(null)
                     .id(1)
                     .tipoCliente(EnumTipoCliente.GeraFisco)
@@ -24,6 +34,7 @@ public class ClienteMock {
         Cliente clienteDtoMock = Cliente.builder()
                 .nome(nome)
                 .cnjp("0000000000")
+                .email("teste@gmail.com")
                 .cpf(null)
                 .tipoCliente(EnumTipoCliente.GeraFisco)
                 .tipoPessoa(EnumTipoPessoa.Juridica)

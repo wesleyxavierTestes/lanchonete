@@ -1,9 +1,37 @@
 package com.lanchonete.mocks.entities;
 
-import com.lanchonete.apllication.dto.cardapio.CardapioDto;
-import com.lanchonete.domain.entities.cardapio.Cardapio;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
+import com.lanchonete.apllication.dto.combo.ComboDto;
+import com.lanchonete.apllication.dto.lanche.LancheDto;
+import com.lanchonete.apllication.dto.produto.ProdutoDto;
+import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.utils.ObjectMapperUtils;
+import com.lanchonete.utils.URL_CONSTANTS_TEST;
+
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class CardapioMock {
+
+    private TestRestTemplate restTemplate;
+    private int port;
 
     public static CardapioDto dto(String nome) {
         CardapioDto clienteDtoMock = CardapioDto.builder().nome(nome).build();
@@ -12,7 +40,42 @@ public class CardapioMock {
 
     public static Cardapio by(String nome) {
         Cardapio clienteDtoMock = new Cardapio();
-
+        clienteDtoMock.setNome(nome);
         return clienteDtoMock;
     }
+
+    public CardapioDto CARDAPIO(String nome, List<ProdutoDto> produtos, List<LancheDto> lanches,
+            List<ComboDto> combos) {
+        // SAVE
+        CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
+        cardapio.itensDisponiveis = new ArrayList<>();
+        CardapioItemDto produto = null;
+        for (int i = 0; i < 7; i++) {
+            int index = new Random().nextInt(9);
+            if (index % 3 == 0)
+                produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+            else if (index % 2 == 0) {
+                produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
+            } else {
+                produto = Mapper.map(combos.get(i), CardapioItemDto.class);
+            }
+            cardapio.itensDisponiveis.add(produto);
+        }
+
+        String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioSave, port);
+        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(cardapio, null),
+                Object.class);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        String json = ObjectMapperUtils.toJson(response.getBody());
+        cardapio = ObjectMapperUtils.jsonTo(json, CardapioDto.class);
+
+        assertNotNull(cardapio);
+
+        return cardapio;
+    }
+
 }

@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -16,8 +14,6 @@ import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboItemDto;
-import com.lanchonete.apllication.dto.estoque.EstoqueDto;
-import com.lanchonete.apllication.dto.estoque.EstoqueProdutoDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
@@ -147,17 +143,20 @@ public class CardapioTest {
         public void save_ok() {
             List<CategoriaDto> categorias = new ArrayList<>();
             for (int i = 0; i < 20; i++) {
-                CategoriaDto categoria = CATEGORIA("CardapioTest: Categoria" + i + " Save_ok");
+                CategoriaDto categoria = new CategoriaMock(restTemplate, port).CATEGORIA("CardapioTest: Categoria" + i + " Save_ok");
                 categorias.add(categoria);
             }
 
             List<ProdutoDto> produtos = new ArrayList<>();
 
+            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
+            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
             for (int i = 0; i < 30; i++) {
                 int index = new Random().nextInt(20);
-                ProdutoDto produto = PRODUTO("CardapioTest: Produto" + i + " Save_ok", categorias.get(index));
+
+                ProdutoDto produto = produtoMock.PRODUTO("CardapioTest: Produto" + i + " Save_ok", categorias.get(index));
                 if (index % 2 == 0)
-                    ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
                 produtos.add(produto);
             }
 
@@ -169,23 +168,24 @@ public class CardapioTest {
                 List<IngredienteDto> ingredientes = new ArrayList<>();
                 ingredientes.add(Mapper.map(produtos.get(indexProduto + 1), IngredienteDto.class));
                 ingredientes.add(Mapper.map(produtos.get(indexProduto), IngredienteDto.class));
-
-                LancheDto lanche = LANCHE("CardapioTest: Lanche" + i + "  Save_ok", categorias.get(indexCategoria),
+                LancheMock lancheMock = new LancheMock(restTemplate, port);
+                LancheDto lanche = lancheMock.LANCHE("CardapioTest: Lanche" + i + "  Save_ok", categorias.get(indexCategoria),
                         ingredientes);
                 lanches.add(lanche);
             }
 
             List<ComboDto> combos = new ArrayList<>();
+            ComboMock comboMock = new ComboMock(restTemplate, port);
             for (int i = 0; i < 7; i++) {
                 int indexLanche = new Random().nextInt(10);
                 int indexCategoria = new Random().nextInt(15);
                 int indexProduto = new Random().nextInt(25);
-                ComboDto combo = COMBO("CardapioTest: ComboDto" + i + " Save_ok", categorias.get(indexCategoria),
+                ComboDto combo = comboMock.COMBO("CardapioTest: ComboDto" + i + " Save_ok", categorias.get(indexCategoria),
                         lanches.get(indexLanche), produtos.get(indexProduto));
                 combos.add(combo);
             }
-
-            CARDAPIO("CardapioTest: CardapioDto Save_ok", produtos, lanches, combos);
+            CardapioMock cardapioMock = new CardapioMock(restTemplate, port);
+            entity = cardapioMock.CARDAPIO("CardapioTest: CardapioDto Save_ok", produtos, lanches, combos);
 
             LIST();
             FIND();
@@ -193,165 +193,6 @@ public class CardapioTest {
             FIND_DESACTIVE();
             ACTIVE();
             FIND_ACTIVE();
-        }
-
-        private CardapioDto CARDAPIO(String nome, List<ProdutoDto> produtos, List<LancheDto> lanches,
-                List<ComboDto> combos) {
-            // SAVE
-            CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
-            cardapio.itensDisponiveis = new ArrayList<>();
-            CardapioItemDto produto = null;
-            for (int i = 0; i < 7; i++) {
-                int index = new Random().nextInt(9);
-                if (index % 3 == 0)
-                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
-                else if (index % 2 == 0) {
-                    produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
-                } else {
-                    produto = Mapper.map(combos.get(i), CardapioItemDto.class);
-                }
-                cardapio.itensDisponiveis.add(produto);
-            }
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioSave, port);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST,
-                    new HttpEntity<>(cardapio, null), Object.class);
-
-            assertNotNull(response);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
-
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            cardapio = ObjectMapperUtils.jsonTo(json, CardapioDto.class);
-
-            assertNotNull(cardapio);
-
-            return cardapio;
-        }
-
-        private ComboDto COMBO(String nome, CategoriaDto categoria, LancheDto lanche, ProdutoDto comboBebida) {
-
-            ComboDto combo = null;
-            try {
-                combo = ComboMock.dto(nome);
-                combo.categoria = categoria;
-                combo.lanche = Mapper.map(lanche, ComboItemDto.class);
-                combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
-                combo.valor = "123";
-                combo.valorTotal = "123";
-            } catch (Exception e) {
-                System.out.print(e);
-            }
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
-            ResponseEntity<Object> response = null;
-            try {
-                response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(combo, null), Object.class);
-            } catch (Exception e) {
-                System.out.print(e);
-            }
-            if (response == null)
-                System.out.print("");
-
-            assertNotNull(response);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
-            try {
-                String json = ObjectMapperUtils.toJson(response.getBody());
-                combo = ObjectMapperUtils.jsonTo(json, ComboDto.class);
-
-                assertNotNull(lanche.codigo);
-            } catch (Exception e) {
-                System.out.print(e);
-            }
-            return combo;
-
-        }
-
-        private LancheDto LANCHE(String nome, CategoriaDto categorialanche, List<IngredienteDto> ingredientes) {
-            // SAVE
-            LancheDto lanche = (LancheDto) LancheMock.dto(nome);
-            lanche.categoria = categorialanche;
-            lanche.ingredientesLanche = ingredientes;
-
-            BigDecimal valorCalculo = BigDecimal.ZERO;
-
-            for (IngredienteDto ingredienteDto : ingredientes)
-                valorCalculo = new BigDecimal(ingredienteDto.valor).add(valorCalculo);
-
-            lanche.valor = valorCalculo.toString();
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheSave, port);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST,
-                    new HttpEntity<>(lanche, null), Object.class);
-
-            assertNotNull(response);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
-
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            lanche = ObjectMapperUtils.jsonTo(json, LancheDto.class);
-
-            assertNotNull(lanche.codigo);
-
-            return lanche;
-        }
-
-        private ProdutoDto PRODUTO(String nome, CategoriaDto categoria) {
-            // SAVE
-            ProdutoDto produto = ProdutoMock.dto(nome);
-            produto.categoria = categoria;
-
-            HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
-
-            assertNotNull(response);
-            assertEquals(HttpStatus.OK, response.getStatusCode(), "SAVE expect Error");
-            assertNotNull(response.getBody());
-
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            ProdutoDto produtoSave = ObjectMapperUtils.jsonTo(json, ProdutoDto.class);
-
-            assertNotNull(produtoSave.codigo);
-
-            return produtoSave;
-        }
-
-        private void ESTOQUE(ProdutoDto produto) {
-            EstoqueDto estoque = EstoqueMock.dto();
-            estoque.produto = Mapper.map(produto, EstoqueProdutoDto.class);
-            estoque.quantidade = 1;
-            estoque.data = LocalDateTime.now().toString();
-
-            HttpEntity<EstoqueDto> requestSave = new HttpEntity<>(estoque, null);
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.EstoqueSaveAdd, port);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
-
-            assertNotNull(response);
-            assertNotNull(response.getBody());
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-        }
-
-        private CategoriaDto CATEGORIA(String nome) {
-            CategoriaDto categoria = CategoriaMock.dto(nome);
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CategoriaSave, port);
-
-            HttpEntity<CategoriaDto> requestSave = new HttpEntity<>(categoria, null);
-
-            ResponseEntity<CategoriaDto> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
-                    CategoriaDto.class);
-
-            assertNotNull(response);
-            assertNotNull(response.getBody());
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            CategoriaDto categoriaNew = ObjectMapperUtils.jsonTo(json, CategoriaDto.class);
-
-            return categoriaNew;
         }
 
         private void ACTIVE() {
