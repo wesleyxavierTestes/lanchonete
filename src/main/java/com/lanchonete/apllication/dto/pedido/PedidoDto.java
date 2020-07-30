@@ -25,7 +25,11 @@ public class PedidoDto  {
     public String codigo;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public List<PedidoItemDto> ItensVenda;
+    public List<PedidoItemDto> pedidoitens;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    public String valor;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     @Max(value = 150, message = MessageError.MAX_LIMITE)

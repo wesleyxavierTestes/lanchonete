@@ -41,10 +41,11 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
     @NotNull(message = "Itens são obrigatório")
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
-    private Set<IProdutoPedido> ItensVenda = new HashSet<>();
+    private Set<IProdutoPedido> pedidoitens = new HashSet<>();
 
     private UUID codigo;
 
+    private BigDecimal valor;
     private BigDecimal valorDesconto;
     private BigDecimal valorTotal;
     

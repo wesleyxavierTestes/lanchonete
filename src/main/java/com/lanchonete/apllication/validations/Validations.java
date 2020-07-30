@@ -208,12 +208,12 @@ public class Validations {
      */
     private <T> void setErros(final String entityName,
             final String fieldNameEntity, final Set<ConstraintViolation<T>> constrains) {
-        constrains.stream().forEach(c -> {
+        constrains.stream().forEach(constraim -> {
             try {
                 final boolean valid = Objects.nonNull(entityName) && !entityName.isEmpty();
 
                 String property = valid ? String.format("%s.%s", entityName, fieldNameEntity) : fieldNameEntity;
-                String message = c.getMessage();
+                String message = constraim.getMessage();
 
                 this.erros.add(CustomErro.builder().property(property).message(message).build());
             } catch (final Exception e) {

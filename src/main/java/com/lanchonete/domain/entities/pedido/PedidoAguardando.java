@@ -4,9 +4,11 @@ import javax.persistence.Entity;
 
 import com.lanchonete.domain.enuns.pedidos.EnumEstadoPedido;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @NoArgsConstructor
 @Entity

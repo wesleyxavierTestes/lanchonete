@@ -22,5 +22,16 @@ public interface ICardapioRepository extends JpaRepository<Cardapio, Long>  {
         value = "SELECT (c.*) FROM cardapio as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM cardapio as c where c.ativo = false")
     Page<Cardapio> listDesactive(PageRequest pageRequest);
+
+    @Query(
+        nativeQuery = true, 
+            value = "SELECT SUM(e.quantidade) "
+                    +"FROM public.produto as p "
+                    +"join public.estoque as e "
+                    +"on e.produto_id = p.id "
+                    +"where p.ativo = true "
+                    +"and p.codigo = ?1 "
+                    +"GROUP BY p.id ")
+    double countEstoqueByCodigo(String codigo);
     
 }

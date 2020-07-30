@@ -33,4 +33,8 @@ public class VendaService extends BaseService<Venda> {
     public Page<VendaListDto> listCancelDto(int page) {
         return _repository.listCancel(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(VendaListDto.class));
     }
+
+	public void criarVenda(Venda entity) {
+        //
+	}
 }

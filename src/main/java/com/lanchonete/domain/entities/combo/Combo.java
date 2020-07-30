@@ -10,6 +10,7 @@ import javax.persistence.OneToOne;
 
 import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Combo extends AbstractProduto implements IProdutoPedido {
+public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
 
     @OneToOne
     private Lanche lanche;

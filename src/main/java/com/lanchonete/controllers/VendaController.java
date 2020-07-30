@@ -66,7 +66,11 @@ public class VendaController extends AbstractBaseController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid VendaDto entityDto) {
 
-        Venda entity = this._service.save(Mapper.map(entityDto));
+        Venda entity = Mapper.map(entityDto);
+
+        this._service.criarVenda(entity);
+
+        this._service.save(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

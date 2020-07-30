@@ -7,7 +7,9 @@ import javax.validation.Valid;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.domain.services.pedido.PedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidoController extends AbstractBaseController {
 
     private final PedidoService _service;
+    private final CardapioService _cardapioService;
 
     @Autowired
-    public PedidoController(PedidoService service) {
+    public PedidoController(PedidoService service, CardapioService cardapioService) {
         _service = service;
+        _cardapioService = cardapioService;
     }
 
     // TODO: INCOMPLETO
@@ -85,7 +89,13 @@ public class PedidoController extends AbstractBaseController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid PedidoDto entityDto) {
 
-        Pedido entity = this._service.save(Mapper.map(entityDto));
+        Cardapio cardapio = _cardapioService.cardapioActive();
+
+        Pedido entity = Mapper.map(entityDto);
+
+        this._service.criarPedido(entity, cardapio);
+
+        // this._service.save(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

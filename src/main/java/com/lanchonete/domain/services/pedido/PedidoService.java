@@ -6,7 +6,11 @@ import java.time.LocalTime;
 
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.entities.pedido.PedidoItem;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.pedido.IPedidoRepository;
 
@@ -26,8 +30,8 @@ public class PedidoService extends BaseService<Pedido> {
         _repository = repository;
     }
 
-    public Page<PedidoListDto>  listFilterDto(Pedido entity, int page) {
-        return super. listFilter(entity, page).map(Mapper.pageMap(PedidoListDto.class));
+    public Page<PedidoListDto> listFilterDto(Pedido entity, int page) {
+        return super.listFilter(entity, page).map(Mapper.pageMap(PedidoListDto.class));
     }
 
     public Page<PedidoListDto> listDto(int page) {
@@ -50,5 +54,21 @@ public class PedidoService extends BaseService<Pedido> {
 
     public Page<PedidoListDto> listClient(long id, int page) {
         return _repository.listClient(id, PageRequest.of((page - 1), 10)).map(Mapper.pageMap(PedidoListDto.class));
+    }
+
+    public void criarPedido(Pedido entity, Cardapio cardapio) {
+
+        entity.getv
+        for (IProdutoPedido produto : entity.getPedidoitens()) {
+            for (IProdutoCardapio produtoCardapio : cardapio.getItensDisponiveis()) {
+                if (produto.getCodigo().equals(produtoCardapio.getCodigo())) {
+                    produto = (IProdutoPedido) produtoCardapio;
+                    entity
+                    break;
+                }
+            }
+        }
+
+        entity.
     }
 }

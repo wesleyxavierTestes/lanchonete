@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Produto extends AbstractProduto {
+public class Produto extends AbstractProduto implements IProdutoCardapio, IProdutoPedido {
 
     /**
      * Estoques FindAllByProdutoId

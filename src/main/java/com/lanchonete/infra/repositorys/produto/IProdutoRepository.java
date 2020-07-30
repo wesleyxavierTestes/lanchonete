@@ -1,5 +1,7 @@
 package com.lanchonete.infra.repositorys.produto;
 
+import java.util.List;
+
 import com.lanchonete.domain.entities.produto.entities.Produto;
 
 import org.springframework.data.domain.Page;
@@ -17,7 +19,6 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
         countQuery = "SELECT (c.*) FROM produto as c where c.ativo = true")
     Page<Produto> listActive(PageRequest of);
 
-    
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM produto as c where c.ativo = false",
@@ -55,6 +56,17 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long>  {
                     +"and p.id = ?1 "
                     +"GROUP BY p.id ")
     double countEstoqueById(long id);
+
+    @Query(
+        nativeQuery = true, 
+            value = "SELECT SUM(e.quantidade) > 0 "
+                    +"FROM public.produto as p "
+                    +"join public.estoque as e "
+                    +"on e.produto_id = p.id "
+                    +"where p.ativo = true "
+                    +"and p.id = ?1 "
+                    +"GROUP BY p.id ")
+    boolean countEstoqueByIdBool(long id);
     
     @Query(
         nativeQuery = true, 

@@ -18,8 +18,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import net.bytebuddy.dynamic.scaffold.TypeWriter.MethodPool.Record.ForDefinedMethod.WithoutBody;
-
 public abstract class BaseService<T extends BaseEntity> implements IBaseService<T> {
 
     private final JpaRepository<T, Long> _repository;

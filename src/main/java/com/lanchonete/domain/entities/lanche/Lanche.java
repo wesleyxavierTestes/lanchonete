@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
@@ -27,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lanche extends AbstractProduto implements IProdutoPedido {
+public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, 
     cascade = CascadeType.ALL)

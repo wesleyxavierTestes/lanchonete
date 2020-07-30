@@ -184,6 +184,7 @@ public class CardapioTest {
                         lanches.get(indexLanche), produtos.get(indexProduto));
                 combos.add(combo);
             }
+            
             CardapioMock cardapioMock = new CardapioMock(restTemplate, port);
             entity = cardapioMock.CARDAPIO("CardapioTest: CardapioDto Save_ok", produtos, lanches, combos);
 

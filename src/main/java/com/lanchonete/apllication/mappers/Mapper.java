@@ -5,11 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
+import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
@@ -17,6 +19,7 @@ import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
+import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
@@ -33,8 +36,11 @@ import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.entities.pedido.PedidoAguardando;
+import com.lanchonete.domain.entities.pedido.PedidoItem;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.utils.ObjectMapperUtils;
@@ -101,8 +107,8 @@ public final class Mapper {
         List<CardapioItemDto> copy = null;
 
         if (Objects.nonNull(entity.itensDisponiveis)) {
-            entity.itensDisponiveis.stream().forEach(c -> itensDisponiveis
-            .add(Mapper.map(c, CardapioItem.class)));
+            entity.itensDisponiveis.stream()
+                    .forEach(item -> itensDisponiveis.add(Mapper.map(item, CardapioItem.class)));
 
             copy = new ArrayList<>(entity.itensDisponiveis);
             entity.itensDisponiveis = null;
@@ -203,7 +209,7 @@ public final class Mapper {
         List<IngredienteDto> copy = null;
 
         if (Objects.nonNull(entity.ingredientesLanche)) {
-            entity.ingredientesLanche.stream().forEach(c -> ingredientes.add(Mapper.map(c, Ingrediente.class)));
+            entity.ingredientesLanche.stream().forEach(item -> ingredientes.add(Mapper.map(item, Ingrediente.class)));
 
             copy = new ArrayList<>(entity.ingredientesLanche);
             entity.ingredientesLanche = null;
@@ -226,8 +232,34 @@ public final class Mapper {
         return PedidoMapper.update(entityDto, entity);
     }
 
-    public static Pedido map(final PedidoDto entity) {
-        return Mapper.map(entity, Pedido.class);
+    public static PedidoAguardando map(final PedidoDto entity) {
+        final Set<IProdutoPedido> pedidoitens = new HashSet<>();
+        List<PedidoItemDto> copy = null;
+
+        if (Objects.nonNull(entity.pedidoitens)) {
+            entity.pedidoitens.stream().forEach(item -> {
+                PedidoItem itemnew = new PedidoItem();
+
+                itemnew.setId(item.id);
+                itemnew.setNome(item.nome);
+                itemnew.setCodigo(UUID.fromString(item.codigo));
+                
+                PedidoItem itemnew2 = Mapper.map(item, PedidoItem.class);
+
+                pedidoitens.add(itemnew);
+            });
+
+            copy = new ArrayList<>(entity.pedidoitens);
+            entity.pedidoitens = null;
+        }
+
+        final PedidoAguardando pedidoMap = Mapper.map(entity, PedidoAguardando.class);
+        if (Objects.nonNull(pedidoMap))
+            pedidoMap.setPedidoitens(pedidoitens);
+
+        entity.pedidoitens = copy;
+
+        return pedidoMap;
     }
 
     public static PedidoDto map(final Pedido entity) {

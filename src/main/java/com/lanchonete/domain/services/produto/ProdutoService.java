@@ -35,50 +35,50 @@ public class ProdutoService extends BaseService<Produto> {
     }
 
     public Page<ProdutoListDto> listFilterDto(Produto entity, int page) {
-        return super.listFilter(entity, page).map(c -> {
-            double count = this._repository.countEstoqueById(c.getId());
-            c.setEstoqueAtual(count);
-            return c;
+        return super.listFilter(entity, page).map(produto -> {
+            double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count);
+            return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(c -> {
-            double count = this._repository.countEstoqueById(c.getId());
-            c.setEstoqueAtual(count);
-            return c;
+        return _repository.findAll(PageRequest.of((page - 1), 10)).map(produto -> {
+            double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count);
+            return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listActiveDto(int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10)).map(c -> {
-            double count = this._repository.countEstoqueById(c.getId());
-            c.setEstoqueAtual(count);
-            return c;
+        return _repository.listActive(PageRequest.of((page - 1), 10)).map(produto -> {
+            double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count);
+            return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDesactiveDto(int page) {
-        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(c -> {
-            double count = this._repository.countEstoqueById(c.getId());
-            c.setEstoqueAtual(count);
-            return c;
+        return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(produto -> {
+            double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count);
+            return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoqueZero(int page) {
-        return _repository.listEstoque(0, 1, PageRequest.of((page - 1), 10)).map(c -> {
-            double count = this._repository.countEstoqueById(c.getId());
-            c.setEstoqueAtual(count);
-            return c;
+        return _repository.listEstoque(0, 1, PageRequest.of((page - 1), 10)).map(produto -> {
+            double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count);
+            return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoque(int page) {
-        return _repository.listEstoque(1, 9999999, PageRequest.of((page - 1), 10)).map(c -> {
-            double count = this._repository.countEstoqueById(c.getId());
-            c.setEstoqueAtual(count);
-            return c;
+        return _repository.listEstoque(1, 9999999, PageRequest.of((page - 1), 10)).map(produto -> {
+            double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count);
+            return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 }

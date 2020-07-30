@@ -1,14 +1,14 @@
 package com.lanchonete.apllication.dto.cliente;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 
 import com.lanchonete.utils.MessageError;
 
 public class ClienteGenericDto {
 
+    @NotNull(message = MessageError.IS_MANDATORY)
     public long id;
     public boolean ativo;
     
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String nome;
 }

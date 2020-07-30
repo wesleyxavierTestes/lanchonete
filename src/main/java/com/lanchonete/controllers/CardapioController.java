@@ -34,8 +34,6 @@ public class CardapioController extends AbstractBaseController {
         _service = service;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new CardapioDto());
@@ -44,6 +42,12 @@ public class CardapioController extends AbstractBaseController {
     @GetMapping("list")
     public ResponseEntity<Page<CardapioListDto>> list(@RequestParam(name = "page") int page) {
         Page<CardapioListDto> list = this._service.listDto(page);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("list/full")
+    public ResponseEntity<Page<CardapioListDto>> listFull(@RequestParam(name = "page") int page) {
+        Page<CardapioListDto> list = this._service.listDtoFull(page);
         return ResponseEntity.ok(list);
     }
 
@@ -79,8 +83,6 @@ public class CardapioController extends AbstractBaseController {
     public ResponseEntity<Object> save(@RequestBody() @Valid CardapioDto entityDto) {
 
         Cardapio entity = Mapper.map(entityDto);
-
-        this._service.criarCardapio(entity);
 
         try {
             this._service.save(entity);

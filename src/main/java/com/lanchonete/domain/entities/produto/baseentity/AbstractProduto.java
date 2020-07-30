@@ -33,5 +33,5 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
     private String nome;
 
     @Column(nullable = false)
-    private BigDecimal valor;    
+    private BigDecimal valor;
 }
