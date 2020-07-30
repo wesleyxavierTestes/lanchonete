@@ -1,17 +1,17 @@
 package com.lanchonete.domain.entities.cardapio;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
+import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +24,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Cardapio extends BaseEntity {
+@Entity(name = "cardapio_item")
+public class CardapioItem extends AbstractProduto implements IProdutoCardapio {
 
-    @Column(unique = true)
-    private String nome;
+    private boolean disponivel = true;
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
-    cascade = CascadeType.DETACH)
-    private Set<IProdutoCardapio> itensDisponiveis = new HashSet<>();
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Cardapio cardapio;
 }

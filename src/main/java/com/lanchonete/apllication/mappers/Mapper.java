@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
@@ -19,10 +20,11 @@ import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
-import com.lanchonete.domain.entities.cardapio.combo.Combo;
-import com.lanchonete.domain.entities.cardapio.combo.ComboBebida;
-import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
-import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.cardapio.CardapioItem;
+import com.lanchonete.domain.entities.combo.Combo;
+import com.lanchonete.domain.entities.combo.ComboBebida;
+import com.lanchonete.domain.entities.lanche.Ingrediente;
+import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
@@ -31,6 +33,7 @@ import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.entities.venda.Venda;
@@ -94,7 +97,24 @@ public final class Mapper {
     }
 
     public static Cardapio map(final CardapioDto entity) {
-        return Mapper.map(entity, Cardapio.class);
+        final Set<IProdutoCardapio> itensDisponiveis = new HashSet<>();
+        List<CardapioItemDto> copy = null;
+
+        if (Objects.nonNull(entity.itensDisponiveis)) {
+            entity.itensDisponiveis.stream().forEach(c -> itensDisponiveis
+            .add(Mapper.map(c, CardapioItem.class)));
+
+            copy = new ArrayList<>(entity.itensDisponiveis);
+            entity.itensDisponiveis = null;
+        }
+
+        final Cardapio lancheMap = Mapper.map(entity, Cardapio.class);
+        if (Objects.nonNull(lancheMap))
+            lancheMap.setItensDisponiveis(itensDisponiveis);
+
+        entity.itensDisponiveis = copy;
+
+        return lancheMap;
     }
 
     public static CardapioDto map(final Cardapio entity) {
@@ -178,8 +198,8 @@ public final class Mapper {
         return LancheMapper.update(entityDto, entity);
     }
 
-    public static Lanche map(LancheDto entity) {
-        Set<IProdutoComposicao> ingredientes = new HashSet<>();
+    public static Lanche map(final LancheDto entity) {
+        final Set<IProdutoComposicao> ingredientes = new HashSet<>();
         List<IngredienteDto> copy = null;
 
         if (Objects.nonNull(entity.ingredientesLanche)) {
@@ -189,7 +209,7 @@ public final class Mapper {
             entity.ingredientesLanche = null;
         }
 
-        Lanche lancheMap = Mapper.map(entity, Lanche.class);
+        final Lanche lancheMap = Mapper.map(entity, Lanche.class);
         if (Objects.nonNull(lancheMap))
             lancheMap.setIngredientesLanche(ingredientes);
 
@@ -234,10 +254,10 @@ public final class Mapper {
         return Mapper.map(entity, IngredienteDto.class);
     }
 
-    public static ComboBebida map(Combo entity, Produto bebida) {
+    public static ComboBebida map(final Combo entity, final Produto bebida) {
         try {
             return Mapper.map(bebida, ComboBebida.class);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }

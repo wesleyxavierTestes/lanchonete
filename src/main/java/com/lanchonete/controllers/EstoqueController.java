@@ -46,19 +46,26 @@ public class EstoqueController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<EstoqueListDto>> list(@RequestParam(name = "page") int page) {
+        
         Page<EstoqueListDto> list = this._serviceEstoque.listDto(page);
+        
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/entrance")
     public ResponseEntity<Object> listEntrance(@RequestParam(name = "page") int page) {
+        
         Page<EstoqueListDto> list = this._serviceEstoque.listEntrance(page);
+        
         return ResponseEntity.ok(list);
     }
 
+
     @GetMapping("list/leave")
     public ResponseEntity<Object> findLeave(@RequestParam(name = "page") int page) {
+        
         Page<EstoqueListDto> list = this._serviceEstoque.listLeave(page);
+        
         return ResponseEntity.ok(list);
     }
 

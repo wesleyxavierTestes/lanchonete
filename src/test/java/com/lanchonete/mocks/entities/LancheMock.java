@@ -3,7 +3,7 @@ package com.lanchonete.mocks.entities;
 import java.math.BigDecimal;
 
 import com.lanchonete.apllication.dto.lanche.LancheDto;
-import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.lanche.Lanche;
 
 public class LancheMock {
 

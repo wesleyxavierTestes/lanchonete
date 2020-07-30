@@ -8,7 +8,7 @@ import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
-import com.lanchonete.domain.entities.cardapio.lanche.Ingrediente;
+import com.lanchonete.domain.entities.lanche.Ingrediente;
 import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.mocks.entities.CategoriaMock;

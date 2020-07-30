@@ -1,7 +1,7 @@
 package com.lanchonete.infra.repositorys.lanche;
 
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
-import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.lanche.Lanche;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

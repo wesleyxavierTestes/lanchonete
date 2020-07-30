@@ -69,10 +69,8 @@ public class CardapioController extends AbstractBaseController {
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
+        
         Cardapio entity = this._service.find(id);
-
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -80,7 +78,15 @@ public class CardapioController extends AbstractBaseController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid CardapioDto entityDto) {
 
-        Cardapio entity = this._service.save(Mapper.map(entityDto));
+        Cardapio entity = Mapper.map(entityDto);
+
+        this._service.criarCardapio(entity);
+
+        try {
+            this._service.save(entity);
+        } catch (Exception e) {
+            System.out.print(e);
+        }
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

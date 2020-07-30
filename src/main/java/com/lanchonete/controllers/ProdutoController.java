@@ -1,6 +1,5 @@
 package com.lanchonete.controllers;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -14,7 +13,6 @@ import com.lanchonete.domain.entities.produto.entities.Produto;
 import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
-import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,25 +48,25 @@ public class ProdutoController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<ProdutoListDto>> list(@RequestParam(name = "page") int page) {
-        
+
         Page<ProdutoListDto> list = this._service.listDto(page);
-        
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/estoque/zero")
     public ResponseEntity<Page<ProdutoListDto>> listEstoqueZero(@RequestParam(name = "page") int page) {
-        
+
         Page<ProdutoListDto> list = this._service.listEstoqueZero(page);
-        
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/estoque")
     public ResponseEntity<Page<ProdutoListDto>> listEstoque(@RequestParam(name = "page") int page) {
-        
+
         Page<ProdutoListDto> list = this._service.listEstoque(page);
-        
+
         return ResponseEntity.ok(list);
     }
 
@@ -128,8 +126,6 @@ public class ProdutoController extends AbstractBaseController {
         Categoria categoria = this._serviceCategoria.find(entityDto.categoria.id);
 
         Produto entity = this._service.find(entityDto.id);
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         Produto map = Mapper.map(entityDto, entity);
 

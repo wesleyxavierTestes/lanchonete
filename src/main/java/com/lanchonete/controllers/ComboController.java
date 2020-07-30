@@ -1,17 +1,14 @@
 package com.lanchonete.controllers;
 
-import java.util.Objects;
-
 import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.cardapio.combo.Combo;
+import com.lanchonete.domain.entities.combo.Combo;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.combo.ComboService;
-import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,26 +43,34 @@ public class ComboController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<ComboListDto>> list(@RequestParam(name = "page") int page) {
+
         Page<ComboListDto> list = this._service.listDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @PostMapping("list/filter")
     public ResponseEntity<Page<ComboListDto>> listFilter(@RequestParam(name = "page") int page,
             @RequestBody ComboDto filter) {
+
         Page<ComboListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/active")
     public ResponseEntity<Page<ComboListDto>> listActive(@RequestParam(name = "page") int page) {
+
         Page<ComboListDto> list = this._service.listActiveDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/desactive")
     public ResponseEntity<Page<ComboListDto>> listDesactive(@RequestParam(name = "page") int page) {
+
         Page<ComboListDto> list = this._service.listDesactiveDto(page);
+
         return ResponseEntity.ok(list);
     }
 
@@ -81,9 +86,6 @@ public class ComboController extends AbstractBaseController {
     public ResponseEntity<Object> save(@RequestBody() @Valid ComboDto entityDto) {
 
         Categoria categoria = this._serviceCategoria.find(entityDto.categoria.id);
-
-        if (!Objects.nonNull(categoria))
-            return ResponseEntity.badRequest().body("Categoria" + MessageError.IS_MANDATORY);
 
         Combo entity = Mapper.map(entityDto);
 

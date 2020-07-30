@@ -5,15 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
-import com.lanchonete.apllication.dto.combo.ComboItem;
 import com.lanchonete.apllication.dto.combo.ComboDto;
+import com.lanchonete.apllication.dto.combo.ComboItemDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueProdutoDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
@@ -21,8 +19,7 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
-import com.lanchonete.domain.entities.cardapio.combo.Combo;
-import com.lanchonete.domain.entities.produto.baseentity.IProduto;
+import com.lanchonete.domain.entities.combo.Combo;
 import com.lanchonete.domain.services.combo.ComboService;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ComboMock;
@@ -45,7 +42,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ComboTest {
@@ -173,8 +169,8 @@ public class ComboTest {
 
             ComboDto combo = ComboMock.dto(nome);
             combo.categoria = categoria;
-            combo.lanche = Mapper.map(lanche, ComboItem.class);
-            combo.bebida = Mapper.map(comboBebida, ComboItem.class);
+            combo.lanche = Mapper.map(lanche, ComboItemDto.class);
+            combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
             combo.valor = "123";
             combo.valorTotal = "123";
 

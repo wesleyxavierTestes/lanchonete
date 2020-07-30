@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import com.lanchonete.utils.MessageError;
 
-public class ComboItem {
+public class ComboItemDto {
 
     public long id;
 

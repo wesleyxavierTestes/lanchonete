@@ -1,8 +1,7 @@
-package com.lanchonete.domain.entities.cardapio.lanche;
+package com.lanchonete.domain.entities.lanche;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;

@@ -1,4 +1,4 @@
-package com.lanchonete.domain.entities.cardapio.combo;
+package com.lanchonete.domain.entities.combo;
 
 import javax.persistence.Entity;
 

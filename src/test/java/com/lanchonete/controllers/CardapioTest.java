@@ -5,16 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
-import com.lanchonete.apllication.dto.combo.ComboItem;
+import com.lanchonete.apllication.dto.combo.ComboItemDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueDto;
 import com.lanchonete.apllication.dto.estoque.EstoqueProdutoDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
@@ -24,6 +25,7 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.services.cardapio.CardapioService;
+import com.lanchonete.mocks.entities.CardapioMock;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ComboMock;
 import com.lanchonete.mocks.entities.EstoqueMock;
@@ -74,7 +76,8 @@ public class CardapioTest {
         public void listar() {
             String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioList + "/?page=1", port);
 
-            ResponseEntity<CardapioUtilsPageMock> response = restTemplate.getForEntity(url, CardapioUtilsPageMock.class);
+            ResponseEntity<CardapioUtilsPageMock> response = restTemplate.getForEntity(url,
+                    CardapioUtilsPageMock.class);
             CardapioUtilsPageMock page = response.getBody();
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -139,28 +142,51 @@ public class CardapioTest {
         private CardapioUtilsPageMock page;
         private CardapioDto entity;
 
-        // @Test
+        @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
-            CategoriaDto categoria1 = CATEGORIA("CardapioTest: Categoria1 Save_ok");
-            CategoriaDto categoria2 = CATEGORIA("CardapioTest: Categoria2 Save_ok");
-            CategoriaDto categoria3 = CATEGORIA("CardapioTest: Categoria3 Save_ok");
-            CategoriaDto categoria4 = CATEGORIA("CardapioTest: Categoria4 Save_ok");
-            ProdutoDto produto1 = PRODUTO("CardapioTest: Produto1 Save_ok", categoria1);
-            ProdutoDto produto2 = PRODUTO("CardapioTest: Produto2 Save_ok", categoria2);
-            ProdutoDto produto3 = PRODUTO("CardapioTest: Produto3 Save_ok", categoria3);
-            ESTOQUE(produto1);
-            ESTOQUE(produto2);
-            ESTOQUE(produto3);
+            List<CategoriaDto> categorias = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                CategoriaDto categoria = CATEGORIA("CardapioTest: Categoria" + i + " Save_ok");
+                categorias.add(categoria);
+            }
 
-            List<IngredienteDto> ingredientes = new ArrayList<>();
-            ingredientes.add(Mapper.map(produto1, IngredienteDto.class));
-            ingredientes.add(Mapper.map(produto2, IngredienteDto.class));
+            List<ProdutoDto> produtos = new ArrayList<>();
 
-            LancheDto lanche1 = LANCHE("CardapioTest: Lanche Save_ok", categoria1, ingredientes);
+            for (int i = 0; i < 30; i++) {
+                int index = new Random().nextInt(20);
+                ProdutoDto produto = PRODUTO("CardapioTest: Produto" + i + " Save_ok", categorias.get(index));
+                if (index % 2 == 0)
+                    ESTOQUE(produto);
+                produtos.add(produto);
+            }
 
-            ComboDto combo1 = COMBO("CardapioTest: ComboDto Save_ok", categoria4, lanche1, produto3);
-            
+            List<LancheDto> lanches = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                int indexProduto = new Random().nextInt(25);
+                int indexCategoria = new Random().nextInt(10);
+
+                List<IngredienteDto> ingredientes = new ArrayList<>();
+                ingredientes.add(Mapper.map(produtos.get(indexProduto + 1), IngredienteDto.class));
+                ingredientes.add(Mapper.map(produtos.get(indexProduto), IngredienteDto.class));
+
+                LancheDto lanche = LANCHE("CardapioTest: Lanche" + i + "  Save_ok", categorias.get(indexCategoria),
+                        ingredientes);
+                lanches.add(lanche);
+            }
+
+            List<ComboDto> combos = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                int indexLanche = new Random().nextInt(10);
+                int indexCategoria = new Random().nextInt(15);
+                int indexProduto = new Random().nextInt(25);
+                ComboDto combo = COMBO("CardapioTest: ComboDto" + i + " Save_ok", categorias.get(indexCategoria),
+                        lanches.get(indexLanche), produtos.get(indexProduto));
+                combos.add(combo);
+            }
+
+            CARDAPIO("CardapioTest: CardapioDto Save_ok", produtos, lanches, combos);
+
             LIST();
             FIND();
             DESACTIVE();
@@ -169,28 +195,75 @@ public class CardapioTest {
             FIND_ACTIVE();
         }
 
-        private ComboDto COMBO(String nome, CategoriaDto categoria, LancheDto lanche, ProdutoDto comboBebida) {
+        private CardapioDto CARDAPIO(String nome, List<ProdutoDto> produtos, List<LancheDto> lanches,
+                List<ComboDto> combos) {
+            // SAVE
+            CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
+            cardapio.itensDisponiveis = new ArrayList<>();
+            CardapioItemDto produto = null;
+            for (int i = 0; i < 7; i++) {
+                int index = new Random().nextInt(9);
+                if (index % 3 == 0)
+                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+                else if (index % 2 == 0) {
+                    produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
+                } else {
+                    produto = Mapper.map(combos.get(i), CardapioItemDto.class);
+                }
+                cardapio.itensDisponiveis.add(produto);
+            }
 
-            ComboDto combo = ComboMock.dto(nome);
-            combo.categoria = categoria;
-            combo.lanche = Mapper.map(lanche, ComboItem.class);
-            combo.bebida = Mapper.map(comboBebida, ComboItem.class);
-            combo.valor = "123";
-            combo.valorTotal = "123";
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(combo, null),
-                    Object.class);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioSave, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST,
+                    new HttpEntity<>(cardapio, null), Object.class);
 
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
 
             String json = ObjectMapperUtils.toJson(response.getBody());
-            combo = ObjectMapperUtils.jsonTo(json, ComboDto.class);
+            cardapio = ObjectMapperUtils.jsonTo(json, CardapioDto.class);
 
-            assertNotNull(lanche.codigo);
+            assertNotNull(cardapio);
 
+            return cardapio;
+        }
+
+        private ComboDto COMBO(String nome, CategoriaDto categoria, LancheDto lanche, ProdutoDto comboBebida) {
+
+            ComboDto combo = null;
+            try {
+                combo = ComboMock.dto(nome);
+                combo.categoria = categoria;
+                combo.lanche = Mapper.map(lanche, ComboItemDto.class);
+                combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
+                combo.valor = "123";
+                combo.valorTotal = "123";
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
+            ResponseEntity<Object> response = null;
+            try {
+                response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(combo, null), Object.class);
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+            if (response == null)
+                System.out.print("");
+
+            assertNotNull(response);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            try {
+                String json = ObjectMapperUtils.toJson(response.getBody());
+                combo = ObjectMapperUtils.jsonTo(json, ComboDto.class);
+
+                assertNotNull(lanche.codigo);
+            } catch (Exception e) {
+                System.out.print(e);
+            }
             return combo;
 
         }
@@ -337,7 +410,8 @@ public class CardapioTest {
             // LIST
             String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioList + "/?page=1", port);
 
-            ResponseEntity<CardapioUtilsPageMock> responselist = restTemplate.getForEntity(url, CardapioUtilsPageMock.class);
+            ResponseEntity<CardapioUtilsPageMock> responselist = restTemplate.getForEntity(url,
+                    CardapioUtilsPageMock.class);
 
             page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());

@@ -1,18 +1,15 @@
-package com.lanchonete.domain.entities.cardapio.lanche;
+package com.lanchonete.domain.entities.combo;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
 import lombok.AllArgsConstructor;
@@ -27,11 +24,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lanche extends AbstractProduto implements IProdutoPedido {
+public class Combo extends AbstractProduto implements IProdutoPedido {
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, 
-    cascade = CascadeType.ALL)
-    private Set<IProdutoComposicao> ingredientesLanche = new HashSet<>();
+    @OneToOne
+    private Lanche lanche;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ComboBebida bebida;
 
     @Column(nullable = false)
     private BigDecimal valorTotal;
@@ -42,7 +41,6 @@ public class Lanche extends AbstractProduto implements IProdutoPedido {
         if (!Objects.nonNull(this.getValor()))
             this.setValor(BigDecimal.ZERO);
 
-        for (IProdutoComposicao i : ingredientesLanche)
-            this.setValor(this.getValor().add(i.getValor()));
+        this.setValor(this.lanche.getValorTotal().add(this.bebida.getValor()));
     }
 }

@@ -3,7 +3,7 @@ package com.lanchonete.mocks.entities;
 import java.math.BigDecimal;
 
 import com.lanchonete.apllication.dto.combo.ComboDto;
-import com.lanchonete.domain.entities.cardapio.combo.Combo;
+import com.lanchonete.domain.entities.combo.Combo;
 
 public class ComboMock {
 

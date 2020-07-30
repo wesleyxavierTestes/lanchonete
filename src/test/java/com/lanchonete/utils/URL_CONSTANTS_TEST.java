@@ -48,11 +48,11 @@ public final class URL_CONSTANTS_TEST {
     public final static String ComboActive = "http://localhost:%s/api/combo/active";
     public final static String ComboDesactive = "http://localhost:%s/api/combo/desactive";
     
-    public final static String CardapioList = "http://localhost:%s/api/combo/list";
-    public final static String CardapioFind = "http://localhost:%s/api/combo/find";
-    public final static String CardapioSave = "http://localhost:%s/api/combo/save";
-    public final static String CardapioActive = "http://localhost:%s/api/combo/active";
-    public final static String CardapioDesactive = "http://localhost:%s/api/combo/desactive";
+    public final static String CardapioList = "http://localhost:%s/api/cardapio/list";
+    public final static String CardapioFind = "http://localhost:%s/api/cardapio/find";
+    public final static String CardapioSave = "http://localhost:%s/api/cardapio/save";
+    public final static String CardapioActive = "http://localhost:%s/api/cardapio/active";
+    public final static String CardapioDesactive = "http://localhost:%s/api/cardapio/desactive";
     
     public final static String EnderecoList = "http://localhost:%s/api/endereco/list";
     public final static String EnderecoFind = "http://localhost:%s/api/endereco/find";

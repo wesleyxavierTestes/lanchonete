@@ -62,33 +62,40 @@ public class ClienteController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<ClienteListDto>> list(@RequestParam(name = "page") int page) {
+
         Page<ClienteListDto> list = this._service.listDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @PostMapping("list/filter")
-    public ResponseEntity<Page<ClienteListDto>> listFilter(
-        @RequestParam(name = "page") int page,   
-        @RequestBody ClienteDto filter) {
+    public ResponseEntity<Page<ClienteListDto>> listFilter(@RequestParam(name = "page") int page,
+            @RequestBody ClienteDto filter) {
+
         Page<ClienteListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/active")
     public ResponseEntity<Page<ClienteListDto>> listActive(@RequestParam(name = "page") int page) {
+
         Page<ClienteListDto> list = this._service.listActiveDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/desactive")
     public ResponseEntity<Page<ClienteListDto>> listDesactive(@RequestParam(name = "page") int page) {
+
         Page<ClienteListDto> list = this._service.listDesactiveDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
-        
+
         Cliente entity = this._service.find(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -96,7 +103,7 @@ public class ClienteController extends AbstractBaseController {
 
     @GetMapping("find/default")
     public ResponseEntity<Object> findefault() {
-        
+
         Cliente entity = this._service.findDefault();
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -106,7 +113,7 @@ public class ClienteController extends AbstractBaseController {
     public ResponseEntity<Object> save(@RequestBody() @Valid ClienteDto entityDto) {
 
         Cliente entity = this._service.save(Mapper.map(entityDto));
-        
+
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
@@ -122,16 +129,16 @@ public class ClienteController extends AbstractBaseController {
 
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
-        
-        Cliente entity  = this._service.ative(id, true);
+
+        Cliente entity = this._service.ative(id, true);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        
-        Cliente entity  = this._service.ative(id, false);
+
+        Cliente entity = this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

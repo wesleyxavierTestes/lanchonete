@@ -37,4 +37,7 @@ public class CardapioService extends BaseService<Cardapio> {
     public Page<CardapioListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CardapioListDto.class));
     }
+
+	public void criarCardapio(Cardapio entity) {
+	}
 }

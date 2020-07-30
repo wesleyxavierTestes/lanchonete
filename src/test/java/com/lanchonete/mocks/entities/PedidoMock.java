@@ -7,9 +7,7 @@ import com.lanchonete.domain.entities.pedido.PedidoNovo;
 public class PedidoMock {
 
     public static PedidoDto dto(String nome) {
-        PedidoDto clienteDtoMock = PedidoDto.builder()
-.nome(nome)
-                .build();
+        PedidoDto clienteDtoMock = PedidoDto.builder().nome(nome).build();
         return clienteDtoMock;
     }
 

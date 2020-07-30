@@ -23,13 +23,13 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractProduto extends BaseEntity implements IProduto {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private UUID codigo;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Categoria categoria;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String nome;
 
     @Column(nullable = false)

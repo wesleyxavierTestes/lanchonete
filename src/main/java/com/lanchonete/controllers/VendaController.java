@@ -1,14 +1,15 @@
 package com.lanchonete.controllers;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+
 import javax.validation.Valid;
+
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.venda.VendaService;
-import com.lanchonete.utils.MessageError;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -40,22 +41,24 @@ public class VendaController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<VendaListDto>> list(@RequestParam(name = "page") int page) {
+
         Page<VendaListDto> list = this._service.listDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/cancel")
     public ResponseEntity<Page<VendaListDto>> listCancel(@RequestParam(name = "page") int page) {
+
         Page<VendaListDto> list = this._service.listCancelDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
-        Venda entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+        Venda entity = this._service.find(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -70,10 +73,8 @@ public class VendaController extends AbstractBaseController {
 
     @DeleteMapping("cancel")
     public ResponseEntity<Object> cancel(@RequestParam(name = "id") long id) {
-        Venda entity = this._service.find(id);
 
-        if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+        Venda entity = this._service.find(id);
 
         entity.setAtivo(true);
         entity.setCancelado(true);

@@ -17,7 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ItemVenda extends AbstractProduto implements IProdutoVenda {
+public class VendaItem extends AbstractProduto implements IProdutoVenda {
 
     @OneToOne
     private Pedido pedido;

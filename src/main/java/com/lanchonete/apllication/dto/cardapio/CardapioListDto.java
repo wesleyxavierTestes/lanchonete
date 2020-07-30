@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CardapioListDto {
 
+    public long id;
+    public boolean ativo;
     public String nome;
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.entities.Produto;

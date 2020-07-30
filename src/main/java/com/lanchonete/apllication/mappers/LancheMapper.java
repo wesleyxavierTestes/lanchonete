@@ -1,7 +1,7 @@
 package com.lanchonete.apllication.mappers;
 
 import com.lanchonete.apllication.dto.lanche.LancheDto;
-import com.lanchonete.domain.entities.cardapio.lanche.Lanche;
+import com.lanchonete.domain.entities.lanche.Lanche;
 
 final class LancheMapper {
     private LancheMapper() {}
