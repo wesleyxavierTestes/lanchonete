@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -32,14 +33,23 @@ public class Venda extends BaseEntity {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
-    private Set<IProdutoVenda> pedidos = new HashSet<>();
+    private Set<IProdutoVenda> vendaItens = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Cliente cliente;
 
+    @Column(nullable = false)
     private BigDecimal valorDesconto;
+
+    @Column(nullable = false)
     private BigDecimal valor;
+
+    @Column(nullable = false)
     private BigDecimal valorTotal;
+
+    @Column(nullable = false)
     private boolean cancelado;
+
+    @Column(nullable = true)
     private LocalDateTime dataCancelado;
 }

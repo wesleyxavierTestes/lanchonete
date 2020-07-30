@@ -22,6 +22,7 @@ public class ComboDto  {
     @NotNull(message = MessageError.IS_MANDATORY)
     public String nome;
 
+    @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String codigo;
 
     @NotNull(message = MessageError.IS_MANDATORY)

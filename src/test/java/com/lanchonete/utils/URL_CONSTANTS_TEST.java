@@ -36,6 +36,13 @@ public final class URL_CONSTANTS_TEST {
     public final static String CategoriaActive = "http://localhost:%s/api/categoria/active";
     public final static String CategoriaDesactive = "http://localhost:%s/api/categoria/desactive";
 
+    public final static String PedidoList = "http://localhost:%s/api/pedido/list";
+    public final static String PedidoFind = "http://localhost:%s/api/pedido/find";
+    public final static String PedidoSave = "http://localhost:%s/api/pedido/save";
+    public final static String PedidoUpdate = "http://localhost:%s/api/pedido/update";
+    public final static String PedidoActive = "http://localhost:%s/api/pedido/active";
+    public final static String PedidoDesactive = "http://localhost:%s/api/pedido/desactive";
+
     public final static String LancheList = "http://localhost:%s/api/lanche/list";
     public final static String LancheFind = "http://localhost:%s/api/lanche/find";
     public final static String LancheSave = "http://localhost:%s/api/lanche/save";

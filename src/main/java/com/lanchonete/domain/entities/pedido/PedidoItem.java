@@ -1,6 +1,7 @@
 package com.lanchonete.domain.entities.pedido;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -30,6 +31,8 @@ public class PedidoItem extends AbstractProduto implements IProdutoCardapio {
 
     private EnumEstadoPedido estado = EnumEstadoPedido.Novo;
     
+    private UUID codigo;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Pedido cardapio;
 }

@@ -7,8 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
+import com.lanchonete.apllication.dto.pedido.PedidoDto;
+import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboItemDto;
@@ -19,14 +25,16 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
-import com.lanchonete.domain.entities.combo.Combo;
-import com.lanchonete.domain.services.combo.ComboService;
+import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.services.pedido.PedidoService;
+import com.lanchonete.mocks.entities.PedidoMock;
+import com.lanchonete.mocks.entities.CardapioMock;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ComboMock;
 import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
-import com.lanchonete.mocks.pages.ComboUtilsPageMock;
+import com.lanchonete.mocks.pages.PedidoUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -44,7 +52,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ComboTest {
+public class PedidoTest {
 
     @LocalServerPort
     private int port;
@@ -53,26 +61,27 @@ public class ComboTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    protected ComboService _service;
+    protected PedidoService _service;
 
     @Test
-    @DisplayName("Deve converter uma ComboDto para Combo incluindo Endereco")
+    @DisplayName("Deve converter uma PedidoDto para Pedido incluindo Endereco")
     public void converterClientDto() {
 
-        Combo combo = Mapper.map(new ComboDto());
+        Pedido combo = Mapper.map(new PedidoDto());
         assertNotNull(combo);
     }
 
     @Nested
     @DisplayName(value = "Testes com combos Invalidos")
-    class ComboInvalid {
+    class PedidoInvalid {
         @Test
         @DisplayName("Deve listar todos combos com lista vazia")
         public void listar() {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoList + "/?page=1", port);
 
-            ResponseEntity<ComboUtilsPageMock> response = restTemplate.getForEntity(url, ComboUtilsPageMock.class);
-            ComboUtilsPageMock page = response.getBody();
+            ResponseEntity<PedidoUtilsPageMock> response = restTemplate.getForEntity(url,
+                    PedidoUtilsPageMock.class);
+            PedidoUtilsPageMock page = response.getBody();
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(page);
@@ -82,7 +91,7 @@ public class ComboTest {
         @Test
         @DisplayName("Deve buscar um combo")
         public void find_inexistente() {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=100000", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFind + "/?id=100000", port);
 
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
@@ -92,10 +101,10 @@ public class ComboTest {
         @Test
         @DisplayName("Deve tentar salvar combo invalido")
         public void save_invalid_test() {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoSave, port);
 
-            ComboDto entity = new ComboDto();
-            HttpEntity<ComboDto> requestSave = new HttpEntity<>(entity, null);
+            PedidoDto entity = new PedidoDto();
+            HttpEntity<PedidoDto> requestSave = new HttpEntity<>(entity, null);
 
             ResponseEntity<CustomErro[]> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
                     CustomErro[].class);
@@ -108,8 +117,8 @@ public class ComboTest {
         @Test
         @DisplayName("Deve tentar alterar combo inexistente")
         public void active() {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboActive + "/?id=100000", port);
-            HttpEntity<ComboDto> requestActive = new HttpEntity<>(null, null);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoActive + "/?id=100000", port);
+            HttpEntity<PedidoDto> requestActive = new HttpEntity<>(null, null);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestActive,
                     String.class);
 
@@ -120,8 +129,8 @@ public class ComboTest {
         @Test
         @DisplayName("Deve tentar excluir combo inexistente")
         public void desactive() {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboDesactive + "/?id=100000", port);
-            HttpEntity<ComboDto> requestDesactive = new HttpEntity<>(null, null);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoDesactive + "/?id=100000", port);
+            HttpEntity<PedidoDto> requestDesactive = new HttpEntity<>(null, null);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestDesactive,
                     String.class);
 
@@ -132,31 +141,55 @@ public class ComboTest {
 
     @Nested
     @DisplayName(value = "Testes de integração combos")
-    class ComboValid {
-        private ComboUtilsPageMock page;
-        private ComboDto entity;
+    class PedidoValid {
+        private PedidoUtilsPageMock page;
+        private PedidoDto entity;
 
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
-            CategoriaDto categoria1 = CATEGORIA("ComboTest: Categoria1 Save_ok");
-            CategoriaDto categoria2 = CATEGORIA("ComboTest: Categoria2 Save_ok");
-            CategoriaDto categoria3 = CATEGORIA("ComboTest: Categoria3 Save_ok");
-            CategoriaDto categoria4 = CATEGORIA("ComboTest: Categoria4 Save_ok");
-            ProdutoDto produto1 = PRODUTO("ComboTest: Produto1 Save_ok", categoria1);
-            ProdutoDto produto2 = PRODUTO("ComboTest: Produto2 Save_ok", categoria2);
-            ProdutoDto produto3 = PRODUTO("ComboTest: Produto3 Save_ok", categoria3);
-            ESTOQUE(produto1);
-            ESTOQUE(produto2);
-            ESTOQUE(produto3);
+            List<CategoriaDto> categorias = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                CategoriaDto categoria = CATEGORIA("PedidoTest: Categoria" + i + " Save_ok");
+                categorias.add(categoria);
+            }
 
-            List<IngredienteDto> ingredientes = new ArrayList<>();
-            ingredientes.add(Mapper.map(produto1, IngredienteDto.class));
-            ingredientes.add(Mapper.map(produto2, IngredienteDto.class));
+            List<ProdutoDto> produtos = new ArrayList<>();
 
-            LancheDto lanche1 = LANCHE("ComboTest: Lanche Save_ok", categoria1, ingredientes);
+            for (int i = 0; i < 30; i++) {
+                int index = new Random().nextInt(20);
+                ProdutoDto produto = PRODUTO("PedidoTest: Produto" + i + " Save_ok", categorias.get(index));
+                if (index % 2 == 0)
+                    ESTOQUE(produto);
+                produtos.add(produto);
+            }
 
-            COMBO("ComboTest: ComboDto Save_ok", categoria4, lanche1, produto3);
+            List<LancheDto> lanches = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                int indexProduto = new Random().nextInt(25);
+                int indexCategoria = new Random().nextInt(10);
+
+                List<IngredienteDto> ingredientes = new ArrayList<>();
+                ingredientes.add(Mapper.map(produtos.get(indexProduto + 1), IngredienteDto.class));
+                ingredientes.add(Mapper.map(produtos.get(indexProduto), IngredienteDto.class));
+
+                LancheDto lanche = LANCHE("PedidoTest: Lanche" + i + "  Save_ok", categorias.get(indexCategoria),
+                        ingredientes);
+                lanches.add(lanche);
+            }
+
+            List<ComboDto> combos = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                int indexLanche = new Random().nextInt(10);
+                int indexCategoria = new Random().nextInt(15);
+                int indexProduto = new Random().nextInt(25);
+                ComboDto combo = COMBO("PedidoTest: ComboDto" + i + " Save_ok", categorias.get(indexCategoria),
+                        lanches.get(indexLanche), produtos.get(indexProduto));
+                combos.add(combo);
+            }
+
+            CARDAPIO("PedidoTest: PedidoDto Save_ok", produtos, lanches, combos);
+
             LIST();
             FIND();
             DESACTIVE();
@@ -165,28 +198,76 @@ public class ComboTest {
             FIND_ACTIVE();
         }
 
-        private ComboDto COMBO(String nome, CategoriaDto categoria, LancheDto lanche, ProdutoDto comboBebida) {
+        private CardapioDto CARDAPIO(String nome, List<ProdutoDto> produtos, List<LancheDto> lanches,
+                List<ComboDto> combos) {
+            // SAVE
+            CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
+            cardapio.itensDisponiveis = new ArrayList<>();
+            CardapioItemDto produto = null;
+            for (int i = 0; i < 7; i++) {
+                int index = new Random().nextInt(9);
+                if (index % 3 == 0)
+                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+                else if (index % 2 == 0) {
+                    produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
+                } else {
+                    produto = Mapper.map(combos.get(i), CardapioItemDto.class);
+                }
+                cardapio.itensDisponiveis.add(produto);
+            }
 
-            ComboDto combo = ComboMock.dto(nome);
-            combo.categoria = categoria;
-            combo.lanche = Mapper.map(lanche, ComboItemDto.class);
-            combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
-            combo.valor = "123";
-            combo.valorTotal = "123";
-
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(combo, null),
-                    Object.class);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioSave, port);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST,
+                    new HttpEntity<>(cardapio, null), Object.class);
 
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
 
             String json = ObjectMapperUtils.toJson(response.getBody());
-            combo = ObjectMapperUtils.jsonTo(json, ComboDto.class);
+            cardapio = ObjectMapperUtils.jsonTo(json, CardapioDto.class);
 
-            assertNotNull(lanche.codigo);
+            assertNotNull(cardapio);
 
+            return cardapio;
+        }
+
+        
+        private ComboDto COMBO(String nome, CategoriaDto categoria, LancheDto lanche, ProdutoDto comboBebida) {
+
+            ComboDto combo = null;
+            try {
+                combo = ComboMock.dto(nome);
+                combo.categoria = categoria;
+                combo.lanche = Mapper.map(lanche, ComboItemDto.class);
+                combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
+                combo.valor = "123";
+                combo.valorTotal = "123";
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
+            ResponseEntity<Object> response = null;
+            try {
+                response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(combo, null), Object.class);
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+            if (response == null)
+                System.out.print("");
+
+            assertNotNull(response);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            try {
+                String json = ObjectMapperUtils.toJson(response.getBody());
+                combo = ObjectMapperUtils.jsonTo(json, ComboDto.class);
+
+                assertNotNull(lanche.codigo);
+            } catch (Exception e) {
+                System.out.print(e);
+            }
             return combo;
 
         }
@@ -279,8 +360,8 @@ public class ComboTest {
 
         private void ACTIVE() {
             // ACTIVE
-            HttpEntity<ComboDto> responseurl = new HttpEntity<>(null, null);
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboActive + "/?id=" + entity.id, port);
+            HttpEntity<PedidoDto> responseurl = new HttpEntity<>(null, null);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoActive + "/?id=" + entity.id, port);
 
             ResponseEntity<String> responseActive = restTemplate.exchange(url, HttpMethod.DELETE, responseurl,
                     String.class);
@@ -289,20 +370,20 @@ public class ComboTest {
         }
 
         private void FIND_DESACTIVE() {
-            ResponseEntity<ComboDto> responseFind;
+            ResponseEntity<PedidoDto> responseFind;
             // FIND DESACTIVE
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
-            responseFind = restTemplate.getForEntity(url, ComboDto.class);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFind + "/?id=" + entity.id, port);
+            responseFind = restTemplate.getForEntity(url, PedidoDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(false, responseFind.getBody().ativo);
         }
 
         private void FIND_ACTIVE() {
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFind + "/?id=" + entity.id, port);
 
             // FIND DESACTIVE
-            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(url, ComboDto.class);
+            ResponseEntity<PedidoDto> responseFind = restTemplate.getForEntity(url, PedidoDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
             assertEquals(true, responseFind.getBody().ativo);
@@ -310,9 +391,9 @@ public class ComboTest {
 
         private void DESACTIVE() {
             // DESACTIVE
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboDesactive + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoDesactive + "/?id=" + entity.id, port);
 
-            HttpEntity<ComboDto> responseurl = new HttpEntity<>(null, null);
+            HttpEntity<PedidoDto> responseurl = new HttpEntity<>(null, null);
             ResponseEntity<String> responseDesactive = restTemplate.exchange(url, HttpMethod.DELETE, responseurl,
                     String.class);
 
@@ -321,26 +402,26 @@ public class ComboTest {
 
         private void FIND() {
             // FIND
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboFind + "/?id=" + entity.id, port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFind + "/?id=" + entity.id, port);
 
-            ResponseEntity<ComboDto> responseFind = restTemplate.getForEntity(url, ComboDto.class);
+            ResponseEntity<PedidoDto> responseFind = restTemplate.getForEntity(url, PedidoDto.class);
 
             assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-            assertEquals(entity.nome, responseFind.getBody().nome);
         }
 
         private void LIST() {
             // LIST
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoList + "/?page=1", port);
 
-            ResponseEntity<ComboUtilsPageMock> responselist = restTemplate.getForEntity(url, ComboUtilsPageMock.class);
+            ResponseEntity<PedidoUtilsPageMock> responselist = restTemplate.getForEntity(url,
+                    PedidoUtilsPageMock.class);
 
             page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());
             assertTrue(page.totalElements > 0);
             assertTrue(page.totalPages >= 1);
 
-            entity = Mapper.map(page.content.get(0), ComboDto.class);
+            entity = Mapper.map(page.content.get(0), PedidoDto.class);
         }
 
     }

@@ -2,7 +2,10 @@ package com.lanchonete.domain.entities.venda;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import com.lanchonete.domain.entities.pedido.Pedido;
@@ -19,7 +22,9 @@ import lombok.*;
 @Entity
 public class VendaItem extends AbstractProduto implements IProdutoVenda {
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Pedido pedido;
-    private BigDecimal valorTotal;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Venda venda;
 }

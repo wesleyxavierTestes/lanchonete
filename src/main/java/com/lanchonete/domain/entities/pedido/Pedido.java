@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -41,6 +42,8 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
     private Set<IProdutoPedido> ItensVenda = new HashSet<>();
+
+    private UUID codigo;
 
     private BigDecimal valorDesconto;
     private BigDecimal valorTotal;

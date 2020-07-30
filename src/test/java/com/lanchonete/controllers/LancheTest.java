@@ -303,7 +303,7 @@ public class LancheTest {
             page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());
             assertTrue(page.totalElements > 0);
-            assertEquals(1, page.totalPages);
+            assertTrue(page.totalPages >= 1);
 
             entity = Mapper.map(page.content.get(0), LancheDto.class);
         }

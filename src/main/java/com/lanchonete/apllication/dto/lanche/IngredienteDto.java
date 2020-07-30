@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 public class IngredienteDto {
 
     public long id;
+    public boolean ativo;
+    @Max(value = 30, message = MessageError.MAX_LIMITE)
+    public String dataCadastro;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     @Max(value = 150, message = MessageError.MAX_LIMITE)

@@ -1,5 +1,14 @@
 package com.lanchonete.apllication.dto.pedido;
 
+import java.util.List;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+
+import com.lanchonete.apllication.dto.cliente.ClienteGenericDto;
+import com.lanchonete.domain.enuns.pedidos.EnumEstadoPedido;
+import com.lanchonete.utils.MessageError;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -10,7 +19,31 @@ import lombok.NoArgsConstructor;
 public class PedidoDto  {
 
     public long id;
-    public String nome;
+    public boolean ativo;
 
-    public ClientePedidoDto cliente;
+    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    public String codigo;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public List<PedidoItemDto> ItensVenda;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    public String valorDesconto;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    public String valorTotal;
+    
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public boolean cancelado;
+
+    @Max(value = 30, message = MessageError.MAX_LIMITE)
+    public String dataCancelado;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public EnumEstadoPedido estado;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public ClienteGenericDto cliente;
 }
