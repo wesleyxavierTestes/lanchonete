@@ -8,8 +8,11 @@ import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.entities.pedido.PedidoAguardando;
 import com.lanchonete.domain.services.cardapio.CardapioService;
+import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.domain.services.pedido.PedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +32,16 @@ public class PedidoController extends AbstractBaseController {
 
     private final PedidoService _service;
     private final CardapioService _cardapioService;
+    private final ClienteService _clienteService;
 
     @Autowired
-    public PedidoController(PedidoService service, CardapioService cardapioService) {
+    public PedidoController(
+        PedidoService service,
+        CardapioService cardapioService,
+        ClienteService clienteService) {
         _service = service;
         _cardapioService = cardapioService;
+        _clienteService = clienteService;
     }
 
     // TODO: INCOMPLETO
@@ -89,13 +97,15 @@ public class PedidoController extends AbstractBaseController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid PedidoDto entityDto) {
 
+        Cliente cliente = this._clienteService.find(entityDto.cliente.id);
+
         Cardapio cardapio = _cardapioService.cardapioActive();
 
         Pedido entity = Mapper.map(entityDto);
 
-        this._service.criarPedido(entity, cardapio);
+        PedidoAguardando fazerPedido = this._service.configurarPedido(entity, cardapio, cliente);
 
-        // this._service.save(entity);
+        this._service.save(fazerPedido);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

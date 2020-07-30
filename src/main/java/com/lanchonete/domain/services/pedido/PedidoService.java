@@ -1,13 +1,18 @@
 package com.lanchonete.domain.services.pedido;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.domain.entities.cliente.Cliente;
+import com.lanchonete.domain.entities.pedido.IPedidoState;
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.domain.entities.pedido.PedidoAguardando;
 import com.lanchonete.domain.entities.pedido.PedidoItem;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
@@ -56,19 +61,29 @@ public class PedidoService extends BaseService<Pedido> {
         return _repository.listClient(id, PageRequest.of((page - 1), 10)).map(Mapper.pageMap(PedidoListDto.class));
     }
 
-    public void criarPedido(Pedido entity, Cardapio cardapio) {
+    public PedidoAguardando configurarPedido(Pedido entity, Cardapio cardapio, Cliente cliente) {
+        entity.setValor(BigDecimal.ZERO);
+        configurarPedidoItens(entity, cardapio);
+        entity.calcularValorTotal();
+        entity.setCodigo(UUID.randomUUID());
+        entity.setCliente(cliente);
+        PedidoAguardando fazerPedido = (PedidoAguardando)entity.fazerPedido();
+        return fazerPedido;
+    }
 
-        entity.getv
-        for (IProdutoPedido produto : entity.getPedidoitens()) {
-            for (IProdutoCardapio produtoCardapio : cardapio.getItensDisponiveis()) {
-                if (produto.getCodigo().equals(produtoCardapio.getCodigo())) {
-                    produto = (IProdutoPedido) produtoCardapio;
-                    entity
-                    break;
+    private void configurarPedidoItens(Pedido entity, Cardapio cardapio) {
+        try {
+            for (IProdutoPedido produto : entity.getPedidoitens()) {
+                for (IProdutoCardapio produtoCardapio : cardapio.getItensDisponiveis()) {
+                    if (produto.getCodigo().equals(produtoCardapio.getCodigo())) {
+                        produto = (IProdutoPedido) produtoCardapio;
+                        entity.setValor(entity.getValor().add(produto.getValor()));
+                        break;
+                    }
                 }
             }
+        } catch (Exception e) {
+            System.out.println(e);
         }
-
-        entity.
     }
 }

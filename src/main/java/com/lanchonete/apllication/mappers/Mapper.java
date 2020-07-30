@@ -239,13 +239,8 @@ public final class Mapper {
         if (Objects.nonNull(entity.pedidoitens)) {
             entity.pedidoitens.stream().forEach(item -> {
                 PedidoItem itemnew = new PedidoItem();
-
                 itemnew.setId(item.id);
-                itemnew.setNome(item.nome);
                 itemnew.setCodigo(UUID.fromString(item.codigo));
-                
-                PedidoItem itemnew2 = Mapper.map(item, PedidoItem.class);
-
                 pedidoitens.add(itemnew);
             });
 

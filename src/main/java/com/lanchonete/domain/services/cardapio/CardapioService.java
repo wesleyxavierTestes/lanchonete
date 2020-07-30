@@ -137,6 +137,10 @@ public class CardapioService extends BaseService<Cardapio> {
 
     public Cardapio cardapioActive() {
         Page<CardapioListDto> page = this.listActiveDto(1);
-        return this.find(page.getContent().get(0).id);
+        try {
+            return this.find(page.getContent().get(0).id);
+        } catch (Exception e) {
+            throw new RegraNegocioException("Cardapio ausente");
+        }
     }
 }

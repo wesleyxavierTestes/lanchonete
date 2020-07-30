@@ -36,6 +36,7 @@ public class PedidoMock {
     public static PedidoDto dto(String nome) {
         PedidoDto pedido = PedidoDto.builder().build();
         pedido.estado = EnumEstadoPedido.Novo;
+        pedido.valor = "0";
         pedido.valorDesconto = "0";
         pedido.valorTotal= "123";
         pedido.pedidoitens = new ArrayList<>();
@@ -53,12 +54,10 @@ public class PedidoMock {
         PedidoDto pedido = (PedidoDto) PedidoMock.dto(nome);
         pedido.cliente = cliente;
         
-        PedidoItemDto produto = null;
-        
         for (int i = 0; i <  7; i++) {
             int indexCardapio = new Random().nextInt(cardapio.itensDisponiveis.size());
             
-            produto = Mapper.map(cardapio.itensDisponiveis.get(indexCardapio), PedidoItemDto.class);
+            PedidoItemDto produto = Mapper.map(cardapio.itensDisponiveis.get(indexCardapio), PedidoItemDto.class);
 
             pedido.pedidoitens.add(produto);
         }

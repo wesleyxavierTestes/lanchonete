@@ -83,4 +83,8 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
     public IPedidoState finalizarPedido() {
         return Mapper.map(this, PedidoFinalizado.class).configurar();
     }
+
+    public void calcularValorTotal() {
+        this.setValorTotal(this.getValor().subtract(this.getValorDesconto()));
+    }
 }
