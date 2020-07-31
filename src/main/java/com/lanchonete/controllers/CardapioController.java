@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.services.cardapio.CardapioService;
@@ -90,6 +91,7 @@ public class CardapioController extends AbstractBaseController {
             this._service.save(entity);
         } catch (Exception e) {
             System.out.print(e);
+            throw new RegraNegocioException("Cardápio inválido");
             
         }
 

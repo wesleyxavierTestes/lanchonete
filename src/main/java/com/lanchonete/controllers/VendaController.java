@@ -6,8 +6,11 @@ import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
+import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.venda.Venda;
+import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.venda.VendaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class VendaController extends AbstractBaseController {
 
     private final VendaService _service;
+    private final CategoriaService _categoriaService;
 
     @Autowired
-    public VendaController(VendaService service) {
+    public VendaController(VendaService service, CategoriaService categoriaService) {
         _service = service;
+        _categoriaService = categoriaService;
     }
 
     // TODO: INCOMPLETO
@@ -68,9 +73,15 @@ public class VendaController extends AbstractBaseController {
 
         Venda entity = Mapper.map(entityDto);
 
-       this._service.criarVenda(entity);
+        Categoria categoriaVenda = this._categoriaService.existsCategoriaVenda();
+        this._service.criarVenda(entity, categoriaVenda);
 
-        this._service.save(entity);
+        try {
+            this._service.save(entity);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new RegraNegocioException("Venda inválida");
+        }
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

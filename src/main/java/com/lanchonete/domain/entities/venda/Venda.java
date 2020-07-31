@@ -31,7 +31,7 @@ import lombok.Setter;
 public class Venda extends BaseEntity {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
-    cascade = CascadeType.DETACH)
+    cascade = CascadeType.DETACH, mappedBy = "venda")
     private List<VendaItem> vendaItens = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)

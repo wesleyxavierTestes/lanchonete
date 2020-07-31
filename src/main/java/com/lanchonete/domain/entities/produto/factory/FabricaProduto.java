@@ -18,8 +18,8 @@ import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProdut
 import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.ProdutoProcessaProduto;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 public final class FabricaProduto {
     public static IProduto GerarProdutoPorTipo(final EnumTipoProduto tipoProduto, Object produto) {
@@ -51,7 +51,7 @@ public final class FabricaProduto {
         return null;
     }
 
-    public static boolean validarProduto(IProduto produto, IAbstractProdutoRepository _produtoRepository) {
+    public static boolean validarProduto(IProduto produto, IProdutoRepository _produtoRepository) {
         boolean valido = false;
         try {
             if (produto instanceof Lanche) {
@@ -70,27 +70,6 @@ public final class FabricaProduto {
             System.out.println(e);
         }
         return valido;
-    }
-
-    public static IProduto saveProduto(IProduto produto, IAbstractProdutoRepository _produtoRepository) {
-        try {
-            if (produto instanceof Lanche) {
-                return new LancheProcessaProduto(_produtoRepository).save(produto);
-            } else if (produto instanceof Combo) {
-                return new ComboProcessaProduto(_produtoRepository).save(produto);
-            } else if (produto instanceof Outros) {
-                return new OutrosProcessaProduto(_produtoRepository).save(produto);
-            } else if (produto instanceof Bebida) {
-                return new BebidaProcessaProduto(_produtoRepository).save(produto);
-            } else if (produto instanceof Produto) {
-                return new ProdutoProcessaProduto(_produtoRepository).save(produto);
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        String nome = Objects.nonNull(produto) ? produto.getNome() : "";
-        throw new RegraNegocioException("Produto " + nome + " inválido");
     }
 
     private FabricaProduto() {

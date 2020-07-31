@@ -20,15 +20,12 @@ public class VendaDto {
     public boolean ativo;
     
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String valorDesconto;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String valor;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String valorTotal;
 
     @NotNull(message = MessageError.IS_MANDATORY)

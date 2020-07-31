@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -14,11 +14,11 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 
 public abstract class ProcessaProduto {
     public abstract <T extends IProduto> T processar(IProduto produto);
-    public abstract <T extends IProduto> T save(IProduto produto);
 
-    protected final IAbstractProdutoRepository _repository;
 
-    public ProcessaProduto(IAbstractProdutoRepository repository) {
+    protected final IProdutoRepository _repository;
+
+    public ProcessaProduto(IProdutoRepository repository) {
         _repository = repository;
     }
 

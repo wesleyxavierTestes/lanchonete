@@ -14,12 +14,12 @@ import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 import com.lanchonete.utils.MessageError;
 
 public class LancheProcessaProduto extends ProcessaProduto {
 
-    public LancheProcessaProduto(IAbstractProdutoRepository repository) {
+    public LancheProcessaProduto(IProdutoRepository repository) {
       super(repository);
 	}
 
@@ -31,13 +31,7 @@ public class LancheProcessaProduto extends ProcessaProduto {
         
         return (T)itemProduto;
     }
-
-    @Override
-    public <T extends IProduto> T save(IProduto produto) {
-        this._repository.save((Lanche)produto);
-        return null;
-    }
-
+    
     public boolean validarExisteEstoqueProduto(Lanche lanche) {
         for (IProdutoComposicao produto : lanche.getIngredientesLanche()) {
             if (!validarExisteEstoque(produto))

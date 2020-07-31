@@ -1,5 +1,7 @@
 package com.lanchonete.domain.services.categoria;
 
+import java.util.Objects;
+
 import com.lanchonete.apllication.dto.categoria.CategoriaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.categoria.Categoria;
@@ -22,9 +24,8 @@ public class CategoriaService extends BaseService<Categoria> {
         _repository = repository;
     }
 
-    public Page<CategoriaListDto>  listFilterDto(Categoria entity, int page) {
-        return super. listFilter(entity, page)
-        .map(Mapper.pageMap(CategoriaListDto.class));
+    public Page<CategoriaListDto> listFilterDto(Categoria entity, int page) {
+        return super.listFilter(entity, page).map(Mapper.pageMap(CategoriaListDto.class));
     }
 
     public Page<CategoriaListDto> listDto(int page) {
@@ -37,5 +38,16 @@ public class CategoriaService extends BaseService<Categoria> {
 
     public Page<CategoriaListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CategoriaListDto.class));
+    }
+
+    public Categoria existsCategoriaVenda() {
+        Categoria categoriaVenda = this._repository.findCategoriaVenda();
+        if (!Objects.nonNull(categoriaVenda)) {
+            categoriaVenda = new Categoria();
+            categoriaVenda.setAtivo(true);
+            categoriaVenda.setNome("Venda Automática");
+            categoriaVenda = this.save(categoriaVenda);
+        }
+        return categoriaVenda;
     }
 }

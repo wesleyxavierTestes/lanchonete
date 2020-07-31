@@ -27,7 +27,7 @@ public class IngredienteDto {
     @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String codigo;
 
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    @NotNull(message = MessageError.IS_MANDATORY)
     public String valor;   
 
     @NotNull(message = MessageError.IS_MANDATORY)

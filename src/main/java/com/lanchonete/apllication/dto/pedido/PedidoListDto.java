@@ -24,11 +24,10 @@ public class PedidoListDto {
     public String valor;
     public String valorDesconto;
     public String valorTotal;
-    
-    public boolean cancelado;
-    public String dataCancelado;
+    public ClienteDefaultDto cliente;
 
     public EnumEstadoPedido estado;
     
-    public ClienteDefaultDto cliente;
+    public boolean cancelado;
+    public String dataCancelado;
 }

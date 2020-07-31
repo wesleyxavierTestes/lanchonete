@@ -6,5 +6,5 @@ public enum EnumTipoProduto {
     Bebida,
     Lanche,
     Combo,
-    Outros
+    Outros, Venda
 }

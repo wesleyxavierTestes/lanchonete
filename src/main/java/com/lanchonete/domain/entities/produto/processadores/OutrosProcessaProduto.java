@@ -4,11 +4,11 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.outros.Outros;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 public class OutrosProcessaProduto extends ProcessaProduto {
 
-    public OutrosProcessaProduto(IAbstractProdutoRepository repository) {
+    public OutrosProcessaProduto(IProdutoRepository repository) {
       super(repository);
 	}
 
@@ -19,12 +19,6 @@ public class OutrosProcessaProduto extends ProcessaProduto {
         T itemProduto = (T)Mapper.map(produto, Outros.class);
         
         return (T)itemProduto;
-    }
-
-    @Override
-    public <T extends IProduto> T save(IProduto produto) {
-        this._repository.save((Outros)produto);
-        return null;
     }
 
     public boolean validarExisteEstoqueProduto(Outros outros) {

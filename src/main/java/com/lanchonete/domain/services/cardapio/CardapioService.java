@@ -17,7 +17,7 @@ import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
 import com.lanchonete.domain.entities.produto.processadores.BebidaProcessaProduto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.cardapio.ICardapioRepository;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class CardapioService extends BaseService<Cardapio> {
     private final ICardapioRepository _repository;
 
     @Autowired
-    private IAbstractProdutoRepository _produtoRepository;
+    private IProdutoRepository _produtoRepository;
 
     @Autowired
     public CardapioService(ICardapioRepository repository) {

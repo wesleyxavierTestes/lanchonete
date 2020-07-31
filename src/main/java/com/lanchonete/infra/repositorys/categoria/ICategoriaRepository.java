@@ -23,5 +23,10 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long>  {
         value = "SELECT (c.*) FROM categoria as c where c.ativo = false",
         countQuery = "SELECT (c.*) FROM categoria as c where c.ativo = false")
     Page<Categoria> listDesactive(PageRequest pageRequest);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT (c.*) FROM categoria as c where c.nome like 'Venda Automática' limit 1")
+	Categoria findCategoriaVenda();
     
 }

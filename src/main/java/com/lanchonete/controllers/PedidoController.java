@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cliente.Cliente;
@@ -109,16 +110,12 @@ public class PedidoController extends AbstractBaseController {
         Pedido entity = Mapper.map(entityDto);
 
         this._service.configurarPedido(entity, cardapio, cliente);
-
-        // for (IProduto item : entity.getPedidoitens()) {
-        //     this._produtoService.saveTipoProduto(item);  
-        // }
     
         try {
             this._service.save(entity);
         } catch (Exception e) {
             System.out.print(e);
-            return ResponseEntity.badRequest().body(Mapper.map(entity));
+            throw new RegraNegocioException("Pedido inválido");
         }
 
         return ResponseEntity.ok(Mapper.map(entity));

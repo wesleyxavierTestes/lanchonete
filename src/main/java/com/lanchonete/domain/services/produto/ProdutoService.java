@@ -8,7 +8,7 @@ import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
 import com.lanchonete.domain.services.BaseService;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +20,6 @@ import org.springframework.stereotype.Service;
 public class ProdutoService extends BaseService<Produto> {
 
     private final IProdutoRepository _repository;
-
-    @Autowired
-    private IAbstractProdutoRepository _abstractRepository;
 
     @Autowired
     public ProdutoService(IProdutoRepository repository) {
@@ -87,8 +84,4 @@ public class ProdutoService extends BaseService<Produto> {
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
-
-	public void saveTipoProduto(IProduto item) {
-        item = FabricaProduto.saveProduto(item, this._abstractRepository);
-	}
 }

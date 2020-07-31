@@ -16,7 +16,6 @@ public class ComboItemDto {
     @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String codigo;
 
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String valor;
     
 }

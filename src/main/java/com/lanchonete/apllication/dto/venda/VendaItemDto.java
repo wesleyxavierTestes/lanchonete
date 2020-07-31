@@ -16,13 +16,19 @@ import lombok.NoArgsConstructor;
 public class VendaItemDto {
 
     public long id;
+
+    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    public String codigo;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
     public VendaPedidoDto pedido;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    private String valorDesconto;
+    public String valor;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    private String valorTotal;
+    public String valorDesconto;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public String valorTotal;
 }

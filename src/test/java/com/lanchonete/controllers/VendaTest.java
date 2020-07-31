@@ -145,7 +145,7 @@ public class VendaTest {
         private VendaUtilsPageMock page;
         private VendaDto entity;
 
-        // @Test
+        @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
             List<CategoriaDto> categorias = CATEGORIA();
@@ -158,24 +158,22 @@ public class VendaTest {
             List<PedidoListDto> pedidos = GET_PEDIDOS();
 
             Venda(pedidos);
-            // LIST();
-            // FIND();
-            // // AGUARDANDO();
-            // // FIND_AGUARDANDO();
+            LIST();
+            FIND();
             // CANCEL();
             // FIND_CANCEL();
         }
 
         private VendaDto Venda(List<PedidoListDto> pedidos) {
             VendaMock vendaMock = new VendaMock(restTemplate, port);
-            entity = vendaMock.VENDA("nome", pedidos);
+            entity = vendaMock.VENDA(pedidos);
             return entity;
         }
 
         private List<PedidoDto> PEDIDO(CardapioDto cardapio, ClienteGenericDto clienteGeneric) {
             PedidoMock pedidoMock = new PedidoMock(restTemplate, port);
             List<PedidoDto> lista = new ArrayList<>();
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 5; i++) {
                 PedidoDto pedido = pedidoMock.PEDIDO("VendaTest: PedidoDto" + i + " Save_ok", clienteGeneric, cardapio);
                 lista.add(pedido);
             }
@@ -188,8 +186,7 @@ public class VendaTest {
             assertNotNull(pagePedido);
             assertNotNull(pagePedido.getContent());
             List<PedidoListDto> content = pagePedido.getContent();
-            PedidoDto pedido = Mapper.map(content.get(0), PedidoDto.class);
-            assertNotNull(pedido);
+            System.out.println("CONTAGEM PEDIDOS "+content.size());
             return content;
         }
 

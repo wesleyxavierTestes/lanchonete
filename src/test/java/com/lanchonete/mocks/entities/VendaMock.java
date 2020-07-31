@@ -3,6 +3,7 @@ package com.lanchonete.mocks.entities;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaItemDto;
+import com.lanchonete.apllication.dto.venda.VendaPedidoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.utils.ObjectMapperUtils;
@@ -31,7 +33,7 @@ public class VendaMock {
     private TestRestTemplate restTemplate;
     private int port;
 
-    public static VendaDto dto(String nome) {
+    public static VendaDto dto() {
         VendaDto clienteDtoMock = VendaDto.builder()
         .valor("1000")
         .valorDesconto("0")
@@ -41,18 +43,25 @@ public class VendaMock {
         return clienteDtoMock;
     }
 
-    public static Venda by(String nome) {
+    public static Venda by() {
         Venda clienteDtoMock = new Venda();
 
         return clienteDtoMock;
     }
 
-    public VendaDto VENDA(String nome,  List<PedidoListDto> pedidos) {
+    public VendaDto VENDA(List<PedidoListDto> pedidos) {
         // SAVE
-        VendaDto venda = (VendaDto) VendaMock.dto(nome);
+        VendaDto venda = (VendaDto) VendaMock.dto();
         venda.vendaItens = new ArrayList<>();
         for (PedidoListDto pedidoDto : pedidos) {
-            VendaItemDto vendaItemDto = Mapper.map(pedidoDto, VendaItemDto.class);
+
+            VendaItemDto vendaItemDto = new VendaItemDto();
+            VendaPedidoDto pedido = Mapper.map(pedidoDto, VendaPedidoDto.class);
+            vendaItemDto.valorDesconto = "0";
+            vendaItemDto.valor = pedidoDto.valorTotal;
+            vendaItemDto.valorTotal = new BigDecimal(pedidoDto.valor).subtract(new BigDecimal(vendaItemDto.valorDesconto)).toString();
+            vendaItemDto.pedido = pedido;
+            vendaItemDto.codigo = pedido.codigo;
             venda.vendaItens.add(vendaItemDto);
         }        
 

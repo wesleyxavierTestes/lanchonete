@@ -11,4 +11,5 @@ public class VendaPedidoDto {
 
     public long id;
     public String codigo;
+    
 }

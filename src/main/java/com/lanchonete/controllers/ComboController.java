@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboListDto;
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.combo.Combo;
 import com.lanchonete.domain.entities.categoria.Categoria;
@@ -95,6 +96,7 @@ public class ComboController extends AbstractBaseController {
             entity = this._service.save(entity);
         } catch (Exception e) {
             System.out.println(e);
+            throw new RegraNegocioException("Combo inválido");
         }
 
         return ResponseEntity.ok(Mapper.map(entity));

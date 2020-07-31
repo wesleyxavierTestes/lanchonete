@@ -10,7 +10,7 @@ import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProduto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
-import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ public class LancheService extends BaseService<Lanche> {
     private final ILancheRepository _repository;
 
     @Autowired
-    private IAbstractProdutoRepository _produtoRepository;
+    private IProdutoRepository _produtoRepository;
 
     @Autowired
     public LancheService(ILancheRepository repository) {
