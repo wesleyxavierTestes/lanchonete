@@ -2,7 +2,6 @@ package com.lanchonete.apllication.dto.venda;
 
 import java.util.List;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 import com.lanchonete.utils.MessageError;
