@@ -16,20 +16,5 @@ import lombok.NoArgsConstructor;
 public class VendaItemDto {
 
     public long id;
-    public boolean ativo;
-    @Max(value = 30, message = MessageError.MAX_LIMITE)
-    public String dataCadastro;
-
-    @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String nome;
-
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String codigo;
-
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String valor;   
-
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public EnumTipoProduto tipoProduto;
+    public VendaPedidoDto vendaPedido;
 }

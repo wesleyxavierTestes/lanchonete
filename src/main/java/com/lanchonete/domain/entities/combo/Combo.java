@@ -13,7 +13,6 @@ import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +26,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Combo extends AbstractProduto implements  IProdutoPedido, IProdutoCardapio, IProdutoVenda {
+public class Combo extends AbstractProduto implements  IProdutoPedido, IProdutoCardapio {
 
     @OneToOne
     private Lanche lanche;

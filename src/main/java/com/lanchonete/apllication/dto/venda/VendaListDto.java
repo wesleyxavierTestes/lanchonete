@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class VendaListDto {
 
     public long id;
+    public String dataCadastro;
     public boolean ativo;
     
     public List<VendaItemDto> vendaItens;

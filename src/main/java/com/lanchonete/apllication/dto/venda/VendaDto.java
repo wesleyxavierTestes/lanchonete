@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
-import com.lanchonete.apllication.dto.cliente.ClienteGenericDto;
 import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
@@ -17,14 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VendaDto {
 
-    public long id;
+    public long id;   
     public boolean ativo;
-
-    @Max(value = 30, message = MessageError.MAX_LIMITE)
-    public String dataCadastro;
     
-    public List<VendaItemDto> vendaItens;
-
     @NotNull(message = MessageError.IS_MANDATORY)
     @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String valorDesconto;
@@ -38,11 +32,5 @@ public class VendaDto {
     public String valorTotal;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public boolean cancelado;
-
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
-    public String dataCancelado;
-
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public ClienteGenericDto cliente;
+    public List<VendaItemDto> vendaItens;
 }

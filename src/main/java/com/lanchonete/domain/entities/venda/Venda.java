@@ -15,7 +15,6 @@ import javax.persistence.OneToMany;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +32,7 @@ public class Venda extends BaseEntity {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
-    private Set<IProdutoVenda> vendaItens = new HashSet<>();
+    private Set<VendaPedido> vendaItens = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Cliente cliente;

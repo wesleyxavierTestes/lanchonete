@@ -154,9 +154,9 @@ public class VendaTest {
             List<ComboDto> combos = COMBO(categorias, produtos, lanches);
             CardapioDto cardapio = CARDAPIO(produtos, lanches, combos);
             ClienteGenericDto clienteGeneric = CLIENTE();
-            //List<PedidoDto> pedidos = PEDIDO(cardapio, clienteGeneric);
+            List<PedidoDto> pedidos = PEDIDO(cardapio, clienteGeneric);
 
-            Venda();
+            Venda(pedidos);
             // LIST();
             // FIND();
             // // AGUARDANDO();
@@ -165,8 +165,9 @@ public class VendaTest {
             // FIND_CANCEL();
         }
 
-        private VendaDto Venda() {
-
+        private VendaDto Venda(List<PedidoDto> pedidos) {
+            VendaMock vendaMock = new VendaMock(restTemplate, port);
+            entity = vendaMock.VENDA("nome", pedidos);
             return entity;
         }
 
