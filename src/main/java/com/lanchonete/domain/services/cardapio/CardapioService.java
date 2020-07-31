@@ -1,9 +1,7 @@
 package com.lanchonete.domain.services.cardapio;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
@@ -19,7 +17,7 @@ import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
 import com.lanchonete.domain.entities.produto.processadores.BebidaProcessaProduto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.cardapio.ICardapioRepository;
-import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +30,7 @@ public class CardapioService extends BaseService<Cardapio> {
     private final ICardapioRepository _repository;
 
     @Autowired
-    private IProdutoRepository _produtoRepository;
+    private IAbstractProdutoRepository _produtoRepository;
 
     @Autowired
     public CardapioService(ICardapioRepository repository) {
@@ -46,14 +44,14 @@ public class CardapioService extends BaseService<Cardapio> {
 
     private Function<? super Cardapio, ? extends Cardapio> filterCardapio() {
         return cardapio -> {
-            Set<IProdutoCardapio> getItensDisponiveis = filterProduto(cardapio);
+            List<IProdutoCardapio> getItensDisponiveis = filterProduto(cardapio);
             cardapio.setItensDisponiveis(getItensDisponiveis);
             return cardapio;
         };
     }
 
-    private Set<IProdutoCardapio> filterProduto(Cardapio cardapio) {
-        Set<IProdutoCardapio> getItensDisponiveis = new HashSet<>();
+    private List<IProdutoCardapio> filterProduto(Cardapio cardapio) {
+        List<IProdutoCardapio> getItensDisponiveis = new ArrayList<>();
         List<IProdutoCardapio> itensDisponiveis = new ArrayList<>(cardapio.getItensDisponiveis());
 
         for (IProdutoCardapio produtoCardapio : itensDisponiveis) {

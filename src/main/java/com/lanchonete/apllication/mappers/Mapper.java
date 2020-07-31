@@ -101,7 +101,7 @@ public final class Mapper {
     }
 
     public static Cardapio map(final CardapioDto entity) {
-        final Set<IProdutoCardapio> itensDisponiveis = new HashSet<>();
+        final List<IProdutoCardapio> itensDisponiveis = new ArrayList<>();
         List<CardapioItemDto> copy = null;
 
         if (Objects.nonNull(entity.itensDisponiveis)) {
@@ -204,7 +204,7 @@ public final class Mapper {
     }
 
     public static Lanche map(final LancheDto entity) {
-        final Set<IProdutoComposicao> ingredientes = new HashSet<>();
+        final List<IProdutoComposicao> ingredientes = new ArrayList<>();
         List<IngredienteDto> copy = null;
 
         if (Objects.nonNull(entity.ingredientesLanche)) {
@@ -232,7 +232,7 @@ public final class Mapper {
     }
 
     public static PedidoAguardando map(final PedidoDto entity) {
-        final Set<IProdutoPedido> pedidoitens = new HashSet<>();
+        final List<IProdutoPedido> pedidoitens = new ArrayList<>();
         List<PedidoItemDto> copy = null;
 
         if (Objects.nonNull(entity.pedidoitens)) {

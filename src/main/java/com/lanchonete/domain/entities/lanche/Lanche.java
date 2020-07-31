@@ -1,7 +1,9 @@
 package com.lanchonete.domain.entities.lanche;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,11 +31,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lanche extends AbstractProduto implements  IProdutoPedido, IProdutoCardapio, IProdutoCombo {
+public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, 
-    cascade = CascadeType.ALL)
-    private Set<IProdutoComposicao> ingredientesLanche = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, cascade = CascadeType.ALL)
+    private List<IProdutoComposicao> ingredientesLanche = new ArrayList<>();
 
     @Column(nullable = false)
     private BigDecimal valorTotal;
@@ -46,5 +47,8 @@ public class Lanche extends AbstractProduto implements  IProdutoPedido, IProduto
 
         for (IProdutoComposicao i : ingredientesLanche)
             this.setValor(this.getValor().add(i.getValor()));
+
+        if (!Objects.nonNull(this.getValorTotal()))
+            this.setValorTotal(this.getValor());
     }
 }

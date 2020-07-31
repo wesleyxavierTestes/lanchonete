@@ -4,11 +4,11 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
-import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
 
 public class BebidaProcessaProduto extends ProcessaProduto {
 
-    public BebidaProcessaProduto(IProdutoRepository repository) {
+    public BebidaProcessaProduto(IAbstractProdutoRepository repository) {
         super(repository);
     }
 
@@ -23,6 +23,12 @@ public class BebidaProcessaProduto extends ProcessaProduto {
 
     public boolean validarExisteEstoqueProduto(Bebida bebida) {
         return validarExisteEstoque(bebida);
+    }
+
+    @Override
+    public <T extends IProduto> T save(IProduto produto) {
+        this._repository.save((Bebida)produto);
+        return null;
     }
 
 }

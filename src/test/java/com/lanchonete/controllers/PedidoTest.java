@@ -20,17 +20,12 @@ import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
-import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.pedido.PedidoAguardando;
-import com.lanchonete.domain.entities.pedido.PedidoCancelamento;
 import com.lanchonete.domain.entities.pedido.PedidoNovo;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.domain.services.cliente.ClienteService;
-import com.lanchonete.domain.services.combo.ComboService;
 import com.lanchonete.domain.services.pedido.PedidoService;
-import com.lanchonete.domain.services.produto.ProdutoService;
-import com.lanchonete.infra.repositorys.cardapio.ICardapioRepository;
 import com.lanchonete.mocks.entities.CardapioMock;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ClienteMock;
@@ -40,7 +35,6 @@ import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.PedidoMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.PedidoUtilsPageMock;
-import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
 import org.junit.jupiter.api.DisplayName;
@@ -261,32 +255,32 @@ public class PedidoTest {
             return clienteGeneric;
         }
 
-        private void FIND_CANCEL() {
-            ResponseEntity<PedidoDto> responseFind;
-            // FIND DESACTIVE
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFindCancel + "/?id=" + entity.id, port);
-            responseFind = restTemplate.getForEntity(url, PedidoDto.class);
+        // private void FIND_CANCEL() {
+        //     ResponseEntity<PedidoDto> responseFind;
+        //     // FIND DESACTIVE
+        //     String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFindCancel + "/?id=" + entity.id, port);
+        //     responseFind = restTemplate.getForEntity(url, PedidoDto.class);
 
-            assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-            assertEquals(false, responseFind.getBody().ativo);
-        }
+        //     assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+        //     assertEquals(false, responseFind.getBody().ativo);
+        // }
 
-        private void CANCEL() {
-            // DESACTIVE
-            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoCancel + "/?id=" + entity.id, port);
+        // private void CANCEL() {
+        //     // DESACTIVE
+        //     String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoCancel + "/?id=" + entity.id, port);
 
-            HttpEntity<PedidoDto> responseurl = new HttpEntity<>(null, null);
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.DELETE, responseurl, Object.class);
+        //     HttpEntity<PedidoDto> responseurl = new HttpEntity<>(null, null);
+        //     ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.DELETE, responseurl, Object.class);
 
-            assertNotNull(response);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
+        //     assertNotNull(response);
+        //     assertEquals(HttpStatus.OK, response.getStatusCode());
+        //     assertNotNull(response.getBody());
 
-            String json = ObjectMapperUtils.toJson(response.getBody());
-            PedidoCancelamento pedido = ObjectMapperUtils.jsonTo(json, PedidoCancelamento.class);
+        //     String json = ObjectMapperUtils.toJson(response.getBody());
+        //     PedidoCancelamento pedido = ObjectMapperUtils.jsonTo(json, PedidoCancelamento.class);
 
-            assertNotNull(pedido);
-        }
+        //     assertNotNull(pedido);
+        // }
 
         private void FIND() {
             // FIND

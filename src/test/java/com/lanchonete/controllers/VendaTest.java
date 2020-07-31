@@ -16,21 +16,18 @@ import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
+import com.lanchonete.apllication.dto.pedido.PedidoListDto;
+import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
-import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
-import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cliente.Cliente;
-import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.domain.services.cliente.ClienteService;
-import com.lanchonete.domain.services.combo.ComboService;
+import com.lanchonete.domain.services.pedido.PedidoService;
 import com.lanchonete.domain.services.venda.VendaService;
-import com.lanchonete.domain.services.produto.ProdutoService;
-import com.lanchonete.infra.repositorys.cardapio.ICardapioRepository;
 import com.lanchonete.mocks.entities.CardapioMock;
 import com.lanchonete.mocks.entities.CategoriaMock;
 import com.lanchonete.mocks.entities.ClienteMock;
@@ -38,8 +35,8 @@ import com.lanchonete.mocks.entities.ComboMock;
 import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.PedidoMock;
-import com.lanchonete.mocks.entities.VendaMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
+import com.lanchonete.mocks.entities.VendaMock;
 import com.lanchonete.mocks.pages.VendaUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -72,6 +69,9 @@ public class VendaTest {
 
     @Autowired
     private CardapioService _cardapioService;
+
+    @Autowired
+    private PedidoService _pedidoService;
 
     @Autowired
     private ClienteService _clienteService;
@@ -145,7 +145,7 @@ public class VendaTest {
         private VendaUtilsPageMock page;
         private VendaDto entity;
 
-        @Test
+        // @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
             List<CategoriaDto> categorias = CATEGORIA();
@@ -154,7 +154,8 @@ public class VendaTest {
             List<ComboDto> combos = COMBO(categorias, produtos, lanches);
             CardapioDto cardapio = CARDAPIO(produtos, lanches, combos);
             ClienteGenericDto clienteGeneric = CLIENTE();
-            List<PedidoDto> pedidos = PEDIDO(cardapio, clienteGeneric);
+            PEDIDO(cardapio, clienteGeneric);
+            List<PedidoListDto> pedidos = GET_PEDIDOS();
 
             Venda(pedidos);
             // LIST();
@@ -165,7 +166,7 @@ public class VendaTest {
             // FIND_CANCEL();
         }
 
-        private VendaDto Venda(List<PedidoDto> pedidos) {
+        private VendaDto Venda(List<PedidoListDto> pedidos) {
             VendaMock vendaMock = new VendaMock(restTemplate, port);
             entity = vendaMock.VENDA("nome", pedidos);
             return entity;
@@ -180,6 +181,16 @@ public class VendaTest {
             }
 
             return lista;
+        }
+
+        private List<PedidoListDto> GET_PEDIDOS() {
+            Page<PedidoListDto> pagePedido = _pedidoService.listDto(1);
+            assertNotNull(pagePedido);
+            assertNotNull(pagePedido.getContent());
+            List<PedidoListDto> content = pagePedido.getContent();
+            PedidoDto pedido = Mapper.map(content.get(0), PedidoDto.class);
+            assertNotNull(pedido);
+            return content;
         }
 
         private CardapioDto CARDAPIO(List<ProdutoDto> produtos, List<LancheDto> lanches, List<ComboDto> combos) {

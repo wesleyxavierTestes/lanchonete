@@ -1,6 +1,8 @@
 package com.lanchonete.domain.entities.cardapio;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -32,5 +34,5 @@ public class Cardapio extends BaseEntity {
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
-    private Set<IProdutoCardapio> itensDisponiveis = new HashSet<>();
+    private List<IProdutoCardapio> itensDisponiveis = new ArrayList<>();
 }

@@ -26,7 +26,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Combo extends AbstractProduto implements  IProdutoPedido, IProdutoCardapio {
+public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
 
     @OneToOne
     private Lanche lanche;
@@ -44,5 +44,8 @@ public class Combo extends AbstractProduto implements  IProdutoPedido, IProdutoC
             this.setValor(BigDecimal.ZERO);
 
         this.setValor(this.lanche.getValorTotal().add(this.bebida.getValor()));
+
+        if (!Objects.nonNull(this.getValorTotal()))
+            this.setValorTotal(this.getValor());
     }
 }

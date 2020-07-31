@@ -53,6 +53,15 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
     @Transactional
     @Override
+    public T saveMerge(T entity) {
+
+        _repository.save(entity);
+
+        return entity;
+    }
+
+    @Transactional
+    @Override
     public T save(T entity) {
         boolean exists = this._repository.existsById(entity.getId());
         if (exists)

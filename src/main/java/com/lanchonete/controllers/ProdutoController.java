@@ -98,7 +98,7 @@ public class ProdutoController extends AbstractBaseController {
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
 
-        Produto entity = this._service.find(id);
+        Produto entity = (Produto)this._service.find(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -125,7 +125,7 @@ public class ProdutoController extends AbstractBaseController {
 
         Categoria categoria = this._serviceCategoria.find(entityDto.categoria.id);
 
-        Produto entity = this._service.find(entityDto.id);
+        Produto entity = (Produto)this._service.find(entityDto.id);
 
         Produto map = Mapper.map(entityDto, entity);
 
@@ -139,7 +139,7 @@ public class ProdutoController extends AbstractBaseController {
     @DeleteMapping("active")
     public ResponseEntity<Object> active(@RequestParam(name = "id") long id) {
 
-        Produto entity = this._service.ative(id, true);
+        Produto entity = (Produto)this._service.ative(id, true);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
@@ -147,7 +147,7 @@ public class ProdutoController extends AbstractBaseController {
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
 
-        Produto entity = this._service.ative(id, false);
+        Produto entity = (Produto)this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

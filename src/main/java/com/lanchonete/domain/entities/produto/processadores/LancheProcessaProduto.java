@@ -1,8 +1,8 @@
 package com.lanchonete.domain.entities.produto.processadores;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
@@ -14,12 +14,12 @@ import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
-import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
+import com.lanchonete.infra.repositorys.produto.IAbstractProdutoRepository;
 import com.lanchonete.utils.MessageError;
 
 public class LancheProcessaProduto extends ProcessaProduto {
 
-    public LancheProcessaProduto(IProdutoRepository repository) {
+    public LancheProcessaProduto(IAbstractProdutoRepository repository) {
       super(repository);
 	}
 
@@ -32,6 +32,12 @@ public class LancheProcessaProduto extends ProcessaProduto {
         return (T)itemProduto;
     }
 
+    @Override
+    public <T extends IProduto> T save(IProduto produto) {
+        this._repository.save((Lanche)produto);
+        return null;
+    }
+
     public boolean validarExisteEstoqueProduto(Lanche lanche) {
         for (IProdutoComposicao produto : lanche.getIngredientesLanche()) {
             if (!validarExisteEstoque(produto))
@@ -40,8 +46,8 @@ public class LancheProcessaProduto extends ProcessaProduto {
         return true;
     }
 
-    public Set<IProdutoComposicao> mapperIngrediente(Lanche entity) {
-        Set<IProdutoComposicao> ingredientes = new HashSet<>();
+    public List<IProdutoComposicao> mapperIngrediente(Lanche entity) {
+        List<IProdutoComposicao> ingredientes = new ArrayList<>();
         for (IProdutoComposicao ingrediente : entity.getIngredientesLanche()) {
             Produto produto = _repository.findByIdAtive(ingrediente.getId());
             if (!Objects.nonNull(produto))
@@ -65,7 +71,7 @@ public class LancheProcessaProduto extends ProcessaProduto {
         return _ingrediente;
     }
 
-	public static void setDadosBaseLanche(Lanche entity, Categoria categoria, Set<IProdutoComposicao> ingredientes) {
+	public static void setDadosBaseLanche(Lanche entity, Categoria categoria, List<IProdutoComposicao> ingredientes) {
         entity.setIngredientesLanche(ingredientes);
         entity.setCodigo(UUID.randomUUID());
         entity.setCategoria(categoria);

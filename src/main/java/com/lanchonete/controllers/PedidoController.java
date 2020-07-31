@@ -10,10 +10,11 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.pedido.Pedido;
-import com.lanchonete.domain.entities.pedido.PedidoAguardando;
+import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.domain.services.pedido.PedidoService;
+import com.lanchonete.domain.services.produto.ProdutoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,15 +34,19 @@ public class PedidoController extends AbstractBaseController {
     private final PedidoService _service;
     private final CardapioService _cardapioService;
     private final ClienteService _clienteService;
+    private final ProdutoService _produtoService;
 
     @Autowired
     public PedidoController(
         PedidoService service,
         CardapioService cardapioService,
-        ClienteService clienteService) {
+        ClienteService clienteService,
+        ProdutoService produtoService
+        ) {
         _service = service;
         _cardapioService = cardapioService;
         _clienteService = clienteService;
+        _produtoService = produtoService;
     }
 
     // TODO: INCOMPLETO
@@ -105,6 +110,10 @@ public class PedidoController extends AbstractBaseController {
 
         this._service.configurarPedido(entity, cardapio, cliente);
 
+        for (IProduto item : entity.getPedidoitens()) {
+            this._produtoService.saveTipoProduto(item);  
+        }
+    
         try {
             this._service.save(entity);
         } catch (Exception e) {

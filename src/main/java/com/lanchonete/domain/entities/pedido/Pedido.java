@@ -3,10 +3,8 @@ package com.lanchonete.domain.entities.pedido;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -41,7 +39,7 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
-    private Set<IProdutoPedido> pedidoitens = new HashSet<>();
+    private List<IProdutoPedido> pedidoitens = new ArrayList<>();
 
     private UUID codigo;
 

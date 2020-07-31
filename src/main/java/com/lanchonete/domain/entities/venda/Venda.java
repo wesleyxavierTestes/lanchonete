@@ -2,8 +2,8 @@ package com.lanchonete.domain.entities.venda;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,16 +32,16 @@ public class Venda extends BaseEntity {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH)
-    private Set<VendaPedido> vendaItens = new HashSet<>();
+    private List<VendaItem> vendaItens = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Cliente cliente;
 
     @Column(nullable = false)
-    private BigDecimal valorDesconto;
+    private BigDecimal valor;
 
     @Column(nullable = false)
-    private BigDecimal valor;
+    private BigDecimal valorDesconto;
 
     @Column(nullable = false)
     private BigDecimal valorTotal;

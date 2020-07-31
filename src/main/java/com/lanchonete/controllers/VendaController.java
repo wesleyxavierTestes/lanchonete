@@ -68,7 +68,7 @@ public class VendaController extends AbstractBaseController {
 
         Venda entity = Mapper.map(entityDto);
 
-        this._service.criarVenda(entity);
+       this._service.criarVenda(entity);
 
         this._service.save(entity);
 

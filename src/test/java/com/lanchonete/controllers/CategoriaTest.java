@@ -238,7 +238,7 @@ public class CategoriaTest {
             String json = ObjectMapperUtils.toJson(response.getBody());
             CategoriaDto categoriaSave = ObjectMapperUtils.jsonTo(json, CategoriaDto.class);
 
-            assertNotNull(categoriaSave.id);
+            assertNotNull(categoriaSave);
 
             return categoriaSave;
         }

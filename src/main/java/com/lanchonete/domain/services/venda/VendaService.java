@@ -2,16 +2,16 @@ package com.lanchonete.domain.services.venda;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.venda.Venda;
-import com.lanchonete.domain.entities.venda.VendaPedido;
+import com.lanchonete.domain.entities.venda.VendaItem;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.pedido.IPedidoRepository;
 import com.lanchonete.infra.repositorys.venda.IVendaRepository;
@@ -48,16 +48,15 @@ public class VendaService extends BaseService<Venda> {
     }
 
     public void criarVenda(Venda entity) {
-        //
-        Set<VendaPedido> vendaItens = new HashSet<>();
+        List<VendaItem> vendaItens = new ArrayList<>();
         BigDecimal valor = BigDecimal.ZERO;
-        for (VendaPedido produto : entity.getVendaItens()) {
-            Optional<Pedido> pedidoOptional = _pedidoRepository.findById(produto.getPedido().getId());
+        for (VendaItem _vendaPedido : entity.getVendaItens()) {
+            Optional<Pedido> pedidoOptional = _pedidoRepository.findById(_vendaPedido.getPedido().getId());
             if (pedidoOptional.isEmpty())
                 throw new RegraNegocioException("Pedido inexistente");
             Pedido pedido = pedidoOptional.get();
 
-            VendaPedido vendaPedido = new VendaPedido();
+            VendaItem vendaPedido = new VendaItem();
             vendaPedido.setAtivo(true);
             vendaPedido.setDataCadastro(LocalDateTime.now());
             vendaPedido.setPedido(pedido);
@@ -69,4 +68,5 @@ public class VendaService extends BaseService<Venda> {
         entity.setValor(valor);
         entity.setValorTotal(entity.getValor().subtract(entity.getValorDesconto()));
     }
+
 }

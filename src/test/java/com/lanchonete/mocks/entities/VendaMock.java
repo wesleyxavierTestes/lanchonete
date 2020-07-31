@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
+import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaItemDto;
 import com.lanchonete.apllication.mappers.Mapper;
@@ -46,11 +47,11 @@ public class VendaMock {
         return clienteDtoMock;
     }
 
-    public VendaDto VENDA(String nome,  List<PedidoDto> pedidos) {
+    public VendaDto VENDA(String nome,  List<PedidoListDto> pedidos) {
         // SAVE
         VendaDto venda = (VendaDto) VendaMock.dto(nome);
         venda.vendaItens = new ArrayList<>();
-        for (PedidoDto pedidoDto : pedidos) {
+        for (PedidoListDto pedidoDto : pedidos) {
             VendaItemDto vendaItemDto = Mapper.map(pedidoDto, VendaItemDto.class);
             venda.vendaItens.add(vendaItemDto);
         }        

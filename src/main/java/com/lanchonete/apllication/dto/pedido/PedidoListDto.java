@@ -1,9 +1,8 @@
 package com.lanchonete.apllication.dto.pedido;
 
-import java.util.Set;
+import java.util.List;
 
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.enuns.pedidos.EnumEstadoPedido;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ public class PedidoListDto {
     public long id;
     public boolean ativo;
 
-    public Set<PedidoItemDto> pedidoitens;
+    public List<PedidoItemDto> pedidoitens;
 
     public String codigo;
 

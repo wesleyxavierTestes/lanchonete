@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
@@ -73,14 +73,14 @@ public class PedidoService extends BaseService<Pedido> {
 
     private void configurarPedidoItens(Pedido entity, Cardapio cardapio) {
         try {
-            Set<IProdutoPedido> produtos = new HashSet<>();
+            List<IProdutoPedido> produtos = new ArrayList<>();
             for (IProdutoPedido produto : entity.getPedidoitens()) {
                 for (IProdutoCardapio produtoCardapio : cardapio.getItensDisponiveis()) {
                     if (produto.getCodigo().equals(produtoCardapio.getCodigo())) {
                         IProdutoPedido produtoMapeado = (IProdutoPedido) FabricaProduto.GerarProdutoPorTipo(produto.getTipoProduto(), produto);
-                        produtoMapeado.setValor(produtoCardapio.getValor());
-                        produtoMapeado.setNome(produtoCardapio.getNome());
+                        produtoMapeado = (IProdutoPedido) FabricaProduto.configurarPedidoItens(produtoMapeado, produtoCardapio);
                         entity.setValor(entity.getValor().add(produtoMapeado.getValor()));
+                        
                         produtos.add(produtoMapeado);
                         break;
                     }

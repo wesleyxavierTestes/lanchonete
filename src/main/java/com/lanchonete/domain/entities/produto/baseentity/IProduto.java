@@ -7,6 +7,7 @@ import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 
 public interface IProduto {
     BigDecimal getValor();
+    String getNome();
     UUID getCodigo();
     IProduto setTipoProduto(EnumTipoProduto tipoProduto);
 }
