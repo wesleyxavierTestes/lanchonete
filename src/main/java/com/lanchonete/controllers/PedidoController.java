@@ -110,9 +110,9 @@ public class PedidoController extends AbstractBaseController {
 
         this._service.configurarPedido(entity, cardapio, cliente);
 
-        for (IProduto item : entity.getPedidoitens()) {
-            this._produtoService.saveTipoProduto(item);  
-        }
+        // for (IProduto item : entity.getPedidoitens()) {
+        //     this._produtoService.saveTipoProduto(item);  
+        // }
     
         try {
             this._service.save(entity);

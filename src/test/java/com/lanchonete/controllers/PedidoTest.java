@@ -155,7 +155,9 @@ public class PedidoTest {
             ClienteGenericDto clienteGeneric = CLIENTE();
 
             PedidoMock pedidoMock = new PedidoMock(restTemplate, port);
-            entity = pedidoMock.PEDIDO("PedidoTest: PedidoDto Save_ok", clienteGeneric, cardapio);
+            entity = pedidoMock.PEDIDO("PedidoTest: PedidoDto1 Save_ok", clienteGeneric, cardapio);
+            entity = pedidoMock.PEDIDO("PedidoTest: PedidoDto2 Save_ok", clienteGeneric, cardapio);
+            entity = pedidoMock.PEDIDO("PedidoTest: PedidoDto3 Save_ok", clienteGeneric, cardapio);
 
             LIST();
             FIND();

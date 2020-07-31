@@ -38,7 +38,7 @@ import lombok.Setter;
 public abstract class Pedido extends BaseEntity implements IPedidoState {
     
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
-    cascade = CascadeType.DETACH)
+    cascade = CascadeType.DETACH, mappedBy = "pedido")
     private List<IProdutoPedido> pedidoitens = new ArrayList<>();
 
     private UUID codigo;
