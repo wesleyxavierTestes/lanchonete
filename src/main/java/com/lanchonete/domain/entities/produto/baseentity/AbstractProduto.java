@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.categoria.Categoria;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,4 +35,12 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
 
     @Column(nullable = false)
     private BigDecimal valor;
+
+    @Column(nullable = false)
+    private EnumTipoProduto tipoProduto;
+
+    public IProduto setTipoProduto(EnumTipoProduto tipoProduto) {
+        this.tipoProduto = tipoProduto;
+        return this;
+    }
 }

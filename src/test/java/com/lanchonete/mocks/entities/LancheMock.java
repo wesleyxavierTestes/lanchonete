@@ -10,6 +10,7 @@ import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.domain.entities.lanche.Lanche;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -35,6 +36,7 @@ public class LancheMock {
                 .nome(nome)
                 .valor(new BigDecimal(22.5).toString())
                 .valorTotal(new BigDecimal(22.5).toString())
+                .tipoProduto(EnumTipoProduto.Lanche)
                 .categoria(null)
                 .ingredientesLanche(null)
                 .build();
@@ -48,6 +50,7 @@ public class LancheMock {
         clienteDtoMock.setValorTotal(new BigDecimal(22.5));
         clienteDtoMock.setCategoria(null);
         clienteDtoMock.setIngredientesLanche(null);
+        clienteDtoMock.setTipoProduto(EnumTipoProduto.Lanche);
         return clienteDtoMock;
     }
 

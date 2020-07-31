@@ -7,10 +7,10 @@ import com.lanchonete.apllication.dto.combo.ComboListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.combo.Combo;
-import com.lanchonete.domain.entities.combo.ComboBebida;
 import com.lanchonete.domain.entities.lanche.Lanche;
+import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.categoria.Categoria;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.combo.IComboRepository;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
@@ -79,8 +79,8 @@ public class ComboService extends BaseService<Combo> {
         if (!Objects.nonNull(produtoBebida))
             throw new RegraNegocioException("bebida" + MessageError.NOT_EXISTS);
 
-        ComboBebida bebida = Mapper.map(entity, produtoBebida);
+        Bebida bebida = Mapper.map(produtoBebida, Bebida.class);
+        bebida.setId(0);
         entity.setBebida(bebida);
-        entity.getBebida().setId(0);
     }
 }

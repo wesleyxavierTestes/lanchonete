@@ -1,9 +1,10 @@
-package com.lanchonete.domain.entities.lanche;
+package com.lanchonete.domain.entities.ingrediente;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 

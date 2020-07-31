@@ -10,7 +10,7 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.MessageError;

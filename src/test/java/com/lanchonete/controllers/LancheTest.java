@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
@@ -133,24 +134,10 @@ public class LancheTest {
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
-            CategoriaMock categoriaMock = new CategoriaMock(restTemplate, port);
-            CategoriaDto categoria1 = categoriaMock.CATEGORIA("LancheTest: Categoria1 Save_ok");
-            CategoriaDto categoria2 = categoriaMock.CATEGORIA("LancheTest: Categoria2 Save_ok");
+            List<CategoriaDto> categorias = CATEGORIA();
+            List<ProdutoDto> produtos = PRODUTO(categorias);
+            LANCHE(categorias, produtos);
             
-            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);            
-            ProdutoDto produto1 = produtoMock.PRODUTO("LancheTest: Produto1 Save_ok", categoria1);
-            ProdutoDto produto2 = produtoMock.PRODUTO("LancheTest: Produto2 Save_ok", categoria2);
-
-            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
-            estoqueMock.ESTOQUE(produto1);
-            estoqueMock.ESTOQUE(produto2);
-
-            List<IngredienteDto> ingredientes = new ArrayList<>();
-            ingredientes.add(Mapper.map(produto1, IngredienteDto.class));
-            ingredientes.add(Mapper.map(produto2, IngredienteDto.class));
-
-            LancheMock lancheMock = new LancheMock(restTemplate, port);
-            entity = lancheMock.LANCHE("LancheTest: Lanche Save_ok", categoria1, ingredientes);
             LIST();
             FIND();
             DESACTIVE();
@@ -158,6 +145,61 @@ public class LancheTest {
             ACTIVE();
             FIND_ACTIVE();
         }
+
+        private List<LancheDto> LANCHE(List<CategoriaDto> categorias, List<ProdutoDto> produtos) {
+            List<LancheDto> lanches = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                int indexProduto = new Random().nextInt(25);
+                int indexCategoria = new Random().nextInt(10);
+
+                List<IngredienteDto> ingredientes = new ArrayList<>();
+                ingredientes.add(Mapper.map(produtos.get(indexProduto + 1), IngredienteDto.class));
+                ingredientes.add(Mapper.map(produtos.get(indexProduto), IngredienteDto.class));
+
+                LancheMock lancheMock = new LancheMock(restTemplate, port);
+                LancheDto lanche = lancheMock.LANCHE("LancheTest: Lanche" + i + "  Save_ok",
+                        categorias.get(indexCategoria), ingredientes);
+                lanches.add(lanche);
+            }
+            
+            entity = lanches.get(0);
+
+            return lanches;
+        }
+
+        private List<CategoriaDto> CATEGORIA() {
+            List<CategoriaDto> categorias = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                CategoriaDto categoria = new CategoriaMock(restTemplate, port)
+                        .CATEGORIA("LancheTest: Categoria" + i + " Save_ok");
+                categorias.add(categoria);
+            }
+            return categorias;
+        }
+
+        private List<ProdutoDto> PRODUTO(List<CategoriaDto> categorias) {
+            List<ProdutoDto> produtos = new ArrayList<>();
+
+            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
+            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
+            for (int i = 0; i < 30; i++) {
+                int index = new Random().nextInt(20);
+                ProdutoDto produto = produtoMock.PRODUTO("LancheTest: Produto" + i + " Save_ok", categorias.get(index));
+                if (index % 2 == 0) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                } else if (i == 10) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                }
+                produtos.add(produto);
+            }
+            return produtos;
+        }
+
 
         private void ACTIVE() {
             // ACTIVE

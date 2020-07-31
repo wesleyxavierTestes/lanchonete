@@ -2,7 +2,7 @@ package com.lanchonete.infra.repositorys.produto;
 
 import java.util.List;
 
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

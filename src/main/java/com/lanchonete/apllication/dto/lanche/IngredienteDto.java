@@ -3,6 +3,7 @@ package com.lanchonete.apllication.dto.lanche;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
@@ -28,4 +29,7 @@ public class IngredienteDto {
 
     @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String valor;   
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public EnumTipoProduto tipoProduto;
 }

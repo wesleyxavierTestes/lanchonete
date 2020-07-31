@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.cliente.ClienteGenericDto;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
@@ -54,10 +55,11 @@ public class PedidoMock {
         PedidoDto pedido = (PedidoDto) PedidoMock.dto(nome);
         pedido.cliente = cliente;
         
-        for (int i = 0; i <  7; i++) {
-            int indexCardapio = new Random().nextInt(cardapio.itensDisponiveis.size());
+        int size = cardapio.itensDisponiveis.size();
+        for (int i = 0; i <  size -1 ; i++) {
             
-            PedidoItemDto produto = Mapper.map(cardapio.itensDisponiveis.get(indexCardapio), PedidoItemDto.class);
+            CardapioItemDto item = cardapio.itensDisponiveis.get(i);
+            PedidoItemDto produto = Mapper.map(item, PedidoItemDto.class);
 
             pedido.pedidoitens.add(produto);
         }

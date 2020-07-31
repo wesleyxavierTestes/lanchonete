@@ -4,13 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
-import com.lanchonete.apllication.dto.combo.ComboItemDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
@@ -24,7 +23,6 @@ import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.ComboUtilsPageMock;
-import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
 import org.junit.jupiter.api.DisplayName;
@@ -136,37 +134,71 @@ public class ComboTest {
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
-            CategoriaMock mock = new CategoriaMock(restTemplate, port);
-            CategoriaDto categoria1 = mock.CATEGORIA("ComboTest: Categoria1 Save_ok");
-            CategoriaDto categoria2 = mock.CATEGORIA("ComboTest: Categoria2 Save_ok");
-            CategoriaDto categoria3 = mock.CATEGORIA("ComboTest: Categoria3 Save_ok");
-            CategoriaDto categoria4 = mock.CATEGORIA("ComboTest: Categoria4 Save_ok");
-            
-            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
-            ProdutoDto produto1 = produtoMock.PRODUTO("ComboTest: Produto1 Save_ok", categoria1);
-            ProdutoDto produto2 = produtoMock.PRODUTO("ComboTest: Produto2 Save_ok", categoria2);
-            ProdutoDto produto3 = produtoMock.PRODUTO("ComboTest: Produto3 Save_ok", categoria3);
-
-            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
-            estoqueMock.ESTOQUE(produto1);
-            estoqueMock.ESTOQUE(produto2);
-            estoqueMock.ESTOQUE(produto3);
-
-            List<IngredienteDto> ingredientes = new ArrayList<>();
-            ingredientes.add(Mapper.map(produto1, IngredienteDto.class));
-            ingredientes.add(Mapper.map(produto2, IngredienteDto.class));
-
-            LancheMock lancheMock = new LancheMock(restTemplate, port);
-            LancheDto lanche1 = lancheMock.LANCHE("ComboTest: Lanche Save_ok", categoria1, ingredientes);
+            List<CategoriaDto> categorias = CATEGORIA();
+            List<ProdutoDto> produtos = PRODUTO(categorias);
+            List<LancheDto> lanches = LANCHE(categorias, produtos);
 
             ComboMock comboMock = new ComboMock(restTemplate, port);
-            comboMock.COMBO("ComboTest: ComboDto Save_ok", categoria4, lanche1, produto3);
+            entity = comboMock.COMBO("ComboTest: ComboDto Save_ok", categorias.get(2),  lanches.get(2),  produtos.get(2));
+
             LIST();
             FIND();
             DESACTIVE();
             FIND_DESACTIVE();
             ACTIVE();
             FIND_ACTIVE();
+        }
+
+        private List<LancheDto> LANCHE(List<CategoriaDto> categorias, List<ProdutoDto> produtos) {
+            List<LancheDto> lanches = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                int indexProduto = new Random().nextInt(25);
+                int indexCategoria = new Random().nextInt(10);
+
+                List<IngredienteDto> ingredientes = new ArrayList<>();
+                ingredientes.add(Mapper.map(produtos.get(indexProduto + 1), IngredienteDto.class));
+                ingredientes.add(Mapper.map(produtos.get(indexProduto), IngredienteDto.class));
+
+                LancheMock lancheMock = new LancheMock(restTemplate, port);
+                LancheDto lanche = lancheMock.LANCHE("ComboTest: Lanche" + i + "  Save_ok",
+                        categorias.get(indexCategoria), ingredientes);
+                lanches.add(lanche);
+            }
+            
+            return lanches;
+        }
+
+        private List<CategoriaDto> CATEGORIA() {
+            List<CategoriaDto> categorias = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                CategoriaDto categoria = new CategoriaMock(restTemplate, port)
+                        .CATEGORIA("ComboTest: Categoria" + i + " Save_ok");
+                categorias.add(categoria);
+            }
+            return categorias;
+        }
+
+        private List<ProdutoDto> PRODUTO(List<CategoriaDto> categorias) {
+            List<ProdutoDto> produtos = new ArrayList<>();
+
+            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
+            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
+            for (int i = 0; i < 30; i++) {
+                int index = new Random().nextInt(20);
+                ProdutoDto produto = produtoMock.PRODUTO("ComboTest: Produto" + i + " Save_ok", categorias.get(index));
+                if (index % 2 == 0) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                } else if (i == 10) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                }
+                produtos.add(produto);
+            }
+            return produtos;
         }
 
         private void ACTIVE() {

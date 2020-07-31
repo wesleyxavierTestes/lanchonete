@@ -4,16 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
-import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
-import com.lanchonete.apllication.dto.combo.ComboItemDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
@@ -28,7 +25,6 @@ import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.pages.CardapioUtilsPageMock;
-import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
 import org.junit.jupiter.api.DisplayName;
@@ -141,25 +137,43 @@ public class CardapioTest {
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
-            List<CategoriaDto> categorias = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                CategoriaDto categoria = new CategoriaMock(restTemplate, port).CATEGORIA("CardapioTest: Categoria" + i + " Save_ok");
-                categorias.add(categoria);
+            List<CategoriaDto> categorias = CATEGORIA();
+            List<ProdutoDto> produtos = PRODUTO(categorias);
+            List<LancheDto> lanches = LANCHE(categorias, produtos);
+            List<ComboDto> combos = COMBO(categorias, produtos, lanches);
+            entity = CARDAPIO(produtos, lanches, combos);     
+
+            LIST();
+            FIND();
+            DESACTIVE();
+            FIND_DESACTIVE();
+            ACTIVE();
+            FIND_ACTIVE();
+        }
+
+        private CardapioDto CARDAPIO(List<ProdutoDto> produtos, List<LancheDto> lanches, List<ComboDto> combos) {
+            CardapioMock cardapioMock = new CardapioMock(restTemplate, port);
+            CardapioDto cardapio = cardapioMock.CARDAPIO("CardapioTest: cardapioDto Save_ok", produtos, lanches, combos);
+
+            return cardapio;
+        }
+
+        private List<ComboDto> COMBO(List<CategoriaDto> categorias, List<ProdutoDto> produtos,
+                List<LancheDto> lanches) {
+            List<ComboDto> combos = new ArrayList<>();
+            ComboMock comboMock = new ComboMock(restTemplate, port);
+            for (int i = 0; i < 7; i++) {
+                int indexLanche = new Random().nextInt(10);
+                int indexCategoria = new Random().nextInt(15);
+                int indexProduto = new Random().nextInt(25);
+                ComboDto combo = comboMock.COMBO("CardapioTest: ComboDto" + i + " Save_ok",
+                        categorias.get(indexCategoria), lanches.get(indexLanche), produtos.get(indexProduto));
+                combos.add(combo);
             }
+            return combos;
+        }
 
-            List<ProdutoDto> produtos = new ArrayList<>();
-
-            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
-            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
-            for (int i = 0; i < 30; i++) {
-                int index = new Random().nextInt(20);
-
-                ProdutoDto produto = produtoMock.PRODUTO("CardapioTest: Produto" + i + " Save_ok", categorias.get(index));
-                if (index % 2 == 0)
-                    estoqueMock.ESTOQUE(produto);
-                produtos.add(produto);
-            }
-
+        private List<LancheDto> LANCHE(List<CategoriaDto> categorias, List<ProdutoDto> produtos) {
             List<LancheDto> lanches = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 int indexProduto = new Random().nextInt(25);
@@ -168,32 +182,46 @@ public class CardapioTest {
                 List<IngredienteDto> ingredientes = new ArrayList<>();
                 ingredientes.add(Mapper.map(produtos.get(indexProduto + 1), IngredienteDto.class));
                 ingredientes.add(Mapper.map(produtos.get(indexProduto), IngredienteDto.class));
+
                 LancheMock lancheMock = new LancheMock(restTemplate, port);
-                LancheDto lanche = lancheMock.LANCHE("CardapioTest: Lanche" + i + "  Save_ok", categorias.get(indexCategoria),
-                        ingredientes);
+                LancheDto lanche = lancheMock.LANCHE("CardapioTest: Lanche" + i + "  Save_ok",
+                        categorias.get(indexCategoria), ingredientes);
                 lanches.add(lanche);
             }
+            return lanches;
+        }
 
-            List<ComboDto> combos = new ArrayList<>();
-            ComboMock comboMock = new ComboMock(restTemplate, port);
-            for (int i = 0; i < 7; i++) {
-                int indexLanche = new Random().nextInt(10);
-                int indexCategoria = new Random().nextInt(15);
-                int indexProduto = new Random().nextInt(25);
-                ComboDto combo = comboMock.COMBO("CardapioTest: ComboDto" + i + " Save_ok", categorias.get(indexCategoria),
-                        lanches.get(indexLanche), produtos.get(indexProduto));
-                combos.add(combo);
+        private List<CategoriaDto> CATEGORIA() {
+            List<CategoriaDto> categorias = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                CategoriaDto categoria = new CategoriaMock(restTemplate, port)
+                        .CATEGORIA("CardapioTest: Categoria" + i + " Save_ok");
+                categorias.add(categoria);
             }
-            
-            CardapioMock cardapioMock = new CardapioMock(restTemplate, port);
-            entity = cardapioMock.CARDAPIO("CardapioTest: CardapioDto Save_ok", produtos, lanches, combos);
+            return categorias;
+        }
 
-            LIST();
-            FIND();
-            DESACTIVE();
-            FIND_DESACTIVE();
-            ACTIVE();
-            FIND_ACTIVE();
+        private List<ProdutoDto> PRODUTO(List<CategoriaDto> categorias) {
+            List<ProdutoDto> produtos = new ArrayList<>();
+
+            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
+            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
+            for (int i = 0; i < 30; i++) {
+                int index = new Random().nextInt(20);
+                ProdutoDto produto = produtoMock.PRODUTO("CardapioTest: Produto" + i + " Save_ok", categorias.get(index));
+                if (index % 2 == 0) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                } else if (i == 10) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                }
+                produtos.add(produto);
+            }
+            return produtos;
         }
 
         private void ACTIVE() {

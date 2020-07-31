@@ -1,4 +1,4 @@
-package com.lanchonete.domain.entities.produto.entities;
+package com.lanchonete.domain.entities.produto;
 
 import java.math.BigDecimal;
 import java.util.List;

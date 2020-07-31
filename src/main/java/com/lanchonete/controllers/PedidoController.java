@@ -103,9 +103,14 @@ public class PedidoController extends AbstractBaseController {
 
         Pedido entity = Mapper.map(entityDto);
 
-        PedidoAguardando fazerPedido = this._service.configurarPedido(entity, cardapio, cliente);
+        this._service.configurarPedido(entity, cardapio, cliente);
 
-        this._service.save(fazerPedido);
+        try {
+            this._service.save(entity);
+        } catch (Exception e) {
+            System.out.print(e);
+            return ResponseEntity.badRequest().body(Mapper.map(entity));
+        }
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

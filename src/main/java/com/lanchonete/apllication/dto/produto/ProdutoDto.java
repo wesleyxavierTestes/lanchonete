@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
@@ -34,4 +35,7 @@ public class ProdutoDto  {
 
     @NotNull(message =  MessageError.IS_MANDATORY)
     public CategoriaDto categoria;
+
+    @NotNull(message =  MessageError.IS_MANDATORY)
+    public EnumTipoProduto tipoProduto;
 }

@@ -8,10 +8,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoVenda;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +27,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Combo extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
+public class Combo extends AbstractProduto implements  IProdutoPedido, IProdutoCardapio, IProdutoVenda {
 
     @OneToOne
     private Lanche lanche;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private ComboBebida bebida;
+    private Bebida bebida;
 
     @Column(nullable = false)
     private BigDecimal valorTotal;

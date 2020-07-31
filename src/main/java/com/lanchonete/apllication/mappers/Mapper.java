@@ -11,7 +11,6 @@ import java.util.function.Function;
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
-import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
 import com.lanchonete.apllication.dto.cliente.ClienteDto;
 import com.lanchonete.apllication.dto.cliente.EnderecoDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
@@ -23,11 +22,10 @@ import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
-import com.lanchonete.domain.entities.cardapio.CardapioItem;
 import com.lanchonete.domain.entities.combo.Combo;
-import com.lanchonete.domain.entities.combo.ComboBebida;
-import com.lanchonete.domain.entities.lanche.Ingrediente;
+import com.lanchonete.domain.entities.ingrediente.Ingrediente;
 import com.lanchonete.domain.entities.lanche.Lanche;
+import com.lanchonete.domain.entities.outros.Outros;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
@@ -37,11 +35,11 @@ import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.pedido.PedidoAguardando;
-import com.lanchonete.domain.entities.pedido.PedidoItem;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.utils.ObjectMapperUtils;
 
@@ -108,7 +106,8 @@ public final class Mapper {
 
         if (Objects.nonNull(entity.itensDisponiveis)) {
             entity.itensDisponiveis.stream()
-                    .forEach(item -> itensDisponiveis.add(Mapper.map(item, CardapioItem.class)));
+                    .forEach(item -> itensDisponiveis.add(
+                        (IProdutoCardapio)FabricaProduto.GerarProdutoPorTipo(item.tipoProduto, item)));
 
             copy = new ArrayList<>(entity.itensDisponiveis);
             entity.itensDisponiveis = null;
@@ -238,8 +237,9 @@ public final class Mapper {
 
         if (Objects.nonNull(entity.pedidoitens)) {
             entity.pedidoitens.stream().forEach(item -> {
-                PedidoItem itemnew = new PedidoItem();
+                Outros itemnew = new Outros();
                 itemnew.setId(item.id);
+                itemnew.setTipoProduto(item.tipoProduto);
                 itemnew.setCodigo(UUID.fromString(item.codigo));
                 pedidoitens.add(itemnew);
             });
@@ -279,13 +279,5 @@ public final class Mapper {
 
     public static IngredienteDto map(final Ingrediente entity) {
         return Mapper.map(entity, IngredienteDto.class);
-    }
-
-    public static ComboBebida map(final Combo entity, final Produto bebida) {
-        try {
-            return Mapper.map(bebida, ComboBebida.class);
-        } catch (final Exception e) {
-            return null;
-        }
     }
 }

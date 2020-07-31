@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,9 @@ public class ComboDto  {
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public String nome;
+    
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public EnumTipoProduto tipoProduto;
 
     @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String codigo;

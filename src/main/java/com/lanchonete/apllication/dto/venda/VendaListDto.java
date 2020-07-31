@@ -1,5 +1,7 @@
 package com.lanchonete.apllication.dto.venda;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VendaListDto {
 
-    public String nome;
+    public long id;
+    public boolean ativo;
+    
+    public List<VendaItemDto> vendaItens;
 
+    public String valor;
+
+    public String valorTotal;
+
+    public boolean cancelado;
 }

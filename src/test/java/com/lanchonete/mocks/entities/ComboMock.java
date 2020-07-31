@@ -12,6 +12,7 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.combo.Combo;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -39,6 +40,7 @@ public class ComboMock {
                 .valorTotal(new BigDecimal(22.5).toString())
                 .categoria(null)
                 .lanche(null)
+                .tipoProduto(EnumTipoProduto.Combo)
                 .build();
         return clienteDtoMock;
     }
@@ -50,6 +52,7 @@ public class ComboMock {
         clienteDtoMock.setValorTotal(new BigDecimal(22.5));
         clienteDtoMock.setCategoria(null);
         clienteDtoMock.setLanche(null);
+        clienteDtoMock.setTipoProduto(EnumTipoProduto.Combo);
         return clienteDtoMock;
     }
 

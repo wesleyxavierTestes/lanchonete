@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 

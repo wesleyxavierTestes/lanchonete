@@ -9,7 +9,7 @@ import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;

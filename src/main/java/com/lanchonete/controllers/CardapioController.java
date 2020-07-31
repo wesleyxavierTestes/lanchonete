@@ -84,10 +84,13 @@ public class CardapioController extends AbstractBaseController {
 
         Cardapio entity = Mapper.map(entityDto);
 
+        this._service.criarCardapio(entity);
+        
         try {
             this._service.save(entity);
         } catch (Exception e) {
             System.out.print(e);
+            
         }
 
         return ResponseEntity.ok(Mapper.map(entity));

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -20,12 +20,11 @@ public class PedidoDto  {
 
     public long id;
     public boolean ativo;
+    @Max(value = 30, message = MessageError.MAX_LIMITE)
+    public String dataCadastro;
 
     @Max(value = 150, message = MessageError.MAX_LIMITE)
     public String codigo;
-
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public List<PedidoItemDto> pedidoitens;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     @Max(value = 150, message = MessageError.MAX_LIMITE)
@@ -50,4 +49,7 @@ public class PedidoDto  {
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public ClienteGenericDto cliente;
+
+    @NotNull(message = MessageError.IS_MANDATORY)
+    public List<PedidoItemDto> pedidoitens;
 }

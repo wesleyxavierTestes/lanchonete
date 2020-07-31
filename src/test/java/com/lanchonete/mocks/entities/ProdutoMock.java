@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -52,6 +53,7 @@ public class ProdutoMock {
         // SAVE
         ProdutoDto produto = ProdutoMock.dto(nome);
         produto.categoria = categoria;
+        produto.tipoProduto = EnumTipoProduto.Ingrediente;
 
         HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
         String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);

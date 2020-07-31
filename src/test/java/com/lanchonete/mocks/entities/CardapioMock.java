@@ -14,6 +14,7 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -50,16 +51,25 @@ public class CardapioMock {
         CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
         cardapio.itensDisponiveis = new ArrayList<>();
         CardapioItemDto produto = null;
-        for (int i = 0; i < 7; i++) {
-            int index = new Random().nextInt(9);
-            if (index % 3 == 0)
-                produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
-            else if (index % 2 == 0) {
-                produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
-            } else {
-                produto = Mapper.map(combos.get(i), CardapioItemDto.class);
+        for (int i = 0; i < 30; i++) {
+            try {
+                if (i % 3 == 0) {
+                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+                    produto.tipoProduto = EnumTipoProduto.Outros;
+                } else if (i % 4 == 0) {
+                    produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
+                    produto.tipoProduto = EnumTipoProduto.Lanche;
+                } else if (i % 5 == 0) {
+                    produto = Mapper.map(combos.get(i), CardapioItemDto.class);
+                    produto.tipoProduto = EnumTipoProduto.Combo;
+                } else {
+                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+                    produto.tipoProduto = EnumTipoProduto.Bebida;
+                }
+                cardapio.itensDisponiveis.add(produto);
+            } catch (Exception e) {
+                // TODO: handle exception
             }
-            cardapio.itensDisponiveis.add(produto);
         }
 
         String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioSave, port);

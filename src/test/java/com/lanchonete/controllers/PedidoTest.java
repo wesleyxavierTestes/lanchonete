@@ -16,6 +16,7 @@ import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.lanche.IngredienteDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.pedido.PedidoDto;
+import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.apllication.validations.CustomErro;
@@ -152,25 +153,58 @@ public class PedidoTest {
         @Test
         @DisplayName("Deve salvar; listar; alterar; buscar e deletar")
         public void save_ok() {
-            List<CategoriaDto> categorias = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                CategoriaDto categoria = new CategoriaMock(restTemplate, port)
-                        .CATEGORIA("PedidoTest: Categoria" + i + " Save_ok");
-                categorias.add(categoria);
+            List<CategoriaDto> categorias = CATEGORIA();
+            List<ProdutoDto> produtos = PRODUTO(categorias);
+            List<LancheDto> lanches = LANCHE(categorias, produtos);
+            List<ComboDto> combos = COMBO(categorias, produtos, lanches);
+            CardapioDto cardapio = CARDAPIO(produtos, lanches, combos);
+            ClienteGenericDto clienteGeneric = CLIENTE();
+
+            PedidoMock pedidoMock = new PedidoMock(restTemplate, port);
+            entity = pedidoMock.PEDIDO("PedidoTest: PedidoDto Save_ok", clienteGeneric, cardapio);
+
+            LIST();
+            FIND();
+            // // AGUARDANDO();
+            // // FIND_AGUARDANDO();
+            // CANCEL();
+            // FIND_CANCEL();
+        }
+
+        private CardapioDto CARDAPIO(List<ProdutoDto> produtos, List<LancheDto> lanches, List<ComboDto> combos) {
+            CardapioMock cardapioMock = new CardapioMock(restTemplate, port);
+            cardapioMock.CARDAPIO("PedidoTest: cardapioDto Save_ok", produtos, lanches, combos);
+
+            CardapioDto cardapio = GET_CARDAPIO_COM_ESTOQUE();
+            return cardapio;
+        }
+
+        private CardapioDto GET_CARDAPIO_COM_ESTOQUE() {
+            Page<CardapioListDto> pageCardapio = _cardapioService.listDto(1);
+            assertNotNull(pageCardapio);
+            assertNotNull(pageCardapio.getContent());
+            List<CardapioListDto> content = pageCardapio.getContent();
+            CardapioDto cardapio = Mapper.map(content.get(0), CardapioDto.class);
+            assertNotNull(cardapio);
+            return cardapio;
+        }
+
+        private List<ComboDto> COMBO(List<CategoriaDto> categorias, List<ProdutoDto> produtos,
+                List<LancheDto> lanches) {
+            List<ComboDto> combos = new ArrayList<>();
+            ComboMock comboMock = new ComboMock(restTemplate, port);
+            for (int i = 0; i < 7; i++) {
+                int indexLanche = new Random().nextInt(10);
+                int indexCategoria = new Random().nextInt(15);
+                int indexProduto = new Random().nextInt(25);
+                ComboDto combo = comboMock.COMBO("PedidoTest: ComboDto" + i + " Save_ok",
+                        categorias.get(indexCategoria), lanches.get(indexLanche), produtos.get(indexProduto));
+                combos.add(combo);
             }
+            return combos;
+        }
 
-            List<ProdutoDto> produtos = new ArrayList<>();
-
-            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
-            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
-            for (int i = 0; i < 30; i++) {
-                int index = new Random().nextInt(20);
-                ProdutoDto produto = produtoMock.PRODUTO("PedidoTest: Produto" + i + " Save_ok", categorias.get(index));
-                if (index % 3 != 0)
-                    estoqueMock.ESTOQUE(produto);
-                produtos.add(produto);
-            }
-
+        private List<LancheDto> LANCHE(List<CategoriaDto> categorias, List<ProdutoDto> produtos) {
             List<LancheDto> lanches = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 int indexProduto = new Random().nextInt(25);
@@ -185,49 +219,46 @@ public class PedidoTest {
                         categorias.get(indexCategoria), ingredientes);
                 lanches.add(lanche);
             }
+            return lanches;
+        }
 
-            List<ComboDto> combos = new ArrayList<>();
-            ComboMock comboMock = new ComboMock(restTemplate, port);
-            for (int i = 0; i < 7; i++) {
-                int indexLanche = new Random().nextInt(10);
-                int indexCategoria = new Random().nextInt(15);
-                int indexProduto = new Random().nextInt(25);
-                ComboDto combo = comboMock.COMBO("PedidoTest: ComboDto" + i + " Save_ok",
-                        categorias.get(indexCategoria), lanches.get(indexLanche), produtos.get(indexProduto));
-                combos.add(combo);
+        private List<CategoriaDto> CATEGORIA() {
+            List<CategoriaDto> categorias = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                CategoriaDto categoria = new CategoriaMock(restTemplate, port)
+                        .CATEGORIA("PedidoTest: Categoria" + i + " Save_ok");
+                categorias.add(categoria);
             }
+            return categorias;
+        }
 
-            CardapioMock cardapioMock = new CardapioMock(restTemplate, port);
-            cardapioMock.CARDAPIO("PedidoTest: cardapioDto Save_ok", produtos, lanches, combos);
+        private List<ProdutoDto> PRODUTO(List<CategoriaDto> categorias) {
+            List<ProdutoDto> produtos = new ArrayList<>();
 
-            CardapioDto cardapio = GET_CARDAPIO_COM_ESTOQUE();
-            ClienteGenericDto clienteGeneric = CLIENTE();
-
-            PedidoMock pedidoMock = new PedidoMock(restTemplate, port);
-            entity = pedidoMock.PEDIDO("PedidoTest: PedidoDto Save_ok", clienteGeneric, cardapio);
-
-            LIST();
-            // FIND();
-            // // AGUARDANDO();
-            // // FIND_AGUARDANDO();
-            // CANCEL();
-            // FIND_CANCEL();
+            ProdutoMock produtoMock = new ProdutoMock(restTemplate, port);
+            EstoqueMock estoqueMock = new EstoqueMock(restTemplate, port);
+            for (int i = 0; i < 30; i++) {
+                int index = new Random().nextInt(20);
+                ProdutoDto produto = produtoMock.PRODUTO("PedidoTest: Produto" + i + " Save_ok", categorias.get(index));
+             //   if (index % 2 == 0) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                //} else if (i == 10) {
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                    estoqueMock.ESTOQUE(produto);
+                //}
+                produtos.add(produto);
+            }
+            return produtos;
         }
 
         private ClienteGenericDto CLIENTE() {
             Cliente cliente = _clienteService.save(ClienteMock.by("nome"));
             ClienteGenericDto clienteGeneric = Mapper.map(cliente, ClienteGenericDto.class);
             return clienteGeneric;
-        }
-
-        private CardapioDto GET_CARDAPIO_COM_ESTOQUE() {
-            Page<CardapioListDto> pageCardapio = _cardapioService.listDto(1);
-            assertNotNull(pageCardapio);
-            assertNotNull(pageCardapio.getContent());
-            List<CardapioListDto> content = pageCardapio.getContent();
-            CardapioDto cardapio = Mapper.map(content.get(0), CardapioDto.class);
-            assertNotNull(cardapio);
-            return cardapio;
         }
 
         private void FIND_CANCEL() {
@@ -269,16 +300,21 @@ public class PedidoTest {
         private void LIST() {
             // LIST
             String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoList + "/?page=1", port);
-
-            ResponseEntity<PedidoUtilsPageMock> responselist = restTemplate.getForEntity(url,
+            ResponseEntity<PedidoUtilsPageMock> responselist = null;
+            try {
+                responselist = restTemplate.getForEntity(url,
                     PedidoUtilsPageMock.class);
+            } catch (Exception e) {
+                System.out.print(e);
+            }
 
             page = responselist.getBody();
             assertEquals(HttpStatus.OK, responselist.getStatusCode());
             assertTrue(page.totalElements > 0);
             assertTrue(page.totalPages >= 1);
 
-            entity = Mapper.map(page.content.get(0), PedidoDto.class);
+            PedidoListDto o = page.content.get(0);
+            entity = Mapper.map(o, PedidoDto.class);
         }
 
     }

@@ -1,21 +1,16 @@
 package com.lanchonete.domain.services.lanche;
 
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
-import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.categoria.Categoria;
+import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProduto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
-import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,19 +49,8 @@ public class LancheService extends BaseService<Lanche> {
 
 	public void criarLanche(Lanche entity, Categoria categoria) {
 
-        entity.setCodigo(UUID.randomUUID());
-        entity.setCategoria(categoria);
-
-        for (IProdutoComposicao ingrediente : entity.getIngredientesLanche()) {
-            Produto produto = _produtoRepository.findByIdAtive(ingrediente.getId());
-            if (!Objects.nonNull(produto))
-                throw new RegraNegocioException(String.format("Produto %s", ingrediente.getNome()) 
-                + MessageError.EXISTS);
-                ingrediente.setId(0);
-                ingrediente.setCategoria(produto.getCategoria());
-                ingrediente.setCodigo(produto.getCodigo());
-        } 
-
-        entity.calcularValor();
+        Set<IProdutoComposicao> ingredientes = new LancheProcessaProduto(this._produtoRepository)
+                                                    .mapperIngrediente(entity); 
+        LancheProcessaProduto.setDadosBaseLanche(entity, categoria, ingredientes);
 	}
 }

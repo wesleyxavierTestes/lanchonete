@@ -3,7 +3,7 @@ package com.lanchonete.apllication.mappers;
 import java.math.BigDecimal;
 
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 
 final class ProdutoMapper {
     private ProdutoMapper() {}

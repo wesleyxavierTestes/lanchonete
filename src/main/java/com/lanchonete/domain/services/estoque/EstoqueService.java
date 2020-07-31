@@ -4,7 +4,7 @@ import com.lanchonete.apllication.dto.estoque.EstoqueListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.IEstoque;
-import com.lanchonete.domain.entities.produto.entities.Produto;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.estoque.IEstoqueRepository;
 
