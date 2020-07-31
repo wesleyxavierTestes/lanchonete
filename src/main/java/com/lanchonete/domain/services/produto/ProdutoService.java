@@ -5,10 +5,7 @@ import java.util.Objects;
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.produto.Produto;
-import com.lanchonete.domain.entities.produto.baseentity.IProduto;
-import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
 import com.lanchonete.domain.services.BaseService;
-import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,7 @@ public class ProdutoService extends BaseService<Produto> {
     }
 
     public Produto findByEstoque(long id) {
-        Produto entity = (Produto)this.find(id);
+        Produto entity = this.find(id);
         if (Objects.nonNull(entity)) {
             double count = this._repository.countEstoqueById(entity.getId());
             entity.setEstoqueAtual(count);
@@ -40,7 +37,7 @@ public class ProdutoService extends BaseService<Produto> {
     public Page<ProdutoListDto> listFilterDto(Produto entity, int page) {
         return super.listFilter(entity, page).map(produto -> {
             double count = this._repository.countEstoqueById(produto.getId());
-            ((Produto)produto).setEstoqueAtual(count);
+            produto.setEstoqueAtual(count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
@@ -48,7 +45,7 @@ public class ProdutoService extends BaseService<Produto> {
     public Page<ProdutoListDto> listDto(int page) {
         return _repository.findAll(PageRequest.of((page - 1), 10)).map(produto -> {
             double count = this._repository.countEstoqueById(produto.getId());
-            ((Produto)produto).setEstoqueAtual(count);
+            produto.setEstoqueAtual(count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }

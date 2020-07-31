@@ -1,7 +1,5 @@
 package com.lanchonete.domain.entities.produto.factory;
 
-import java.util.Objects;
-
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.bebida.Bebida;
@@ -18,7 +16,6 @@ import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProdut
 import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.ProdutoProcessaProduto;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
-import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 public final class FabricaProduto {

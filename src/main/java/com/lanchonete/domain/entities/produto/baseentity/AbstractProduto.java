@@ -6,6 +6,8 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -46,6 +48,7 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
     private BigDecimal valor;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EnumTipoProduto tipoProduto;
 
     public IProduto setTipoProduto(EnumTipoProduto tipoProduto) {

@@ -98,13 +98,6 @@ public class VendaService extends BaseService<Venda> {
 
     private void criarVendaGetPedidoRepositoryById(VendaItem _vendaPedido) {
         Pedido pedido = _vendaPedido.getPedido();
-        
-        System.out.println("PEDIDOTESTE PEDIDO "+pedido);
-        System.out.println("PEDIDOTESTE ID-1 "+pedido.getId());
-        _pedidoRepository.findAll().forEach(c -> {
-            System.out.println("PEDIDOTESTE ID-2 "+c.getId());
-        });
-
         Optional<Pedido> pedidoOptional = _pedidoRepository.findById(pedido.getId());
         if (!pedidoOptional.isPresent())
             throw new RegraNegocioException("Pedido inexistente");

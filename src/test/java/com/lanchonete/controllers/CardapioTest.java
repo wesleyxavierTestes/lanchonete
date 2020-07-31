@@ -290,7 +290,6 @@ public class CardapioTest {
 
             entity = Mapper.map(page.content.get(0), CardapioDto.class);
         }
-
     }
 
 }
