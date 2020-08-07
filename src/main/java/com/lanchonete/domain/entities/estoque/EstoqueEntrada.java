@@ -20,7 +20,7 @@ public class EstoqueEntrada extends AbstractEstoque {
   @Override
   public void configureSave() {
     if (this.quantidade < 0)
-      this.quantidade *= 1;
+      this.quantidade *= -1;
   }
 
   public static EstoqueEntrada ProdutoSave(Produto entity) {

@@ -24,8 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("api/cardapio")
+@Api(value = "Cardapio")
 public class CardapioController extends AbstractBaseController {
 
     private final CardapioService _service;
@@ -35,6 +39,7 @@ public class CardapioController extends AbstractBaseController {
         _service = service;
     }
 
+    @ApiOperation(value = "Novo")
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new CardapioDto());
