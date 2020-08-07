@@ -18,7 +18,7 @@ public class OutrosProcessaProduto extends ProcessaProduto {
         
         T itemProduto = (T)Mapper.map(produto, Outros.class);
         
-        return (T)itemProduto;
+        return itemProduto;
     }
 
     public boolean validarExisteEstoqueProduto(Outros outros) {

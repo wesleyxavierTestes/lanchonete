@@ -11,6 +11,7 @@ import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
@@ -46,10 +47,10 @@ public class CardapioMock {
 
     public CardapioDto CARDAPIO(String nome, List<ProdutoDto> produtos, List<LancheDto> lanches,
             List<ComboDto> combos) {
-        // SAVE
         CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
         cardapio.itensDisponiveis = new ArrayList<>();
         CardapioItemDto produto = null;
+        
         for (int i = 0; i < 30; i++) {
             try {
                 if (i % 3 == 0) {
@@ -67,7 +68,7 @@ public class CardapioMock {
                 }
                 cardapio.itensDisponiveis.add(produto);
             } catch (Exception e) {
-                // TODO: handle exception
+                throw new RegraNegocioException("Exceção desconhecida: " + e.getMessage());
             }
         }
 

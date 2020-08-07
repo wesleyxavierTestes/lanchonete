@@ -37,8 +37,6 @@ public class VendaController extends AbstractBaseController {
         _categoriaService = categoriaService;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new VendaDto());
@@ -79,7 +77,6 @@ public class VendaController extends AbstractBaseController {
         try {
             this._service.save(entity);
         } catch (Exception e) {
-            System.out.println(e);
             throw new RegraNegocioException("Venda inválida");
         }
 

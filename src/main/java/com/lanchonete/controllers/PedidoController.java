@@ -44,10 +44,6 @@ public class PedidoController extends AbstractBaseController {
         _clienteService = clienteService;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new PedidoDto());
