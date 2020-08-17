@@ -38,8 +38,6 @@ public class ClienteController extends AbstractBaseController {
         _service = service;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("list/spendmore")
     public ResponseEntity<Page<ClienteListDto>> listSpendMore(@RequestParam(name = "page") int page) {
         return ResponseEntity.ok(this._service.listSpendMore(page));

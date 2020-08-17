@@ -29,7 +29,7 @@ public class LancheProcessaProduto extends ProcessaProduto {
         
         T itemProduto = (T)Mapper.map(produto, Lanche.class);
         
-        return (T)itemProduto;
+        return itemProduto;
     }
     
     public boolean validarExisteEstoqueProduto(Lanche lanche) {
@@ -42,6 +42,7 @@ public class LancheProcessaProduto extends ProcessaProduto {
 
     public List<IProdutoComposicao> mapperIngrediente(Lanche entity) {
         List<IProdutoComposicao> ingredientes = new ArrayList<>();
+        
         for (IProdutoComposicao ingrediente : entity.getIngredientesLanche()) {
             Produto produto = _repository.findByIdAtive(ingrediente.getId());
             if (!Objects.nonNull(produto))
@@ -50,19 +51,20 @@ public class LancheProcessaProduto extends ProcessaProduto {
                 Ingrediente ingredienteMapeado = mapperIngrediente(ingrediente, produto);
                 ingredientes.add(ingredienteMapeado);
         }
+
         return ingredientes;
     }
 
     private Ingrediente mapperIngrediente(IProdutoComposicao ingrediente, Produto produto) {
-        Ingrediente _ingrediente = Mapper.map(produto, Ingrediente.class);
-        _ingrediente.setId(0);
-        _ingrediente.setTipoProduto(EnumTipoProduto.Ingrediente);
-        _ingrediente.setCategoria(produto.getCategoria());
-        _ingrediente.setCodigo(produto.getCodigo());
-        _ingrediente.setValor(ingrediente.getValor());
-        _ingrediente.setAtivo(true);
+        Ingrediente ingredienteMapeado = Mapper.map(produto, Ingrediente.class);
+        ingredienteMapeado.setId(0);
+        ingredienteMapeado.setTipoProduto(EnumTipoProduto.Ingrediente);
+        ingredienteMapeado.setCategoria(produto.getCategoria());
+        ingredienteMapeado.setCodigo(produto.getCodigo());
+        ingredienteMapeado.setValor(ingrediente.getValor());
+        ingredienteMapeado.setAtivo(true);
 
-        return _ingrediente;
+        return ingredienteMapeado;
     }
 
 	public static void setDadosBaseLanche(Lanche entity, Categoria categoria, List<IProdutoComposicao> ingredientes) {

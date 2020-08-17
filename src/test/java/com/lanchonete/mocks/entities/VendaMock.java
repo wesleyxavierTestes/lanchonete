@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaItemDto;

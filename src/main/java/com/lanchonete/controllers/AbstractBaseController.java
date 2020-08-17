@@ -31,9 +31,11 @@ public abstract class AbstractBaseController {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String dataIntegrityViolationException(DataIntegrityViolationException ex)  {
-        String typeName = ex.getCause().getClass().getTypeName();
-        String typeName2 = ConstraintViolationException.class.getTypeName();
-        if (typeName.equals(typeName2) 
+        
+        String nomeDoTipoException = ex.getCause().getClass().getTypeName();
+        String nomeDoTipoErrorBancoDeDados = ConstraintViolationException.class.getTypeName();
+
+        if (nomeDoTipoException.equals(nomeDoTipoErrorBancoDeDados) 
         && ex.getCause().getCause().getMessage().toLowerCase().contains("unique")) {
             return "Duplicação de item não permitida no banco";
         }

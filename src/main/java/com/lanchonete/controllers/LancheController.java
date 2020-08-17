@@ -35,8 +35,6 @@ public class LancheController extends AbstractBaseController {
         _serviceCategoria = serviceCategoria;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new LancheDto());
@@ -95,7 +93,6 @@ public class LancheController extends AbstractBaseController {
         try {
             this._service.save(entity);
         } catch (Exception e) {
-            System.out.println(e);
             throw new RegraNegocioException("Lanche inválida");
         }
 

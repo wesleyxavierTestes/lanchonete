@@ -1,5 +1,6 @@
 package com.lanchonete.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -73,7 +74,7 @@ public class CardapioTest {
             CardapioUtilsPageMock page = response.getBody();
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(page);
+            assertThat(page).isNotNull();
             assertNotNull(page.content);
         }
 

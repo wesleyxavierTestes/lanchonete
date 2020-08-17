@@ -35,8 +35,6 @@ public class ComboController extends AbstractBaseController {
         _serviceCategoria = serviceCategoria;
     }
 
-    // TODO: INCOMPLETO
-    // TODO: NECESSITA DE TESTES
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new ComboDto());

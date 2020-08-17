@@ -24,8 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("api/cardapio")
+@Api(value = "Cardapio")
 public class CardapioController extends AbstractBaseController {
 
     private final CardapioService _service;
@@ -35,6 +39,7 @@ public class CardapioController extends AbstractBaseController {
         _service = service;
     }
 
+    @ApiOperation(value = "Novo")
     @GetMapping("novo")
     public ResponseEntity<Object> novo() {
         return ResponseEntity.ok(new CardapioDto());
@@ -42,7 +47,9 @@ public class CardapioController extends AbstractBaseController {
 
     @GetMapping("list")
     public ResponseEntity<Page<CardapioListDto>> list(@RequestParam(name = "page") int page) {
+
         Page<CardapioListDto> list = this._service.listDto(page);
+
         return ResponseEntity.ok(list);
     }
 
@@ -53,28 +60,33 @@ public class CardapioController extends AbstractBaseController {
     }
 
     @PostMapping("list/filter")
-    public ResponseEntity<Page<CardapioListDto>> listFilter(
-        @RequestParam(name = "page") int page,   
-        @RequestBody CardapioDto filter) {
+    public ResponseEntity<Page<CardapioListDto>> listFilter(@RequestParam(name = "page") int page,
+            @RequestBody CardapioDto filter) {
+
         Page<CardapioListDto> list = this._service.listFilterDto(Mapper.map(filter), page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/active")
     public ResponseEntity<Page<CardapioListDto>> listActive(@RequestParam(name = "page") int page) {
+
         Page<CardapioListDto> list = this._service.listActiveDto(page);
+
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("list/desactive")
     public ResponseEntity<Page<CardapioListDto>> listDesactive(@RequestParam(name = "page") int page) {
+        
         Page<CardapioListDto> list = this._service.listDesactiveDto(page);
+        
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
-        
+
         Cardapio entity = this._service.find(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -86,13 +98,13 @@ public class CardapioController extends AbstractBaseController {
         Cardapio entity = Mapper.map(entityDto);
 
         this._service.criarCardapio(entity);
-        
+
         try {
             this._service.save(entity);
         } catch (Exception e) {
-            System.out.print(e);
+            // log ex.getMessage()
             throw new RegraNegocioException("Cardápio inválido");
-            
+
         }
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -120,7 +132,7 @@ public class CardapioController extends AbstractBaseController {
 
     @DeleteMapping("desactive")
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
-        
+
         Cardapio entity = this._service.ative(id, false);
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -128,7 +140,7 @@ public class CardapioController extends AbstractBaseController {
 
     @DeleteMapping("delete")
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
-        
+
         Cardapio entity = this._service.delete(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
