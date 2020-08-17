@@ -1,5 +1,8 @@
 package com.lanchonete.infra.repositorys.produto;
 
+import java.util.Collection;
+import java.util.UUID;
+
 import com.lanchonete.domain.entities.produto.Produto;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface IProdutoRepository extends JpaRepository<Produto, Long> {
@@ -66,6 +70,36 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long> {
                     +"and p.id = ?1 "
                     +"GROUP BY p.id ")
     boolean countEstoqueByIdBool(long id);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT SUM(e.quantidade) "
+                +"FROM public.produto as p "
+                +"join public.estoque as e "
+                +"on e.produto_id = p.id "
+                +"where p.ativo = true "
+                +"and p.codigo = :codigo "
+                +"GROUP BY p.id ")
+    long countEstoqueByCodigo(@Param("codigo") UUID codigo);
+
+    @Query(
+        nativeQuery = true, 
+        value = "SELECT SUM(e.quantidade) > 0 "
+                +"FROM public.produto as p "
+                +"join public.estoque as e "
+                +"on e.produto_id = p.id "
+                +"where p.ativo = true "
+                +"and p.codigo = :codigo "
+                +"GROUP BY p.id ")
+    boolean _countEstoqueByIdBool(@Param("codigo") UUID codigo);
+
+    @Query(
+        value = "FROM Produto as p "
+                +"where p.codigo = :codigo ")
+    Collection<Produto> _produtoCodigo(@Param("codigo") UUID codigo);
+
+    Collection<Produto> findByNomeContaining(String nome);
+    Collection<Produto> findByCodigo(UUID codigo);
     
     @Query(
         nativeQuery = true, 
