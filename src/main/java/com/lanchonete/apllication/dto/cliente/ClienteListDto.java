@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class ClienteListDto  {
 
     public long id;
+    public boolean ativo;
 
     public String nome;
 
