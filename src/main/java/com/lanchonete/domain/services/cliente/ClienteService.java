@@ -14,6 +14,8 @@ import com.lanchonete.infra.repositorys.cliente.IClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,7 +58,7 @@ public class ClienteService extends BaseService<Cliente> {
     }
 
     public Page<ClienteListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ClienteListDto.class));
+        return _repository.findAll(PageRequest.of((page - 1), 10, Sort.by(Direction.ASC, "nome"))).map(Mapper.pageMap(ClienteListDto.class));
     }
 
     public Page<ClienteListDto> listActiveDto(int page) {
