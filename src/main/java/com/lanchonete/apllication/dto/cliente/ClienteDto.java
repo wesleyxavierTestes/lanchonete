@@ -4,6 +4,7 @@ import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
 import com.lanchonete.utils.MessageError;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,6 +23,7 @@ public class ClienteDto  {
     public boolean ativo;
 
     @NotNull(message = MessageError.IS_MANDATORY)
+    @NotEmpty(message = MessageError.IS_MANDATORY)
     @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String nome;
     

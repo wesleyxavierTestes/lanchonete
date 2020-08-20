@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export environment=dev
+export data_base_url=jdbc:postgresql://0.0.0.0:5432/lanchonete
+export data_base_user=trainee
+export data_base_password=123
+
+mvn spring-boot:run
