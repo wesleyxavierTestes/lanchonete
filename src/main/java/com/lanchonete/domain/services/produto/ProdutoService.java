@@ -1,8 +1,12 @@
 package com.lanchonete.domain.services.produto;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
+import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.BaseService;
@@ -80,5 +84,24 @@ public class ProdutoService extends BaseService<Produto> {
             produto.setEstoqueAtual(count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
+    }
+
+    public long countEstoqueByCodigo(String codigo) {
+       return this._repository.countEstoqueByCodigo(UUID.fromString(codigo));
+    }
+
+    public Collection<Produto> teste(String param) {
+        // return this._repository.findByCodigo(UUID.fromString(param));
+        return this._repository.findByNomeContaining(param);
+     }
+
+    public Produto produtoCodigo(String codigo) {
+        Optional<Produto> produtoOptional = this._repository._produtoCodigo(UUID.fromString(codigo)).stream()
+                .findFirst();
+        if (!produtoOptional.isPresent()) {
+            throw new RegraNegocioException("Produto Inexistente");
+        }
+
+        return produtoOptional.get();
     }
 }

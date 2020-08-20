@@ -1,6 +1,8 @@
 package com.lanchonete.controllers;
 
+import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -97,6 +99,30 @@ public class ProdutoController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("quantidadeEstoque")
+    public ResponseEntity<Long> quantidadeEstoque(@RequestParam(name = "codigo") String codigo) {
+
+        long quantidade = this._service.countEstoqueByCodigo(codigo);
+
+        return ResponseEntity.ok(quantidade);
+    }
+
+    @GetMapping("teste")
+    public ResponseEntity<Stream<ProdutoDto>> produtoTeste(@RequestParam(name = "codigo") String codigo) {
+
+        Collection<Produto> quantidade = this._service.teste(codigo);
+
+        return ResponseEntity.ok(quantidade.stream().map(c -> Mapper.map(c)));
+    }
+
+    @GetMapping("produtoCodigo")
+    public ResponseEntity<ProdutoDto> produtoCodigo(@RequestParam(name = "codigo") String codigo) {
+
+        Produto produto = this._service.produtoCodigo(codigo);
+
+        return ResponseEntity.ok(Mapper.map(produto));
+    }
+
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
 
@@ -150,6 +176,14 @@ public class ProdutoController extends AbstractBaseController {
     public ResponseEntity<Object> desactive(@RequestParam(name = "id") long id) {
 
         Produto entity = (Produto)this._service.ative(id, false);
+
+        return ResponseEntity.ok(Mapper.map(entity));
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
+
+        Produto entity = (Produto)this._service.delete(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }
