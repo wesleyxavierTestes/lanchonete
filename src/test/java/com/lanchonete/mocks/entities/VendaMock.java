@@ -34,9 +34,9 @@ public class VendaMock {
 
     public static VendaDto dto() {
         VendaDto clienteDtoMock = VendaDto.builder()
-        .valor("1000")
-        .valorDesconto("0")
-        .valorTotal("100")
+        .valor(new BigDecimal("1000"))
+        .valorDesconto(new BigDecimal("0"))
+        .valorTotal(new BigDecimal("100"))
         .vendaItens(null)
         .build();
         return clienteDtoMock;
@@ -56,9 +56,9 @@ public class VendaMock {
 
             VendaItemDto vendaItemDto = new VendaItemDto();
             VendaPedidoDto pedido = Mapper.map(pedidoDto, VendaPedidoDto.class);
-            vendaItemDto.valorDesconto = "0";
-            vendaItemDto.valor = pedidoDto.valorTotal;
-            vendaItemDto.valorTotal = new BigDecimal(pedidoDto.valor).subtract(new BigDecimal(vendaItemDto.valorDesconto)).toString();
+            vendaItemDto.valorDesconto = new BigDecimal("0");
+            vendaItemDto.valor = new BigDecimal(pedidoDto.valorTotal);
+            vendaItemDto.valorTotal = new BigDecimal(pedidoDto.valor).subtract(vendaItemDto.valorDesconto);
             vendaItemDto.pedido = pedido;
             vendaItemDto.codigo = pedido.codigo;
             venda.vendaItens.add(vendaItemDto);

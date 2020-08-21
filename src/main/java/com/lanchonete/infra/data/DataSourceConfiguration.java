@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Configuration
 public class DataSourceConfiguration {
-    private final String ambiente = System.getenv("environment");
+    private String ambiente = System.getenv("ambiente");
     /**
      * Configura data base port ambiente
      * Ambiente Vazio é de Test usando o h2
@@ -28,6 +28,8 @@ public class DataSourceConfiguration {
 
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
+        ambiente = System.getenv("ambiente");
+        System.out.println("AMBIENTE ATUAL"+ambiente);
         final HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         if (Objects.nonNull(ambiente) && !ambiente.isEmpty()) {
             adapter.setDatabase(Database.POSTGRESQL);

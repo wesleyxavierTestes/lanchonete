@@ -157,11 +157,10 @@ public final class Mapper {
                 VendaItem vendaItem = new VendaItem();
                 vendaItem.setId(item.id);
                 vendaItem.setTipoProduto(EnumTipoProduto.Venda);
-                vendaItem.setValor(new BigDecimal(item.valor));
-                vendaItem.setValorDesconto(new BigDecimal(item.valorDesconto));
-                vendaItem.setValorTotal(new BigDecimal(item.valorTotal));
+                vendaItem.setValor((item.valor));
+                vendaItem.setValorDesconto((item.valorDesconto));
+                vendaItem.setValorTotal((item.valorTotal));
                 Pedido pedidoMap = Mapper.map(item.pedido);
-                System.out.println("PEDIDO MAP" + pedidoMap);
                 vendaItem.setPedido(pedidoMap);
 
                 vendaItens.add(vendaItem);

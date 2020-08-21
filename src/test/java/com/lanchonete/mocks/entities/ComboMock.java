@@ -36,8 +36,8 @@ public class ComboMock {
 
         ComboDto clienteDtoMock = ComboDto.builder()
                 .nome(nome)
-                .valor(new BigDecimal(22.5).toString())
-                .valorTotal(new BigDecimal(22.5).toString())
+                .valor(new BigDecimal(22.5))
+                .valorTotal(new BigDecimal(22.5))
                 .categoria(null)
                 .lanche(null)
                 .tipoProduto(EnumTipoProduto.Combo)
@@ -63,8 +63,8 @@ public class ComboMock {
         combo.categoria = categoria;
         combo.lanche = Mapper.map(lanche, ComboItemDto.class);
         combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
-        combo.valor = "123";
-        combo.valorTotal = "123";
+        combo.valor = new BigDecimal("123");
+        combo.valorTotal = new BigDecimal("123");
 
         String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboSave, port);
         ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(combo, null),

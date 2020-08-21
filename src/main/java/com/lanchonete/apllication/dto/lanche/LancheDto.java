@@ -1,10 +1,14 @@
 package com.lanchonete.apllication.dto.lanche;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.lanchonete.apllication.configurations.MoneyConverter;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.MessageError;
@@ -32,11 +36,15 @@ public class LancheDto  {
     @NotNull(message = MessageError.IS_MANDATORY)
     public CategoriaDto categoria;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public String valor;
+    @NotNull(message =  MessageError.IS_MANDATORY+"N")
+    @DecimalMax(value = "100000000000.00", message = MessageError.MAX_LIMITE)
+    @JsonDeserialize(using = MoneyConverter.Deserialize.class)
+    public BigDecimal valor;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
-    public String valorTotal;
+    @NotNull(message =  MessageError.IS_MANDATORY+"N")
+    @DecimalMax(value = "100000000000.00", message = MessageError.MAX_LIMITE)
+    @JsonDeserialize(using = MoneyConverter.Deserialize.class)
+    public BigDecimal valorTotal;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public List<IngredienteDto> ingredientesLanche;

@@ -34,8 +34,8 @@ public class LancheMock {
 
         LancheDto clienteDtoMock = LancheDto.builder()
                 .nome(nome)
-                .valor(new BigDecimal(22.5).toString())
-                .valorTotal(new BigDecimal(22.5).toString())
+                .valor(new BigDecimal(22.5))
+                .valorTotal(new BigDecimal(22.5))
                 .tipoProduto(EnumTipoProduto.Lanche)
                 .categoria(null)
                 .ingredientesLanche(null)
@@ -65,9 +65,9 @@ public class LancheMock {
         BigDecimal valorCalculo = BigDecimal.ZERO;
 
         for (IngredienteDto ingredienteDto : ingredientes)
-            valorCalculo = new BigDecimal(ingredienteDto.valor).add(valorCalculo);
+            valorCalculo = (ingredienteDto.valor).add(valorCalculo);
 
-        lanche.valor = valorCalculo.toString();
+        lanche.valor = valorCalculo;
 
         String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheSave, port);
         ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST,

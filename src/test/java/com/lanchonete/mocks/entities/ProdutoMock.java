@@ -31,8 +31,8 @@ public class ProdutoMock {
     public static ProdutoDto dto(String nome) {
             ProdutoDto clienteDtoMock = ProdutoDto.builder()
                                 .categoria(null)
-                                .custo("10.1")
-                                .valor("10.1")
+                                .custo(new BigDecimal("10.1"))
+                                .valor(new BigDecimal("10.1"))
                                 .id(0)
                                 .nome(nome)
                                 .build();
@@ -40,13 +40,13 @@ public class ProdutoMock {
     }
 
     public static Produto by(String nome) {
-        Produto clienteDtoMock = new Produto();
+        Produto produto = new Produto();
 
-                clienteDtoMock.setCusto(new BigDecimal("10.1"));
-                clienteDtoMock.setValor(new BigDecimal("10.1"));
-                clienteDtoMock.setNome(nome);
-                clienteDtoMock.setCategoria(null);
-                                return clienteDtoMock;
+                produto.setCusto(new BigDecimal("10.1"));
+                produto.setValor(new BigDecimal("10.1"));
+                produto.setNome(nome);
+                produto.setCategoria(null);
+                                return produto;
     }
 
     public ProdutoDto PRODUTO(String nome, CategoriaDto categoria) {

@@ -3,6 +3,7 @@ package com.lanchonete.mocks.entities;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
@@ -36,9 +37,9 @@ public class PedidoMock {
     public static PedidoDto dto(String nome) {
         PedidoDto pedido = PedidoDto.builder().build();
         pedido.estado = EnumEstadoPedido.Novo;
-        pedido.valor = "0";
-        pedido.valorDesconto = "0";
-        pedido.valorTotal= "123";
+        pedido.valor = new BigDecimal("0");
+        pedido.valorDesconto = new BigDecimal("0");
+        pedido.valorTotal= new BigDecimal("123");
         pedido.pedidoitens = new ArrayList<>();
         return pedido;
     }
