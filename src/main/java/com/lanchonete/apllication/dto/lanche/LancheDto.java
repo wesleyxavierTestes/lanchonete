@@ -31,6 +31,7 @@ public class LancheDto  {
     @NotNull(message = MessageError.IS_MANDATORY)
     public EnumTipoProduto tipoProduto;
 
+    @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String codigo;
 
     @NotNull(message = MessageError.IS_MANDATORY)
@@ -46,7 +47,7 @@ public class LancheDto  {
     @JsonDeserialize(using = MoneyConverter.Deserialize.class)
     public BigDecimal valorTotal;
 
-    @NotNull(message = MessageError.IS_MANDATORY)
+    @Size(min = 1, message = MessageError.IS_MANDATORY)
     public List<IngredienteDto> ingredientesLanche;
 
     @Size(max = 200, message = MessageError.MAX_LIMITE)

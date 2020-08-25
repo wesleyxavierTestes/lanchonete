@@ -13,12 +13,18 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.pedido.Pedido;
-import com.lanchonete.domain.entities.pedido.PedidoAguardando;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
+import com.lanchonete.domain.entities.produto.processadores.BebidaProcessaProduto;
+import com.lanchonete.domain.entities.produto.processadores.ComboProcessaProduto;
+import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProduto;
+import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProduto;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.domain.services.BaseService;
+import com.lanchonete.infra.repositorys.combo.IComboRepository;
 import com.lanchonete.infra.repositorys.pedido.IPedidoRepository;
+import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +35,12 @@ import org.springframework.stereotype.Service;
 public class PedidoService extends BaseService<Pedido> {
 
     private final IPedidoRepository _repository;
+
+    @Autowired
+    private IProdutoRepository _produtoRepository;
+
+    @Autowired
+    private IComboRepository _comboRepository;
 
     @Autowired
     public PedidoService(IPedidoRepository repository) {
@@ -74,9 +86,21 @@ public class PedidoService extends BaseService<Pedido> {
     private void configurarPedidoItens(Pedido entity, Cardapio cardapio) {
         try {
             List<IProdutoPedido> produtos = new ArrayList<>();
-            for (IProdutoPedido produto : entity.getPedidoitens()) {
+            for (IProdutoPedido produtoPedido : entity.getPedidoitens()) {
                 for (IProdutoCardapio produtoCardapio : cardapio.getItensDisponiveis()) {
-                    if (produto.getCodigo().equals(produtoCardapio.getCodigo())) {
+                    if (produtoPedido.getCodigo().equals(produtoCardapio.getCodigo())) {
+                        IProdutoPedido produto = null;
+                        if (produtoPedido.getTipoProduto() == EnumTipoProduto.Bebida) {
+                            produto = (IProdutoPedido)new BebidaProcessaProduto(this._produtoRepository).processar(produtoPedido);
+                        } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Lanche) {
+                            produto = (IProdutoPedido)new LancheProcessaProduto(this._produtoRepository).processar(produtoPedido);
+                        } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Combo) {
+                            produto = (IProdutoPedido)new ComboProcessaProduto(this._produtoRepository)
+                            .processar(this._comboRepository, produtoPedido);
+                        } else {
+                            produto = (IProdutoPedido)new OutrosProcessaProduto(this._produtoRepository).processar(produtoPedido);
+                        }
+                        
                         IProdutoPedido produtoMapeado = (IProdutoPedido) FabricaProduto.GerarProdutoPorTipo(produto.getTipoProduto(), produto);
                         produtoMapeado = (IProdutoPedido) FabricaProduto.configurarPedidoItens(produtoMapeado, produtoCardapio);
                         entity.setValor(entity.getValor().add(produtoMapeado.getValor()));

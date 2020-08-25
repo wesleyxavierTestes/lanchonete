@@ -14,6 +14,7 @@ import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
+import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 import com.lanchonete.utils.MessageError;
 
@@ -28,9 +29,19 @@ public class LancheProcessaProduto extends ProcessaProduto {
         Produto produto = this.getProduto(lanche.getCodigo());
         
         T itemProduto = (T)Mapper.map(produto, Lanche.class);
+        itemProduto.setTipoProduto(EnumTipoProduto.Lanche);
         
         return itemProduto;
     }
+
+    public <T extends IProduto> T processar(ILancheRepository _lancheRepository, IProduto lanche) {
+        Lanche produto = _lancheRepository.findByCodigo(lanche.getCodigo());
+
+        T itemProduto = (T) Mapper.map(produto, Lanche.class);
+
+        return itemProduto;
+    }
+
     
     public boolean validarExisteEstoqueProduto(Lanche lanche) {
         for (IProdutoComposicao produto : lanche.getIngredientesLanche()) {
@@ -44,7 +55,7 @@ public class LancheProcessaProduto extends ProcessaProduto {
         List<IProdutoComposicao> ingredientes = new ArrayList<>();
         
         for (IProdutoComposicao ingrediente : entity.getIngredientesLanche()) {
-            Produto produto = _repository.findByIdAtive(ingrediente.getId());
+            Produto produto = _repository.findByIdAndAtivoIsTrue(ingrediente.getId());
             if (!Objects.nonNull(produto))
                 throw new RegraNegocioException(String.format("Produto %s", ingrediente.getNome()) 
                 + MessageError.EXISTS);

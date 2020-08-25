@@ -44,7 +44,10 @@ public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoC
         for (IProdutoComposicao i : ingredientesLanche)
             this.setValor(this.getValor().add(i.getValor()));
 
-        if (!Objects.nonNull(this.getValorTotal()))
-            this.setValorTotal(this.getValor());
+        if (!Objects.nonNull(this.getValorTotal())) {
+            this.setValorTotal(BigDecimal.ZERO);
+        }
+        
+        this.setValorTotal(this.getValor());
     }
 }

@@ -9,14 +9,13 @@ import javax.transaction.Transactional;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.utils.MessageError;
+
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 public abstract class BaseService<T extends BaseEntity> implements IBaseService<T> {
 
@@ -47,7 +46,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     public T find(long id) {
         Optional<T> entity = _repository.findById(id);
         if (!entity.isPresent())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new RegraNegocioException("Item inexistente");
         return entity.get();
     }
 

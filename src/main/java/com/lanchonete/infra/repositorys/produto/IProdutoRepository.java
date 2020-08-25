@@ -5,17 +5,22 @@ import java.util.UUID;
 
 import com.lanchonete.domain.entities.produto.Produto;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface IProdutoRepository extends JpaRepository<Produto, Long> {
 
+    Collection<Produto> findAllByNomeContaining(String nome);
+    Collection<Produto> findAllByCodigo(UUID codigo);
+    Produto findByCodigo(UUID codigo);
+    
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM produto as c where c.ativo = true",
@@ -97,12 +102,8 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long> {
         value = "FROM Produto as p "
                 +"where p.codigo = :codigo ")
     Collection<Produto> _produtoCodigo(@Param("codigo") UUID codigo);
-
-    Collection<Produto> findByNomeContaining(String nome);
-    Collection<Produto> findByCodigo(UUID codigo);
     
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT (c.*) FROM produto as c where c.ativo = true and c.id = ?1 limit 1")
-    Produto findByIdAtive(long id);
+    //@Query(
+      //  value = "SELECT (c.*) FROM #{#entityName} as c where c.ativo = true and c.id = ?1")
+    Produto findByIdAndAtivoIsTrue(long id);
 }

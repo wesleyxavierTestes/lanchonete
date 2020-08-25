@@ -1,7 +1,5 @@
 package com.lanchonete.infra.repositorys.outros;
 
-import java.util.List;
-
 import com.lanchonete.domain.entities.outros.Outros;
 
 import org.springframework.data.domain.Page;

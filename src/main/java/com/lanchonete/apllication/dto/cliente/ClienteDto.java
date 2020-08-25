@@ -12,11 +12,9 @@ import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class ClienteDto  {
 
     public long id;
@@ -27,10 +25,12 @@ public class ClienteDto  {
     @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String nome;
     
+    @NotEmpty(message = MessageError.IS_MANDATORY)
     @Size(max = 11, message = MessageError.MAX_LIMITE)
     @Size(min = 11, message = MessageError.MIN_LIMITE)
     public String cpf;
 
+    @NotEmpty(message = MessageError.IS_MANDATORY)
     @Size(max = 14, message = MessageError.MAX_LIMITE)
     @Size(min = 14, message = MessageError.MIN_LIMITE)
     public String cnjp;
@@ -40,6 +40,7 @@ public class ClienteDto  {
     public String email;
 
     @Size(max = 9, message = MessageError.MAX_LIMITE)
+    @Size(min = 8, message = MessageError.MIN_LIMITE)
     public String rg;
 
     @NotNull(message = MessageError.IS_MANDATORY)
@@ -50,4 +51,12 @@ public class ClienteDto  {
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public EnderecoDto endereco;
+
+    public ClienteDto() {
+        if (this.tipoPessoa == EnumTipoPessoa.Fisica) {
+                this.cnjp = "";
+        } else {
+            this.cpf = "";
+        }
+    }
 }

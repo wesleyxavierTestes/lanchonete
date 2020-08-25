@@ -111,8 +111,10 @@ public final class Mapper {
         List<CardapioItemDto> copy = null;
 
         if (Objects.nonNull(entity.itensDisponiveis)) {
-            entity.itensDisponiveis.stream().forEach(item -> itensDisponiveis
-                    .add((IProdutoCardapio) FabricaProduto.GerarProdutoPorTipo(item.tipoProduto, item)));
+            entity.itensDisponiveis.stream().forEach(item -> {
+                IProdutoCardapio gerarProdutoPorTipo = (IProdutoCardapio) FabricaProduto.GerarProdutoPorTipo(item.tipoProduto, item);
+                itensDisponiveis.add(gerarProdutoPorTipo);
+                });
 
             copy = new ArrayList<>(entity.itensDisponiveis);
             entity.itensDisponiveis = null;

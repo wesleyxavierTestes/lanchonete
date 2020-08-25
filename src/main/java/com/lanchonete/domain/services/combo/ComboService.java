@@ -74,7 +74,7 @@ public class ComboService extends BaseService<Combo> {
     }
 
     private void configurarBebida(Combo entity) {
-        Produto produtoBebida = this._produtoRepository.findByIdAtive(entity.getBebida().getId());
+        Produto produtoBebida = this._produtoRepository.findByIdAndAtivoIsTrue(entity.getBebida().getId());
 
         if (!Objects.nonNull(produtoBebida))
             throw new RegraNegocioException("bebida" + MessageError.NOT_EXISTS);

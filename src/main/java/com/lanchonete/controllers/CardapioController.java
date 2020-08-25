@@ -1,14 +1,17 @@
 package com.lanchonete.controllers;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
+import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.domain.entities.outros.Outros;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.utils.MessageError;
 
@@ -106,7 +109,6 @@ public class CardapioController extends AbstractBaseController {
         } catch (Exception e) {
             // log ex.getMessage()
             throw new RegraNegocioException("Cardápio inválido");
-
         }
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -120,6 +122,23 @@ public class CardapioController extends AbstractBaseController {
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
 
         this._service.update(Mapper.map(entityDto, entity));
+
+        return ResponseEntity.ok(Mapper.map(entity));
+    }
+
+    @PutMapping("additem")
+    public ResponseEntity<Object> addItem(@RequestParam(name = "id") long id,
+    @RequestBody() @Valid CardapioItemDto entityDto) {
+
+        Cardapio entity = this._service.find(id);
+        if (!Objects.nonNull(entity))
+            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+
+        Outros map = Mapper.map(entityDto, Outros.class);
+        map.setCodigo(UUID.fromString(entityDto.codigo));
+        this._service.criarCardapio(entity, map);
+        
+        this._service.update(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

@@ -4,6 +4,7 @@ import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProduto;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
 public class BebidaProcessaProduto extends ProcessaProduto {
@@ -17,6 +18,7 @@ public class BebidaProcessaProduto extends ProcessaProduto {
         Produto produto = this.getProduto(bebida.getCodigo());
 
         T itemProduto = (T)Mapper.map(produto, Bebida.class);
+        itemProduto.setTipoProduto(EnumTipoProduto.Bebida);
         
         return itemProduto;
     }

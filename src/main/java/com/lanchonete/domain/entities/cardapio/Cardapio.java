@@ -31,6 +31,6 @@ public class Cardapio extends BaseEntity {
     private String nome;
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
-    cascade = CascadeType.DETACH)
+    cascade = CascadeType.ALL)
     private List<IProdutoCardapio> itensDisponiveis = new ArrayList<>();
 }

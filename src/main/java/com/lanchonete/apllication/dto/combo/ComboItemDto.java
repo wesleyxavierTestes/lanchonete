@@ -3,8 +3,8 @@ package com.lanchonete.apllication.dto.combo;
 import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.lanchonete.apllication.configurations.MoneyConverter;
@@ -15,10 +15,10 @@ public class ComboItemDto {
     public long id;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String nome;
 
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    @Size(max = 50, message = MessageError.MAX_LIMITE)
     public String codigo;
 
     @NotNull(message =  MessageError.IS_MANDATORY+"N")

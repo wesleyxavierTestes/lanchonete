@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +21,7 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     protected long id;
 
+    @JsonFormat(shape = Shape.STRING)
     protected LocalDateTime dataCadastro = LocalDateTime.now();
 
     protected boolean ativo = true; 

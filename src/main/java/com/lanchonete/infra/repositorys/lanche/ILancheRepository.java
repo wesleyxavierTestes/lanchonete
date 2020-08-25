@@ -1,5 +1,8 @@
 package com.lanchonete.infra.repositorys.lanche;
 
+import java.util.Collection;
+import java.util.UUID;
+
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.domain.entities.lanche.Lanche;
 
@@ -11,7 +14,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ILancheRepository extends JpaRepository<Lanche, Long>  {
-    
+    Collection<Lanche> findAllByNomeContaining(String nome);
+    Collection<Lanche> findAllByCodigo(UUID codigo);
+    Lanche findByCodigo(UUID codigo);
+
     @Query(
         nativeQuery = true, 
         value = "SELECT (c.*) FROM lanche as c where c.ativo = true",

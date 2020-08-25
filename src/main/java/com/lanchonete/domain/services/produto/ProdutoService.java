@@ -92,7 +92,7 @@ public class ProdutoService extends BaseService<Produto> {
 
     public Collection<Produto> teste(String param) {
         // return this._repository.findByCodigo(UUID.fromString(param));
-        return this._repository.findByNomeContaining(param);
+        return this._repository.findAllByNomeContaining(param);
      }
 
     public Produto produtoCodigo(String codigo) {

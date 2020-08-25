@@ -33,19 +33,11 @@ public final class FabricaProduto {
             return Mapper.map(produto, Lanche.class).setTipoProduto(tipoProduto);
         }
 
-        if (EnumTipoProduto.Outros == tipoProduto) {
-            return Mapper.map(produto, Outros.class).setTipoProduto(tipoProduto);
-        }
-
-        if (EnumTipoProduto.Produto == tipoProduto) {
-            return Mapper.map(produto, Outros.class).setTipoProduto(EnumTipoProduto.Outros);
-        }
-
         if (EnumTipoProduto.Ingrediente == tipoProduto) {
             return Mapper.map(produto, Outros.class).setTipoProduto(EnumTipoProduto.Outros);
         }
 
-        return null;
+        return Mapper.map(produto, Outros.class).setTipoProduto(tipoProduto);
     }
 
     public static boolean validarProduto(IProduto produto, IProdutoRepository _produtoRepository) {
@@ -53,8 +45,6 @@ public final class FabricaProduto {
         try {
             if (produto instanceof Lanche) {
                 valido = new LancheProcessaProduto(_produtoRepository).validarExisteEstoqueProduto((Lanche) produto);
-            } else if (produto instanceof Combo) {
-                valido = new ComboProcessaProduto(_produtoRepository).validarExisteEstoqueProduto((Combo) produto);
             } else if (produto instanceof Outros) {
                 valido = new OutrosProcessaProduto(_produtoRepository).validarExisteEstoqueProduto((Outros) produto);
             } else if (produto instanceof Bebida) {

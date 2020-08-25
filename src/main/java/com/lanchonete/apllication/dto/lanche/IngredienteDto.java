@@ -3,8 +3,8 @@ package com.lanchonete.apllication.dto.lanche;
 import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.lanchonete.apllication.configurations.MoneyConverter;
@@ -22,14 +22,14 @@ public class IngredienteDto {
 
     public long id;
     public boolean ativo;
-    @Max(value = 30, message = MessageError.MAX_LIMITE)
+    @Size(max = 30, message = MessageError.MAX_LIMITE)
     public String dataCadastro;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String nome;
 
-    @Max(value = 150, message = MessageError.MAX_LIMITE)
+    @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String codigo;
 
     @NotNull(message =  MessageError.IS_MANDATORY+"N")

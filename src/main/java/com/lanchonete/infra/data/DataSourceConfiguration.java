@@ -45,7 +45,7 @@ public class DataSourceConfiguration {
     }
 
     private DataSource getDataSourceAmbiente() {
-        final DataSourceBuilder builder = DataSourceBuilder.create();
+        final DataSourceBuilder<?> builder = DataSourceBuilder.create();
         builder.driverClassName("org.postgresql.Driver");
         builder.url(System.getenv("data_base_url"));
         builder.username(System.getenv("data_base_user"));
@@ -56,7 +56,7 @@ public class DataSourceConfiguration {
     }
 
     private DataSource getDataSourceImMemory() {
-        final DataSourceBuilder builder = DataSourceBuilder.create();
+        final DataSourceBuilder<?> builder = DataSourceBuilder.create();
         builder.driverClassName("org.h2.Driver");
         builder.url("jdbc:h2:mem:db");
         builder.username("sa");
