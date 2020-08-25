@@ -89,6 +89,13 @@ public final class Mapper {
             return null;
         }
     }
+    
+    public static IProdutoCardapio map(final CardapioItemDto entityDto, EnumTipoProduto tipoProduto) {
+        IProdutoCardapio map = Mapper.map(entityDto, Outros.class);
+        map.setCodigo(UUID.fromString(entityDto.codigo));
+        map.setTipoProduto(tipoProduto);
+        return map;
+    }
 
     public static Categoria map(final CategoriaDto entityDto, final Categoria entity) {
         return CategoriaMapper.update(entityDto, entity);

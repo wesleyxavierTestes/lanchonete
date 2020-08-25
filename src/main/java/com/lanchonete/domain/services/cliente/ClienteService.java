@@ -19,14 +19,11 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClienteService extends BaseService<Cliente> {
-
-    private final IClienteRepository _repository;
+public class ClienteService extends BaseService<Cliente, IClienteRepository> {
 
     @Autowired
     public ClienteService(IClienteRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<ClienteListDto>  listFilterDto(Cliente entity, int page) {

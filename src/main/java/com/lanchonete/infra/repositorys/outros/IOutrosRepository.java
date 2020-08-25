@@ -1,15 +1,15 @@
 package com.lanchonete.infra.repositorys.outros;
 
 import com.lanchonete.domain.entities.outros.Outros;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IOutrosRepository extends JpaRepository<Outros, Long>  {
+public interface IOutrosRepository extends IBaseRepository<Outros>  {
 
     @Query(
         nativeQuery = true, 

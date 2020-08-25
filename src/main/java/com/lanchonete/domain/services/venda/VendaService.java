@@ -11,12 +11,10 @@ import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.categoria.Categoria;
-import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.entities.venda.VendaItem;
 import com.lanchonete.domain.services.BaseService;
-import com.lanchonete.infra.repositorys.categoria.ICategoriaRepository;
 import com.lanchonete.infra.repositorys.pedido.IPedidoRepository;
 import com.lanchonete.infra.repositorys.venda.IVendaRepository;
 
@@ -26,9 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VendaService extends BaseService<Venda> {
-
-    private final IVendaRepository _repository;
+public class VendaService extends BaseService<Venda, IVendaRepository> {
 
     @Autowired
     private IPedidoRepository _pedidoRepository;
@@ -36,7 +32,6 @@ public class VendaService extends BaseService<Venda> {
     @Autowired
     public VendaService(IVendaRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<VendaListDto> listFilterDto(Venda entity, int page) {

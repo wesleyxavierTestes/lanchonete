@@ -11,6 +11,8 @@ import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.produto.Produto;
+import com.lanchonete.domain.services.estoque.EstoqueEntradaService;
+import com.lanchonete.domain.services.estoque.EstoqueSaidaService;
 import com.lanchonete.domain.services.estoque.EstoqueService;
 import com.lanchonete.domain.services.produto.ProdutoService;
 import com.lanchonete.utils.MessageError;
@@ -32,12 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/estoque")
 public class EstoqueController extends AbstractBaseController {
 
-    private final EstoqueService _serviceEstoque;
+    private final EstoqueService _service;
+    private final EstoqueSaidaService _serviceSaida;
+    private final EstoqueEntradaService _serviceEntrada;
     private final ProdutoService _serviceProduto;
 
     @Autowired
-    public EstoqueController(EstoqueService serviceEstoque, ProdutoService serviceProduto) {
-        _serviceEstoque = serviceEstoque;
+    public EstoqueController(EstoqueService service, EstoqueSaidaService serviceSaida,
+    EstoqueEntradaService serviceEntrada, ProdutoService serviceProduto) {
+        _service = service;
+        _serviceSaida = serviceSaida;
+        _serviceEntrada = serviceEntrada;
         _serviceProduto = serviceProduto;
     }
 
@@ -49,7 +56,7 @@ public class EstoqueController extends AbstractBaseController {
     @GetMapping("list")
     public ResponseEntity<Page<EstoqueListDto>> list(@RequestParam(name = "page") int page) {
         
-        Page<EstoqueListDto> list = this._serviceEstoque.listDto(page);
+        Page<EstoqueListDto> list = this._service.listDto(page);
         
         return ResponseEntity.ok(list);
     }
@@ -57,7 +64,7 @@ public class EstoqueController extends AbstractBaseController {
     @GetMapping("list/entrance")
     public ResponseEntity<Object> listEntrance(@RequestParam(name = "page") int page) {
         
-        Page<EstoqueListDto> list = this._serviceEstoque.listEntrance(page);
+        Page<EstoqueListDto> list = this._serviceEntrada.listDto(page);
         
         return ResponseEntity.ok(list);
     }
@@ -66,7 +73,7 @@ public class EstoqueController extends AbstractBaseController {
     @GetMapping("list/leave")
     public ResponseEntity<Object> findLeave(@RequestParam(name = "page") int page) {
         
-        Page<EstoqueListDto> list = this._serviceEstoque.listLeave(page);
+        Page<EstoqueListDto> list = this._serviceSaida.listDto(page);
         
         return ResponseEntity.ok(list);
     }
@@ -74,7 +81,7 @@ public class EstoqueController extends AbstractBaseController {
     @GetMapping("find")
     public ResponseEntity<Object> find(@RequestParam(name = "id") long id) {
         
-        AbstractEstoque entity = this._serviceEstoque.find(id);
+        AbstractEstoque entity = this._service.find(id);
 
         return ResponseEntity.ok(Mapper.map(entity, AbstractEstoque.class));
     }
@@ -86,10 +93,10 @@ public class EstoqueController extends AbstractBaseController {
         if (!Objects.nonNull(produto))
             return ResponseEntity.badRequest().body(MessageError.PRODUTO_EXISTS);
 
-        EstoqueEntrada entity = (EstoqueEntrada) this._serviceEstoque
+        EstoqueEntrada entity = (EstoqueEntrada) this._service
                 .configureSave(Mapper.map(entityDto, EstoqueEntrada.class), produto);
 
-        entity = (EstoqueEntrada) this._serviceEstoque.save(entity);
+        entity = (EstoqueEntrada) this._service.save(entity);
 
         return ResponseEntity.ok(entity);
     }
@@ -104,10 +111,10 @@ public class EstoqueController extends AbstractBaseController {
         if (produto.getEstoqueAtual() <= 0)
             return ResponseEntity.badRequest().body(MessageError.PRODUTO_STOCK_EMPTY);
 
-        EstoqueSaida entity = (EstoqueSaida) this._serviceEstoque
+        EstoqueSaida entity = (EstoqueSaida) this._service
                 .configureSave(Mapper.map(entityDto, EstoqueSaida.class), produto);
 
-        entity = (EstoqueSaida) this._serviceEstoque.save(entity);
+        entity = (EstoqueSaida) this._service.save(entity);
 
         return ResponseEntity.ok(entity);
     }
@@ -115,7 +122,7 @@ public class EstoqueController extends AbstractBaseController {
     @DeleteMapping("delete")
     public ResponseEntity<Object> delete(@RequestParam(name = "id") long id) {
         
-        AbstractEstoque entity = this._serviceEstoque.delete(id);
+        AbstractEstoque entity = this._service.delete(id);
 
         return ResponseEntity.ok(Mapper.map(entity));
     }

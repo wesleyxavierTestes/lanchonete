@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity(name = "estoque")
 @Table(name = "estoque")
 @DiscriminatorColumn(name = "estoque_tipo")

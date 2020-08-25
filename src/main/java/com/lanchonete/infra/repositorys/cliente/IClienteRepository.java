@@ -1,15 +1,15 @@
 package com.lanchonete.infra.repositorys.cliente;
 
 import com.lanchonete.domain.entities.cliente.Cliente;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IClienteRepository extends JpaRepository<Cliente, Long>  {
+public interface IClienteRepository extends IBaseRepository<Cliente>  {
 
     @Query(
         nativeQuery = true, 

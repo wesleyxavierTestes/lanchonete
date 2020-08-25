@@ -12,6 +12,8 @@ import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.outros.Outros;
+import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
+import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.utils.MessageError;
 
@@ -128,15 +130,14 @@ public class CardapioController extends AbstractBaseController {
 
     @PutMapping("additem")
     public ResponseEntity<Object> addItem(@RequestParam(name = "id") long id,
+    @RequestParam(name = "tipoProduto") EnumTipoProduto tipoProduto,
     @RequestBody() @Valid CardapioItemDto entityDto) {
 
         Cardapio entity = this._service.find(id);
         if (!Objects.nonNull(entity))
             return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
-
-        Outros map = Mapper.map(entityDto, Outros.class);
-        map.setCodigo(UUID.fromString(entityDto.codigo));
-        this._service.criarCardapio(entity, map);
+        
+        this._service.criarCardapio(entity, Mapper.map(entityDto, tipoProduto));
         
         this._service.update(entity);
 

@@ -10,14 +10,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EnderecoService extends BaseService<Endereco> {
-
-    private final IEnderecoRepository _repository;
+public class EnderecoService extends BaseService<Endereco, IEnderecoRepository> {
 
     @Autowired
     public EnderecoService(IEnderecoRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<Endereco>  listFilter(int page) {

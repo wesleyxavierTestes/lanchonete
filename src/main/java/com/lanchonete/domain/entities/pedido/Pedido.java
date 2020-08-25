@@ -14,9 +14,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.cliente.Cliente;
@@ -37,7 +40,7 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Pedido extends BaseEntity implements IPedidoState {
     
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
     cascade = CascadeType.DETACH, mappedBy = "pedido")
     private List<IProdutoPedido> pedidoitens = new ArrayList<>();
 
@@ -48,6 +51,8 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
     private BigDecimal valorTotal;
     
     private boolean cancelado;
+
+    @JsonFormat(shape = Shape.STRING)
     private LocalDateTime dataCancelado;
 
     @Enumerated(EnumType.STRING)

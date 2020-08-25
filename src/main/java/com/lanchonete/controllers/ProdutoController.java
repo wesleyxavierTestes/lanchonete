@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
@@ -58,6 +59,15 @@ public class ProdutoController extends AbstractBaseController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("list/nome")
+    public ResponseEntity<Page<ProdutoListDto>> list(@RequestParam(name = "page") int page,
+    @RequestParam(name = "nome") String nome) {
+
+        Page<ProdutoListDto> list = this._service.listDtoNome(page, nome);
+
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("list/estoque/zero")
     public ResponseEntity<Page<ProdutoListDto>> listEstoqueZero(@RequestParam(name = "page") int page) {
 
@@ -105,14 +115,6 @@ public class ProdutoController extends AbstractBaseController {
         long quantidade = this._service.countEstoqueByCodigo(codigo);
 
         return ResponseEntity.ok(quantidade);
-    }
-
-    @GetMapping("teste")
-    public ResponseEntity<Stream<ProdutoDto>> produtoTeste(@RequestParam(name = "codigo") String codigo) {
-
-        Collection<Produto> quantidade = this._service.teste(codigo);
-
-        return ResponseEntity.ok(quantidade.stream().map(c -> Mapper.map(c)));
     }
 
     @GetMapping("produtoCodigo")

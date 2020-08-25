@@ -1,6 +1,8 @@
 package com.lanchonete.domain.entities.produto.baseentity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -11,10 +13,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.lanchonete.domain.entities.BaseEntity;
+import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.venda.Venda;
@@ -38,6 +45,13 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
     @ManyToOne
     private Pedido pedido;
 
+    @ManyToMany
+    @JoinTable(name = "cardapio_itens", 
+        joinColumns = @JoinColumn(name = "item_id"), 
+        inverseJoinColumns = @JoinColumn(name = "cardapio_id")
+    )
+    private List<Cardapio> products = new ArrayList<>();
+
     @ManyToOne
     private Venda venda;
 
@@ -47,9 +61,8 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
     @Column(nullable = false)
     private BigDecimal valor;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private EnumTipoProduto tipoProduto;
+    private EnumTipoProduto tipoProduto = EnumTipoProduto.Outros;
 
     public IProduto setTipoProduto(EnumTipoProduto tipoProduto) {
         this.tipoProduto = tipoProduto;

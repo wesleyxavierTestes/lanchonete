@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity implements IBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     protected long id;
@@ -25,4 +25,8 @@ public abstract class BaseEntity {
     protected LocalDateTime dataCadastro = LocalDateTime.now();
 
     protected boolean ativo = true; 
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
 }

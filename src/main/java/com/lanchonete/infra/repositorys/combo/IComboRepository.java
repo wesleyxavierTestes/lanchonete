@@ -4,15 +4,15 @@ import java.util.Collection;
 import java.util.UUID;
 
 import com.lanchonete.domain.entities.combo.Combo;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IComboRepository extends JpaRepository<Combo, Long>  {
+public interface IComboRepository extends IBaseRepository<Combo>  {
     
     Collection<Combo> findAllByNomeContaining(String nome);
     Collection<Combo> findAllByCodigo(UUID codigo);

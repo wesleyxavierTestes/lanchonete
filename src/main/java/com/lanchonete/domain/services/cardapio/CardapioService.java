@@ -1,26 +1,21 @@
 package com.lanchonete.domain.services.cardapio;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
-import com.lanchonete.domain.entities.combo.Combo;
-import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
-import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
 import com.lanchonete.domain.entities.produto.processadores.BebidaProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.ComboProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProduto;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.domain.services.BaseService;
+import com.lanchonete.infra.repositorys.bebida.IBebidaRepository;
 import com.lanchonete.infra.repositorys.cardapio.ICardapioRepository;
 import com.lanchonete.infra.repositorys.combo.IComboRepository;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
@@ -32,9 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CardapioService extends BaseService<Cardapio> {
-
-    private final ICardapioRepository _repository;
+public class CardapioService extends BaseService<Cardapio, ICardapioRepository> {
 
     @Autowired
     private IProdutoRepository _produtoRepository;
@@ -46,45 +39,19 @@ public class CardapioService extends BaseService<Cardapio> {
     private ILancheRepository _lancheRepository;
 
     @Autowired
+    private IBebidaRepository _bebidaRepository;
+
+    @Autowired
     public CardapioService(final ICardapioRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<CardapioListDto> listFilterDto(final Cardapio entity, final int page) {
-        return super.listFilter(entity, page).map(filterCardapio()).map(Mapper.pageMap(CardapioListDto.class));
-    }
-
-    private Function<? super Cardapio, ? extends Cardapio> filterCardapio() {
-        return cardapio -> {
-            final List<IProdutoCardapio> getItensDisponiveis = filterProduto(cardapio);
-            cardapio.setItensDisponiveis(getItensDisponiveis);
-            return cardapio;
-        };
-    }
-
-    private List<IProdutoCardapio> filterProduto(final Cardapio cardapio) {
-        final List<IProdutoCardapio> getItensDisponiveis = new ArrayList<>();
-        final List<IProdutoCardapio> itensDisponiveis = new ArrayList<>(cardapio.getItensDisponiveis());
-
-        for (final IProdutoCardapio produtoCardapio : itensDisponiveis) {
-            try {
-                final boolean valido = FabricaProduto.validarProduto(produtoCardapio, this._produtoRepository);
-
-                if (valido) {
-                    getItensDisponiveis.add(produtoCardapio);
-                }
-
-            } catch (final Exception e) {
-                System.out.println(e);
-            }
-        }
-
-        return getItensDisponiveis;
+        return super.listFilter(entity, page).map(Mapper.pageMap(CardapioListDto.class));
     }
 
     public Page<CardapioListDto> listDto(final int page) {
-        return this.list(page).map(filterCardapio()).map(Mapper.pageMap(CardapioListDto.class));
+        return this.list(page).map(Mapper.pageMap(CardapioListDto.class));
     }
 
     public Page<CardapioListDto> listDtoFull(final int page) {
@@ -92,7 +59,7 @@ public class CardapioService extends BaseService<Cardapio> {
     }
 
     public Page<CardapioListDto> listActiveDto(final int page) {
-        return _repository.listActive(PageRequest.of((page - 1), 10)).map(filterCardapio())
+        return _repository.listActive(PageRequest.of((page - 1), 10))
                 .map(Mapper.pageMap(CardapioListDto.class));
     }
 
@@ -111,11 +78,13 @@ public class CardapioService extends BaseService<Cardapio> {
 
     public void criarCardapio(final Cardapio entity) {
         final List<IProdutoCardapio> itensDisponiveis = entity.getItensDisponiveis().stream().map(produtoCardapio -> {
-            if (produtoCardapio instanceof Bebida) {
-                return (IProdutoCardapio) new BebidaProcessaProduto(this._produtoRepository).processar(produtoCardapio);
-            } else if (produtoCardapio instanceof Lanche) {
-                return (IProdutoCardapio) new LancheProcessaProduto(this._produtoRepository).processar(produtoCardapio);
-            } else if (produtoCardapio instanceof Combo) {
+            if (produtoCardapio.getTipoProduto() == EnumTipoProduto.Bebida) {
+                return (IProdutoCardapio) new BebidaProcessaProduto(this._produtoRepository)
+                .processar(this._bebidaRepository, produtoCardapio);
+            } else if (produtoCardapio.getTipoProduto() == EnumTipoProduto.Lanche) {
+                return (IProdutoCardapio) new LancheProcessaProduto(this._produtoRepository)
+                .processar(produtoCardapio);
+            } else if (produtoCardapio.getTipoProduto() == EnumTipoProduto.Combo) {
                 return (IProdutoCardapio)new ComboProcessaProduto(this._produtoRepository)
                 .processar(this._comboRepository, produtoCardapio);
             } else {
@@ -128,6 +97,7 @@ public class CardapioService extends BaseService<Cardapio> {
     }
 
     public void criarCardapio(final Cardapio entity, IProdutoCardapio produtoCardapio) {
+
         final List<IProdutoCardapio> itensDisponiveis = entity.getItensDisponiveis();
 
         produtoCardapio = processaProdutoCardapioPorTipo(produtoCardapio);
@@ -141,7 +111,8 @@ public class CardapioService extends BaseService<Cardapio> {
 
     private void validaDuplicacaoItemCardapio(IProdutoCardapio produtoCardapio, final List<IProdutoCardapio> itensDisponiveis) {
         final long produtoCardapioId = produtoCardapio.getId();
-        final Optional<IProdutoCardapio> exist = itensDisponiveis.stream().filter(c -> produtoCardapioId == c.getId())
+        final Optional<IProdutoCardapio> exist = itensDisponiveis.stream()
+        .filter(c -> extracted(produtoCardapioId, c))
                 .findFirst();
 
         if (exist.isPresent()) {
@@ -149,10 +120,15 @@ public class CardapioService extends BaseService<Cardapio> {
         }
     }
 
+    private boolean extracted(final long produtoCardapioId, IProdutoCardapio c) {
+        long id = c.getId();
+        return produtoCardapioId == id;
+    }
+
     private IProdutoCardapio processaProdutoCardapioPorTipo(IProdutoCardapio produtoCardapio) {
         if (produtoCardapio.getTipoProduto() == EnumTipoProduto.Bebida) {
             produtoCardapio = (IProdutoCardapio) new BebidaProcessaProduto(this._produtoRepository)
-                    .processar(produtoCardapio);
+            .processar(this._bebidaRepository, produtoCardapio);
         } else if (produtoCardapio.getTipoProduto() == EnumTipoProduto.Lanche) {
             produtoCardapio = (IProdutoCardapio) new LancheProcessaProduto(this._produtoRepository)
                     .processar(this._lancheRepository, produtoCardapio);

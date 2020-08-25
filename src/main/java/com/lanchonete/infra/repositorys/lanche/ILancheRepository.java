@@ -5,15 +5,15 @@ import java.util.UUID;
 
 import com.lanchonete.apllication.dto.lanche.LancheListDto;
 import com.lanchonete.domain.entities.lanche.Lanche;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ILancheRepository extends JpaRepository<Lanche, Long>  {
+public interface ILancheRepository extends IBaseRepository<Lanche>  {
     Collection<Lanche> findAllByNomeContaining(String nome);
     Collection<Lanche> findAllByCodigo(UUID codigo);
     Lanche findByCodigo(UUID codigo);

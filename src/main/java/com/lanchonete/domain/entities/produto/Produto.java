@@ -28,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Produto extends AbstractProduto implements IProdutoCardapio, IProdutoPedido {
+public class Produto extends AbstractProduto implements IProdutoPedido, IProdutoCardapio {
 
     /**
      * Estoques FindAllByProdutoId

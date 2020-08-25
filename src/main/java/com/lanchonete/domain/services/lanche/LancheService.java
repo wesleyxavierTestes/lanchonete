@@ -18,9 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LancheService extends BaseService<Lanche> {
-
-    private final ILancheRepository _repository;
+public class LancheService extends BaseService<Lanche, ILancheRepository> {
 
     @Autowired
     private IProdutoRepository _produtoRepository;
@@ -28,7 +26,6 @@ public class LancheService extends BaseService<Lanche> {
     @Autowired
     public LancheService(ILancheRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<LancheListDto>  listFilterDto(Lanche entity, int page) {

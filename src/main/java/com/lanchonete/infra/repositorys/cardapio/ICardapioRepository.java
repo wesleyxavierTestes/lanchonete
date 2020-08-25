@@ -1,15 +1,15 @@
 package com.lanchonete.infra.repositorys.cardapio;
 
 import com.lanchonete.domain.entities.cardapio.Cardapio;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ICardapioRepository extends JpaRepository<Cardapio, Long>  {
+public interface ICardapioRepository extends IBaseRepository<Cardapio>  {
     
     @Query(
         nativeQuery = true, 

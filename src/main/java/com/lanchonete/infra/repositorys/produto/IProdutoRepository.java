@@ -3,21 +3,21 @@ package com.lanchonete.infra.repositorys.produto;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.produto.Produto;
-
-
-import org.springframework.stereotype.Repository;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IProdutoRepository extends JpaRepository<Produto, Long> {
+public interface IProdutoRepository extends IBaseRepository<Produto> {
 
-    Collection<Produto> findAllByNomeContaining(String nome);
+    Page<Produto> findAllByNomeContainingIgnoreCase(String nome, Pageable page);
     Collection<Produto> findAllByCodigo(UUID codigo);
     Produto findByCodigo(UUID codigo);
     
@@ -63,7 +63,7 @@ public interface IProdutoRepository extends JpaRepository<Produto, Long> {
                     +"where p.ativo = true "
                     +"and p.id = ?1 "
                     +"GROUP BY p.id ")
-    double countEstoqueById(long id);
+    Double countEstoqueById(long id);
 
     @Query(
         nativeQuery = true, 

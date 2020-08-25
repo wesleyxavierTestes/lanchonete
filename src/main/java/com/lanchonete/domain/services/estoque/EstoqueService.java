@@ -14,27 +14,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EstoqueService extends BaseService<AbstractEstoque> {
-
-    private final IEstoqueRepository _repository;
-
+public class EstoqueService extends BaseService<AbstractEstoque, IEstoqueRepository> {
     @Autowired
     public EstoqueService(IEstoqueRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<EstoqueListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10))
-        .map(Mapper.pageMap(EstoqueListDto.class));
-    }
-
-    public Page<EstoqueListDto> listLeave(int page) {
-        return _repository.listLeave(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(EstoqueListDto.class));
-    }
-
-    public Page<EstoqueListDto> listEntrance(int page) {
-        return _repository.listEntrance(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(EstoqueListDto.class));
+        Page<AbstractEstoque> findAll = _repository.findAll(PageRequest.of((page - 1), 10));
+        return findAll.map(Mapper.pageMap(EstoqueListDto.class));
     }
 
     public IEstoque configureSave(IEstoque entity, Produto produto) {

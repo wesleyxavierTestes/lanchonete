@@ -9,5 +9,6 @@ public interface IProduto {
     BigDecimal getValor();
     String getNome();
     UUID getCodigo();
+    void setCodigo(UUID codigo);
     IProduto setTipoProduto(EnumTipoProduto tipoProduto);
 }

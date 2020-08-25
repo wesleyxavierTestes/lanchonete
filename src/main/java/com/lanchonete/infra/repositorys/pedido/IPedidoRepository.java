@@ -3,15 +3,15 @@ package com.lanchonete.infra.repositorys.pedido;
 import java.util.List;
 
 import com.lanchonete.domain.entities.pedido.Pedido;
+import com.lanchonete.infra.repositorys.IBaseRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IPedidoRepository extends JpaRepository<Pedido, Long>  {
+public interface IPedidoRepository extends IBaseRepository<Pedido>  {
 
     @Query(nativeQuery = true, value = "SELECT * FROM pedido WHERE estado like ?1 and c.ativo = true")
     List<Pedido> findByEstado(String estado);

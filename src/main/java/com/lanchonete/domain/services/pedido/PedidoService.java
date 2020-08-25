@@ -23,6 +23,7 @@ import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProdut
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.combo.IComboRepository;
+import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
 import com.lanchonete.infra.repositorys.pedido.IPedidoRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 
@@ -32,20 +33,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PedidoService extends BaseService<Pedido> {
-
-    private final IPedidoRepository _repository;
+public class PedidoService extends BaseService<Pedido, IPedidoRepository> {
 
     @Autowired
     private IProdutoRepository _produtoRepository;
-
+    
     @Autowired
     private IComboRepository _comboRepository;
 
     @Autowired
+    private ILancheRepository _lancheRepository;
+
+    @Autowired
     public PedidoService(IPedidoRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<PedidoListDto> listFilterDto(Pedido entity, int page) {
@@ -91,14 +92,17 @@ public class PedidoService extends BaseService<Pedido> {
                     if (produtoPedido.getCodigo().equals(produtoCardapio.getCodigo())) {
                         IProdutoPedido produto = null;
                         if (produtoPedido.getTipoProduto() == EnumTipoProduto.Bebida) {
-                            produto = (IProdutoPedido)new BebidaProcessaProduto(this._produtoRepository).processar(produtoPedido);
+                            produto = (IProdutoPedido)new BebidaProcessaProduto(this._produtoRepository)
+                            .processar(produtoPedido);
                         } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Lanche) {
-                            produto = (IProdutoPedido)new LancheProcessaProduto(this._produtoRepository).processar(produtoPedido);
+                            produto = (IProdutoPedido)new LancheProcessaProduto(this._produtoRepository)
+                            .processar(this._lancheRepository, produtoPedido);
                         } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Combo) {
                             produto = (IProdutoPedido)new ComboProcessaProduto(this._produtoRepository)
                             .processar(this._comboRepository, produtoPedido);
                         } else {
-                            produto = (IProdutoPedido)new OutrosProcessaProduto(this._produtoRepository).processar(produtoPedido);
+                            produto = (IProdutoPedido)new OutrosProcessaProduto(this._produtoRepository)
+                            .processar(produtoPedido);
                         }
                         
                         IProdutoPedido produtoMapeado = (IProdutoPedido) FabricaProduto.GerarProdutoPorTipo(produto.getTipoProduto(), produto);

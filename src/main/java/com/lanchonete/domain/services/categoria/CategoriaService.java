@@ -14,14 +14,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CategoriaService extends BaseService<Categoria> {
-
-    private final ICategoriaRepository _repository;
+public class CategoriaService extends BaseService<Categoria, ICategoriaRepository> {
 
     @Autowired
     public CategoriaService(ICategoriaRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<CategoriaListDto> listFilterDto(Categoria entity, int page) {

@@ -7,15 +7,15 @@ import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Outros extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
 
-    public Outros() {}
+
 }

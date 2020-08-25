@@ -23,9 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ComboService extends BaseService<Combo> {
-
-    private final IComboRepository _repository;
+public class ComboService extends BaseService<Combo, IComboRepository> {
 
     @Autowired
     private ILancheRepository _lancheRepository;
@@ -36,7 +34,6 @@ public class ComboService extends BaseService<Combo> {
     @Autowired
     public ComboService(IComboRepository repository) {
         super(repository);
-        _repository = repository;
     }
 
     public Page<ComboListDto> listFilterDto(Combo entity, int page) {
