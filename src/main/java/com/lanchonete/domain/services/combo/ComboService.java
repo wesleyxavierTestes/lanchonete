@@ -1,5 +1,7 @@
 package com.lanchonete.domain.services.combo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,6 +14,7 @@ import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.services.BaseService;
+import com.lanchonete.infra.repositorys.bebida.IBebidaRepository;
 import com.lanchonete.infra.repositorys.combo.IComboRepository;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
 import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
@@ -29,7 +32,7 @@ public class ComboService extends BaseService<Combo, IComboRepository> {
     private ILancheRepository _lancheRepository;
 
     @Autowired
-    private IProdutoRepository _produtoRepository;
+    private IBebidaRepository _bebidaRepository;
 
     @Autowired
     public ComboService(IComboRepository repository) {
@@ -41,7 +44,8 @@ public class ComboService extends BaseService<Combo, IComboRepository> {
     }
 
     public Page<ComboListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(ComboListDto.class));
+        Page<Combo> findAll = _repository.findAll(PageRequest.of((page - 1), 10));
+        return findAll.map(Mapper.pageMap(ComboListDto.class));
     }
 
     public Page<ComboListDto> listActiveDto(int page) {
@@ -62,22 +66,28 @@ public class ComboService extends BaseService<Combo, IComboRepository> {
     }
 
     private void configurarLanche(Combo entity) {
-        Lanche lanche = this._lancheRepository.findByIdAtive(entity.getLanche().getId());
+        List<Lanche> lanches = new ArrayList<>();
+        for (Lanche lanche : entity.getLanches()) {
+            lanche = this._lancheRepository.findByIdEqualsAndAtivoTrue(lanche.getId());
 
-        if (!Objects.nonNull(lanche))
-            throw new RegraNegocioException("lanche" + MessageError.NOT_EXISTS);
+            if (!Objects.nonNull(lanche))
+                throw new RegraNegocioException("lanche" + MessageError.NOT_EXISTS);
 
-        entity.setLanche(lanche);
+            lanches.add(lanche);
+        }
+        entity.setLanches(lanches);
     }
 
     private void configurarBebida(Combo entity) {
-        Produto produtoBebida = this._produtoRepository.findByIdAndAtivoIsTrue(entity.getBebida().getId());
+        List<Bebida> bebidas = new ArrayList<>();
+        for (Bebida bebida : entity.getBebidas()) {
+            bebida = this._bebidaRepository.findByIdEqualsAndAtivoTrue(bebida.getId());
 
-        if (!Objects.nonNull(produtoBebida))
-            throw new RegraNegocioException("bebida" + MessageError.NOT_EXISTS);
+            if (!Objects.nonNull(bebida))
+                throw new RegraNegocioException("bebida" + MessageError.NOT_EXISTS);
 
-        Bebida bebida = Mapper.map(produtoBebida, Bebida.class);
-        bebida.setId(0);
-        entity.setBebida(bebida);
+            bebidas.add(bebida);
+        }
+        entity.setBebidas(bebidas);
     }
 }

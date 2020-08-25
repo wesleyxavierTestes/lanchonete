@@ -112,17 +112,12 @@ public class CardapioService extends BaseService<Cardapio, ICardapioRepository> 
     private void validaDuplicacaoItemCardapio(IProdutoCardapio produtoCardapio, final List<IProdutoCardapio> itensDisponiveis) {
         final long produtoCardapioId = produtoCardapio.getId();
         final Optional<IProdutoCardapio> exist = itensDisponiveis.stream()
-        .filter(c -> extracted(produtoCardapioId, c))
+        .filter(c -> produtoCardapioId == c.getId())
                 .findFirst();
 
         if (exist.isPresent()) {
             throw new RegraNegocioException("Item de Cardapio existente");
         }
-    }
-
-    private boolean extracted(final long produtoCardapioId, IProdutoCardapio c) {
-        long id = c.getId();
-        return produtoCardapioId == id;
     }
 
     private IProdutoCardapio processaProdutoCardapioPorTipo(IProdutoCardapio produtoCardapio) {
@@ -141,4 +136,16 @@ public class CardapioService extends BaseService<Cardapio, ICardapioRepository> 
         }
         return produtoCardapio;
     }
+
+	public void remove(Cardapio entity, long itemId) {
+
+        List<IProdutoCardapio> produtos = entity.getItensDisponiveis();
+        
+        Optional<IProdutoCardapio> produto = produtos.stream()
+        .filter(item -> item.getId() == itemId).findFirst();
+
+        produtos.remove(produto.get());
+
+        entity.setItensDisponiveis(produtos);
+	}
 }

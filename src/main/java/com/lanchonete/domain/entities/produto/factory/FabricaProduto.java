@@ -11,7 +11,6 @@ import com.lanchonete.domain.entities.produto.baseentity.IProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.entities.produto.processadores.BebidaProcessaProduto;
-import com.lanchonete.domain.entities.produto.processadores.ComboProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.ProdutoProcessaProduto;
@@ -73,8 +72,8 @@ public final class FabricaProduto {
                 ((Lanche) produto).setIngredientesLanche(((Lanche) produtoCardapio).getIngredientesLanche());
                 ((Lanche) produto).calcularValor();
             } else if (produto instanceof Combo) {
-                ((Combo) produto).setBebida(((Combo) produtoCardapio).getBebida());
-                ((Combo) produto).setLanche(((Combo) produtoCardapio).getLanche());
+                ((Combo) produto).setBebidas(((Combo) produtoCardapio).getBebidas());
+                ((Combo) produto).setLanches(((Combo) produtoCardapio).getLanches());
                 ((Combo) produto).calcularValor();
             }
 

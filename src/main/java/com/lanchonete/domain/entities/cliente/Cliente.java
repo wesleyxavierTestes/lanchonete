@@ -1,5 +1,7 @@
 package com.lanchonete.domain.entities.cliente;
 
+import java.util.ArrayList;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import com.lanchonete.domain.enuns.cliente.EnumTipoPessoa;
+import com.lanchonete.utils.MessageError;
+import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 
@@ -48,4 +52,14 @@ public class Cliente extends BaseEntity {
    
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Endereco endereco;
+
+    public static Object isValidCpfCnpj(EnumTipoPessoa tipoPessoa, String cpf, String cnpj) {
+        if (tipoPessoa != EnumTipoPessoa.Fisica && cnpj == null) {
+            return new ArrayList<CustomErro>() {{ add(new CustomErro("cnpj", MessageError.IS_MANDATORY)); }};
+        } else if (cpf == null) {
+            return new ArrayList<CustomErro>() {{ add(new CustomErro("cpf", MessageError.IS_MANDATORY)); }};
+        }
+
+        return null;
+    }
 }

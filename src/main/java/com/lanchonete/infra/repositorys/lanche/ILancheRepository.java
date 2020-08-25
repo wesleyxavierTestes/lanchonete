@@ -30,8 +30,6 @@ public interface ILancheRepository extends IBaseRepository<Lanche>  {
         countQuery = "SELECT (c.*) FROM lanche as c where c.ativo = false")
 	Page<LancheListDto> listDesactive(PageRequest of);
 
-    @Query(
-        nativeQuery = true, 
-        value = "SELECT (c.*) FROM lanche as c where c.ativo = true and c.id = ?1 limit 1")
-        Lanche findByIdAtive(long id);
+
+    Lanche findByIdEqualsAndAtivoTrue(long id);
 }

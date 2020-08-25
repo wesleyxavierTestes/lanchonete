@@ -55,10 +55,11 @@ public class LancheProcessaProduto extends ProcessaProduto {
         List<IProdutoComposicao> ingredientes = new ArrayList<>();
         
         for (IProdutoComposicao ingrediente : entity.getIngredientesLanche()) {
-            Produto produto = _repository.findByIdAndAtivoIsTrue(ingrediente.getId());
+            Produto produto = _repository.findByIdAndAtivoTrue(ingrediente.getId());
+            
             if (!Objects.nonNull(produto))
-                throw new RegraNegocioException(String.format("Produto %s", ingrediente.getNome()) 
-                + MessageError.EXISTS);
+                throw new RegraNegocioException(String.format("Produto %s não existe", ingrediente.getNome()));
+
                 Ingrediente ingredienteMapeado = mapperIngrediente(ingrediente, produto);
                 ingredientes.add(ingredienteMapeado);
         }

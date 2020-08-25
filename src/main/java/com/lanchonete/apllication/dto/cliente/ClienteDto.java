@@ -25,15 +25,13 @@ public class ClienteDto  {
     @Size(max = 150, message = MessageError.MAX_LIMITE)
     public String nome;
     
-    @NotEmpty(message = MessageError.IS_MANDATORY)
     @Size(max = 11, message = MessageError.MAX_LIMITE)
     @Size(min = 11, message = MessageError.MIN_LIMITE)
     public String cpf;
 
-    @NotEmpty(message = MessageError.IS_MANDATORY)
     @Size(max = 14, message = MessageError.MAX_LIMITE)
     @Size(min = 14, message = MessageError.MIN_LIMITE)
-    public String cnjp;
+    public String cnpj;
 
     @Size(max = 100, message = MessageError.MAX_LIMITE)
     @Email(message = "Email " + MessageError.IS_INVALID)
@@ -53,10 +51,6 @@ public class ClienteDto  {
     public EnderecoDto endereco;
 
     public ClienteDto() {
-        if (this.tipoPessoa == EnumTipoPessoa.Fisica) {
-                this.cnjp = "";
-        } else {
-            this.cpf = "";
-        }
+        
     }
 }

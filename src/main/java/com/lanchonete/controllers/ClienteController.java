@@ -1,5 +1,7 @@
 package com.lanchonete.controllers;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import com.lanchonete.apllication.dto.cliente.ClienteDefaultDto;
@@ -12,6 +14,7 @@ import com.lanchonete.domain.services.cliente.ClienteService;
 import com.lanchonete.utils.HttpBase;
 import com.lanchonete.utils.MessageError;
 import com.lanchonete.utils.UrlConstants;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -111,9 +114,11 @@ public class ClienteController extends AbstractBaseController {
 
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody() @Valid ClienteDto entityDto) {
+        Object isValid = Cliente.isValidCpfCnpj(entityDto.tipoPessoa, entityDto.cpf, entityDto.cnpj);
+        if (Objects.nonNull(isValid)) ResponseEntity.badRequest().body(isValid);
 
         Cliente entity = Mapper.map(entityDto);
-        
+
         this._service.save(entity);
 
         return ResponseEntity.ok(Mapper.map(entity));
@@ -121,6 +126,8 @@ public class ClienteController extends AbstractBaseController {
 
     @PutMapping("update")
     public ResponseEntity<Object> update(@RequestBody() @Valid ClienteDto entityDto) {
+        Object isValid = Cliente.isValidCpfCnpj(entityDto.tipoPessoa, entityDto.cpf, entityDto.cnpj);
+        if (Objects.nonNull(isValid)) ResponseEntity.badRequest().body(isValid);
 
         Cliente entity = this._service.find(entityDto.id);
 

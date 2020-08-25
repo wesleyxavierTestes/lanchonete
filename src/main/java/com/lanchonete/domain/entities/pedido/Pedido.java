@@ -14,9 +14,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -25,6 +28,7 @@ import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
+import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.enuns.pedidos.EnumEstadoPedido;
 
 import lombok.AllArgsConstructor;
@@ -40,9 +44,16 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Pedido extends BaseEntity implements IPedidoState {
     
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
-    cascade = CascadeType.DETACH, mappedBy = "pedido")
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class)
+    @JoinTable(
+        name = "pedido_itens",
+        joinColumns = @JoinColumn(name = "item_id"),
+        inverseJoinColumns = @JoinColumn(name = "pedido_id")
+    )
     private List<IProdutoPedido> pedidoitens = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private Venda venda;
 
     private UUID codigo;
 
@@ -54,6 +65,9 @@ public abstract class Pedido extends BaseEntity implements IPedidoState {
 
     @JsonFormat(shape = Shape.STRING)
     private LocalDateTime dataCancelado;
+
+    @JsonFormat(shape = Shape.STRING)
+    private LocalDateTime dataFinalizacao;
 
     @Enumerated(EnumType.STRING)
     private EnumEstadoPedido estado = EnumEstadoPedido.Novo;

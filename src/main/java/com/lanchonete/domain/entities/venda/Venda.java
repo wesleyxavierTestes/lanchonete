@@ -11,9 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.lanchonete.domain.entities.BaseEntity;
 import com.lanchonete.domain.entities.cliente.Cliente;
+import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 
 import lombok.AllArgsConstructor;
@@ -30,9 +32,8 @@ import lombok.Setter;
 @Entity
 public class Venda extends BaseEntity {
     
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class,
-    cascade = CascadeType.DETACH, mappedBy = "venda")
-    private List<VendaItem> vendaItens = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private Pedido pedido;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Cliente cliente;

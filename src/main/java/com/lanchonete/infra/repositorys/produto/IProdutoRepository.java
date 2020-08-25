@@ -105,5 +105,5 @@ public interface IProdutoRepository extends IBaseRepository<Produto> {
     
     //@Query(
       //  value = "SELECT (c.*) FROM #{#entityName} as c where c.ativo = true and c.id = ?1")
-    Produto findByIdAndAtivoIsTrue(long id);
+    Produto findByIdAndAtivoTrue(long id);
 }

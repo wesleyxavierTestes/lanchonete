@@ -42,8 +42,13 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Categoria categoria;
 
-    @ManyToOne
-    private Pedido pedido;
+    @ManyToMany
+    @JoinTable(
+        name = "pedido_itens",
+        joinColumns = @JoinColumn(name = "pedido_id"),
+        inverseJoinColumns = @JoinColumn(name = "item_id")
+    )
+    private List<Pedido> pedidos;
 
     @ManyToMany
     @JoinTable(name = "cardapio_itens", 
@@ -51,9 +56,6 @@ public abstract class AbstractProduto extends BaseEntity implements IProduto {
         inverseJoinColumns = @JoinColumn(name = "cardapio_id")
     )
     private List<Cardapio> products = new ArrayList<>();
-
-    @ManyToOne
-    private Venda venda;
 
     @Column(nullable = false)
     private String nome;

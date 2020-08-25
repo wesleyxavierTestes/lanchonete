@@ -1,7 +1,6 @@
 package com.lanchonete.domain.services;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -40,6 +39,7 @@ public abstract class BaseService<T extends IBaseEntity, Y extends IBaseReposito
                 .withStringMatcher(StringMatcher.CONTAINING));
         return _repository.findAll(example, PageRequest.of((page - 1), 10));
     }
+    
     public T find(long id) {
         Optional<T> entity = _repository.findByIdEquals(id);
         

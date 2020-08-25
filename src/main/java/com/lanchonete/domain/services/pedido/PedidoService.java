@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.lanchonete.apllication.dto.pedido.PedidoListDto;
@@ -20,6 +21,7 @@ import com.lanchonete.domain.entities.produto.processadores.BebidaProcessaProdut
 import com.lanchonete.domain.entities.produto.processadores.ComboProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.LancheProcessaProduto;
 import com.lanchonete.domain.entities.produto.processadores.OutrosProcessaProduto;
+import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.combo.IComboRepository;
@@ -91,19 +93,8 @@ public class PedidoService extends BaseService<Pedido, IPedidoRepository> {
                 for (IProdutoCardapio produtoCardapio : cardapio.getItensDisponiveis()) {
                     if (produtoPedido.getCodigo().equals(produtoCardapio.getCodigo())) {
                         IProdutoPedido produto = null;
-                        if (produtoPedido.getTipoProduto() == EnumTipoProduto.Bebida) {
-                            produto = (IProdutoPedido)new BebidaProcessaProduto(this._produtoRepository)
-                            .processar(produtoPedido);
-                        } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Lanche) {
-                            produto = (IProdutoPedido)new LancheProcessaProduto(this._produtoRepository)
-                            .processar(this._lancheRepository, produtoPedido);
-                        } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Combo) {
-                            produto = (IProdutoPedido)new ComboProcessaProduto(this._produtoRepository)
-                            .processar(this._comboRepository, produtoPedido);
-                        } else {
-                            produto = (IProdutoPedido)new OutrosProcessaProduto(this._produtoRepository)
-                            .processar(produtoPedido);
-                        }
+                        
+                        produto = processarProdutoPedido(produtoPedido);
                         
                         IProdutoPedido produtoMapeado = (IProdutoPedido) FabricaProduto.GerarProdutoPorTipo(produto.getTipoProduto(), produto);
                         produtoMapeado = (IProdutoPedido) FabricaProduto.configurarPedidoItens(produtoMapeado, produtoCardapio);
@@ -119,4 +110,55 @@ public class PedidoService extends BaseService<Pedido, IPedidoRepository> {
             System.out.println(e);
         }
     }
+
+    private IProdutoPedido processarProdutoPedido(IProdutoPedido produtoPedido) {
+        IProdutoPedido produto;
+        if (produtoPedido.getTipoProduto() == EnumTipoProduto.Bebida) {
+            produto = (IProdutoPedido)new BebidaProcessaProduto(this._produtoRepository)
+            .processar(produtoPedido);
+        } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Lanche) {
+            produto = (IProdutoPedido)new LancheProcessaProduto(this._produtoRepository)
+            .processar(this._lancheRepository, produtoPedido);
+        } else if (produtoPedido.getTipoProduto() == EnumTipoProduto.Combo) {
+            produto = (IProdutoPedido)new ComboProcessaProduto(this._produtoRepository)
+            .processar(this._comboRepository, produtoPedido);
+        } else {
+            produto = (IProdutoPedido)new OutrosProcessaProduto(this._produtoRepository)
+            .processar(produtoPedido);
+        }
+        return produto;
+    }
+
+	public void adicionar(Pedido entity, IProdutoPedido produtoPedido) {
+        IProdutoPedido produto = processarProdutoPedido(produtoPedido);
+        List<IProdutoPedido> produtos = entity.getPedidoitens();
+
+        produtos.add(produto);
+        entity.setPedidoitens(produtos);
+    }
+
+	public void remove(Pedido entity, long itemId) {
+        List<IProdutoPedido> produtos = entity.getPedidoitens();
+        
+        Optional<IProdutoPedido> produto = produtos.stream()
+        .filter(item -> item.getId() == itemId).findFirst();
+
+        produtos.remove(produto.get());
+
+        entity.setPedidoitens(produtos);
+	}
+
+	public Venda finalizarPedido(Pedido entity) {
+        entity.finalizarPedido().configurar();
+
+        Venda venda = Venda.builder()
+                .cliente(entity.getCliente())
+                .valor(entity.getValorTotal())
+                .valorDesconto(BigDecimal.ZERO)
+                .valorTotal(entity.getValorTotal())
+                .pedido(entity)
+                .build();
+
+		return  venda;
+	}
 }

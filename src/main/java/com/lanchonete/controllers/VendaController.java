@@ -8,7 +8,6 @@ import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.venda.VendaService;
@@ -73,8 +72,7 @@ public class VendaController extends AbstractBaseController {
 
         Venda entity = Mapper.map(entityDto);
 
-        Categoria categoriaVenda = this._categoriaService.existsCategoriaVenda();
-        this._service.criarVenda(entity, categoriaVenda);
+        this._service.criarVenda(entity);
 
         try {
             this._service.save(entity);

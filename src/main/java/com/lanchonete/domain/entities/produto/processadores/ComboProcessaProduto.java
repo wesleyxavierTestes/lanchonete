@@ -34,9 +34,11 @@ public class ComboProcessaProduto extends ProcessaProduto {
 
     public boolean validarExisteEstoqueProduto(Combo combo) {
         boolean existeEstoqueBebida = new BebidaProcessaProduto(this._repository)
-                .validarExisteEstoqueProduto(combo.getBebida());
+                .validarExisteEstoqueProduto(combo.getBebidas().get(0));
+
         boolean existeEstoqueLanche = new LancheProcessaProduto(this._repository)
-                .validarExisteEstoqueProduto(combo.getLanche());
+                .validarExisteEstoqueProduto(combo.getLanches().get(0));
+
         return existeEstoqueBebida && existeEstoqueLanche;
     }
 }

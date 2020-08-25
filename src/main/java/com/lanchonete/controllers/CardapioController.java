@@ -1,7 +1,6 @@
 package com.lanchonete.controllers;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -11,8 +10,6 @@ import com.lanchonete.apllication.dto.cardapio.CardapioListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
-import com.lanchonete.domain.entities.outros.Outros;
-import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.domain.services.cardapio.CardapioService;
 import com.lanchonete.utils.MessageError;
@@ -135,9 +132,24 @@ public class CardapioController extends AbstractBaseController {
 
         Cardapio entity = this._service.find(id);
         if (!Objects.nonNull(entity))
-            return ResponseEntity.badRequest().body(MessageError.NOT_EXISTS);
+            throw new RegraNegocioException(MessageError.NOT_EXISTS);
         
         this._service.criarCardapio(entity, Mapper.map(entityDto, tipoProduto));
+        
+        this._service.update(entity);
+
+        return ResponseEntity.ok(Mapper.map(entity));
+    }
+
+    @PutMapping("removeitem")
+    public ResponseEntity<Object> removeItem(@RequestParam(name = "id") long id,
+    @RequestParam(name = "itemId") long itemId) {
+
+        Cardapio entity = this._service.find(id);
+        if (!Objects.nonNull(entity))
+            throw new RegraNegocioException(MessageError.NOT_EXISTS);
+        
+        this._service.remove(entity, itemId);
         
         this._service.update(entity);
 

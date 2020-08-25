@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
@@ -12,6 +14,7 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.combo.Combo;
+import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -39,7 +42,7 @@ public class ComboMock {
                 .valor(new BigDecimal(22.5))
                 .valorTotal(new BigDecimal(22.5))
                 .categoria(null)
-                .lanche(null)
+                .lanches(null)
                 .tipoProduto(EnumTipoProduto.Combo)
                 .build();
         return clienteDtoMock;
@@ -51,18 +54,17 @@ public class ComboMock {
         clienteDtoMock.setValor(new BigDecimal(22.5));
         clienteDtoMock.setValorTotal(new BigDecimal(22.5));
         clienteDtoMock.setCategoria(null);
-        clienteDtoMock.setLanche(null);
+        clienteDtoMock.setLanches(null);
         clienteDtoMock.setTipoProduto(EnumTipoProduto.Combo);
         return clienteDtoMock;
     }
 
 
     public ComboDto COMBO(String nome, CategoriaDto categoria, LancheDto lanche, ProdutoDto comboBebida) {
-
         ComboDto combo = ComboMock.dto(nome);
         combo.categoria = categoria;
-        combo.lanche = Mapper.map(lanche, ComboItemDto.class);
-        combo.bebida = Mapper.map(comboBebida, ComboItemDto.class);
+        combo.lanches = new ArrayList<ComboItemDto>() {{ add(Mapper.map(lanche, ComboItemDto.class)); }};
+        combo.bebidas = new ArrayList<ComboItemDto>() {{ add(Mapper.map(comboBebida, ComboItemDto.class)); }};
         combo.valor = new BigDecimal("123");
         combo.valorTotal = new BigDecimal("123");
 

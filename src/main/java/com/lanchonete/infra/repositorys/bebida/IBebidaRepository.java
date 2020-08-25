@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IBebidaRepository extends IBaseRepository<Bebida> {
 
+	Bebida findByIdEqualsAndAtivoTrue(long id);
+
 }

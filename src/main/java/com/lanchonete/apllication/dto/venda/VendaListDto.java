@@ -15,7 +15,7 @@ public class VendaListDto {
     public String dataCadastro;
     public boolean ativo;
     
-    public List<VendaItemDto> vendaItens;
+    public VendaPedidoDto pedido;
 
     public String valor;
 

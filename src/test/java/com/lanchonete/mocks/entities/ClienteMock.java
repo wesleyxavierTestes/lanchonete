@@ -19,7 +19,7 @@ public class ClienteMock {
     public static ClienteDto dto(String nome) {
             ClienteDto clienteDtoMock = ClienteDto.builder()
                     .nome(nome)
-                    .cnjp("96864231000112")
+                    .cnpj("96864231000112")
                     .email("teste@gmail.com")
                     .cpf(null)
                     .id(1)

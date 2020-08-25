@@ -9,8 +9,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.lanchonete.domain.entities.combo.Combo;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
@@ -31,6 +35,13 @@ public class Lanche extends AbstractProduto implements IProdutoPedido, IProdutoC
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = AbstractProduto.class, cascade = CascadeType.ALL)
     private List<IProdutoComposicao> ingredientesLanche = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "combo_lanche", 
+        joinColumns = @JoinColumn(name = "combo_id"), 
+        inverseJoinColumns = @JoinColumn(name = "lanche_id")
+    )
+    private List<Combo> lanches = new ArrayList<>();
 
     @Column(nullable = false)
     private BigDecimal valorTotal;

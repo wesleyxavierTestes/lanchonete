@@ -1,6 +1,7 @@
 package com.lanchonete.apllication.dto.combo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Max;
@@ -48,10 +49,10 @@ public class ComboDto  {
     public BigDecimal valorTotal;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public ComboItemDto bebida;
+    public List<ComboItemDto> bebidas;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public ComboItemDto lanche;
+    public  List<ComboItemDto> lanches;
 
     @Size(max = 200, message = MessageError.MAX_LIMITE)
     private String observacao;

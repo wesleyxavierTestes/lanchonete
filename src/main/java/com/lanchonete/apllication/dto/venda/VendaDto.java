@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.lanchonete.apllication.configurations.MoneyConverter;
+import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
@@ -38,5 +39,5 @@ public class VendaDto {
     public BigDecimal valorTotal;
 
     @NotNull(message = MessageError.IS_MANDATORY)
-    public List<VendaItemDto> vendaItens;
+    public VendaPedidoDto pedido;
 }

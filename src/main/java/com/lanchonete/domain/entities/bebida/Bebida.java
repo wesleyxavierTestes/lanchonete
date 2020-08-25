@@ -1,7 +1,14 @@
 package com.lanchonete.domain.entities.bebida;
 
-import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+
+import com.lanchonete.domain.entities.combo.Combo;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCombo;
@@ -18,5 +25,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class Bebida extends AbstractProduto implements IProdutoPedido, IProdutoCardapio, IProdutoCombo {
-    private String observacao;
+
+    @ManyToMany
+    @JoinTable(name = "combo_bebida", 
+        joinColumns = @JoinColumn(name = "combo_id"), 
+        inverseJoinColumns = @JoinColumn(name = "bebida_id")
+    )
+    private List<Combo> bebidas = new ArrayList<>();
 }

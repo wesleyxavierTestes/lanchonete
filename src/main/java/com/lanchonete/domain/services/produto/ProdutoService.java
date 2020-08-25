@@ -1,6 +1,5 @@
 package com.lanchonete.domain.services.produto;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,40 +44,40 @@ public class ProdutoService extends BaseService<Produto, IProdutoRepository> {
 
     public Page<ProdutoListDto> listDto(int page) {
         return _repository.findAll(PageRequest.of((page - 1), 10)).map(produto -> {
-            double count = this._repository.countEstoqueById(produto.getId());
-            produto.setEstoqueAtual(count);
+            Double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count == null ? 0 : count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listActiveDto(int page) {
         return _repository.listActive(PageRequest.of((page - 1), 10)).map(produto -> {
-            double count = this._repository.countEstoqueById(produto.getId());
-            produto.setEstoqueAtual(count);
+            Double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count == null ? 0 : count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listDesactiveDto(int page) {
         return _repository.listDesactive(PageRequest.of((page - 1), 10)).map(produto -> {
-            double count = this._repository.countEstoqueById(produto.getId());
-            produto.setEstoqueAtual(count);
+            Double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count == null ? 0 : count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoqueZero(int page) {
         return _repository.listEstoque(0, 1, PageRequest.of((page - 1), 10)).map(produto -> {
-            double count = this._repository.countEstoqueById(produto.getId());
-            produto.setEstoqueAtual(count);
+            Double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count == null ? 0 : count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
 
     public Page<ProdutoListDto> listEstoque(int page) {
         return _repository.listEstoque(1, 9999999, PageRequest.of((page - 1), 10)).map(produto -> {
-            double count = this._repository.countEstoqueById(produto.getId());
-            produto.setEstoqueAtual(count);
+            Double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count == null ? 0 : count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
     }
@@ -100,8 +99,8 @@ public class ProdutoService extends BaseService<Produto, IProdutoRepository> {
 	public Page<ProdutoListDto> listDtoNome(int page, String nome) {
        return this._repository.findAllByNomeContainingIgnoreCase(nome, PageRequest.of((page - 1), 10))
         .map(produto -> {
-            double count = this._repository.countEstoqueById(produto.getId());
-            produto.setEstoqueAtual(count);
+            Double count = this._repository.countEstoqueById(produto.getId());
+            produto.setEstoqueAtual(count == null ? 0 : count);
             return produto;
         }).map(Mapper.pageMap(ProdutoListDto.class));
 	}

@@ -1,11 +1,8 @@
 package com.lanchonete.apllication.mappers;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -22,30 +19,28 @@ import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
-import com.lanchonete.apllication.dto.venda.VendaItemDto;
 import com.lanchonete.apllication.dto.venda.VendaPedidoDto;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
-import com.lanchonete.domain.entities.combo.Combo;
-import com.lanchonete.domain.entities.ingrediente.Ingrediente;
-import com.lanchonete.domain.entities.lanche.Lanche;
-import com.lanchonete.domain.entities.outros.Outros;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.cliente.Endereco;
+import com.lanchonete.domain.entities.combo.Combo;
 import com.lanchonete.domain.entities.estoque.AbstractEstoque;
 import com.lanchonete.domain.entities.estoque.EstoqueEntrada;
 import com.lanchonete.domain.entities.estoque.EstoqueSaida;
 import com.lanchonete.domain.entities.estoque.IEstoque;
+import com.lanchonete.domain.entities.ingrediente.Ingrediente;
+import com.lanchonete.domain.entities.lanche.Lanche;
+import com.lanchonete.domain.entities.outros.Outros;
 import com.lanchonete.domain.entities.pedido.Pedido;
 import com.lanchonete.domain.entities.pedido.PedidoAguardando;
 import com.lanchonete.domain.entities.pedido.PedidoFinalizado;
+import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoComposicao;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoPedido;
 import com.lanchonete.domain.entities.produto.factory.FabricaProduto;
-import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.domain.entities.venda.Venda;
-import com.lanchonete.domain.entities.venda.VendaItem;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 
@@ -62,7 +57,8 @@ public final class Mapper {
         final Function<T, Y> converter = new Function<T, Y>() {
             @Override
             public Y apply(final T entity) {
-                return Mapper.map(entity, ref);
+                Y map = Mapper.map(entity, ref);
+                return map;
             }
         };
         return converter;
@@ -92,6 +88,13 @@ public final class Mapper {
     
     public static IProdutoCardapio map(final CardapioItemDto entityDto, EnumTipoProduto tipoProduto) {
         IProdutoCardapio map = Mapper.map(entityDto, Outros.class);
+        map.setCodigo(UUID.fromString(entityDto.codigo));
+        map.setTipoProduto(tipoProduto);
+        return map;
+    }
+
+    public static IProdutoPedido map(final PedidoItemDto entityDto, EnumTipoProduto tipoProduto) {
+        IProdutoPedido map = Mapper.map(entityDto, Outros.class);
         map.setCodigo(UUID.fromString(entityDto.codigo));
         map.setTipoProduto(tipoProduto);
         return map;
@@ -157,33 +160,13 @@ public final class Mapper {
     }
 
     public static Venda map(final VendaDto entity) {
-        final List<VendaItem> vendaItens = new ArrayList<>();
-        List<VendaItemDto> copy = null;
-
-        if (Objects.nonNull(entity.vendaItens)) {
-            entity.vendaItens.forEach(item -> {
-
-                VendaItem vendaItem = new VendaItem();
-                vendaItem.setId(item.id);
-                vendaItem.setTipoProduto(EnumTipoProduto.Venda);
-                vendaItem.setValor((item.valor));
-                vendaItem.setValorDesconto((item.valorDesconto));
-                vendaItem.setValorTotal((item.valorTotal));
-                Pedido pedidoMap = Mapper.map(item.pedido);
-                vendaItem.setPedido(pedidoMap);
-
-                vendaItens.add(vendaItem);
-            });
-
-            copy = new ArrayList<>(entity.vendaItens);
-            entity.vendaItens = null;
-        }
+        
+        Pedido pedidoMap = Mapper.map(entity.pedido, Pedido.class);
+        
+        entity.pedido = null;
 
         final Venda vendaMap = Mapper.map(entity, Venda.class);
-        if (Objects.nonNull(vendaMap))
-            vendaMap.setVendaItens(vendaItens);
-
-        entity.vendaItens = copy;
+        vendaMap.setPedido(pedidoMap);
 
         return vendaMap;
 
@@ -251,7 +234,12 @@ public final class Mapper {
         List<IngredienteDto> copy = null;
 
         if (Objects.nonNull(entity.ingredientesLanche)) {
-            entity.ingredientesLanche.stream().forEach(item -> ingredientes.add(Mapper.map(item, Ingrediente.class)));
+            entity.ingredientesLanche.stream().forEach(item -> {
+            Ingrediente map = Mapper.map(item, Ingrediente.class);
+            map.setCodigo(UUID.fromString(item.codigo));
+            map.setTipoProduto(item.tipoProduto);
+            ingredientes.add(map);
+        });
 
             copy = new ArrayList<>(entity.ingredientesLanche);
             entity.ingredientesLanche = null;

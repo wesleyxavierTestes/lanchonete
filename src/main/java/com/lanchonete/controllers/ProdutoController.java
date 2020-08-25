@@ -1,11 +1,8 @@
 package com.lanchonete.controllers;
 
-import java.util.Collection;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.produto.ProdutoListDto;
