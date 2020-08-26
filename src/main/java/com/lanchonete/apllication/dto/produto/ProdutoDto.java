@@ -1,10 +1,8 @@
 package com.lanchonete.apllication.dto.produto;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -44,7 +42,7 @@ public class ProdutoDto  {
 
     @Size(max = 150, message = MessageError.MAX_LIMITE)
     @NotNull(message =  MessageError.IS_MANDATORY)
-    public String codigo = UUID.randomUUID().toString();
+    public String codigo;
 
     @NotNull(message =  MessageError.IS_MANDATORY)
     public CategoriaDto categoria;

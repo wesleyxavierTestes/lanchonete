@@ -30,12 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class VendaController extends AbstractBaseController {
 
     private final VendaService _service;
-    private final CategoriaService _categoriaService;
 
     @Autowired
-    public VendaController(VendaService service, CategoriaService categoriaService) {
+    public VendaController(VendaService service) {
         _service = service;
-        _categoriaService = categoriaService;
     }
 
     @GetMapping("novo")

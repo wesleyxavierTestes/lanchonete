@@ -1,14 +1,12 @@
 package com.lanchonete.apllication.dto.venda;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.lanchonete.apllication.configurations.MoneyConverter;
-import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.utils.MessageError;
 
 import lombok.AllArgsConstructor;
