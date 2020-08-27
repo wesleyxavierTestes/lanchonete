@@ -14,7 +14,7 @@ public class EstoqueListDto {
 
     public long id;
     public long quantidade;
-    public String data;
+    public String dataCadastro;
 
     @JsonIgnore
     public EstoqueProdutoDto produto;

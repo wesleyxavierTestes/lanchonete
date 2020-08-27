@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class LancheService extends BaseService<Lanche, ILancheRepository> {
 

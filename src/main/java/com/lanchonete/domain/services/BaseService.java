@@ -17,6 +17,7 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+
 public abstract class BaseService<T extends IBaseEntity, Y extends IBaseRepository<T>> {
 
     protected final Y _repository;

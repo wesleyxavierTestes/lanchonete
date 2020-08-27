@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+
+
 @Service
 public class CategoriaService extends BaseService<Categoria, ICategoriaRepository> {
 
@@ -26,7 +28,8 @@ public class CategoriaService extends BaseService<Categoria, ICategoriaRepositor
     }
 
     public Page<CategoriaListDto> listDto(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10)).map(Mapper.pageMap(CategoriaListDto.class));
+        Page<Categoria> pagelist = _repository.findAll(PageRequest.of((page - 1), 10));
+        return pagelist.map(Mapper.pageMap(CategoriaListDto.class));
     }
 
     public Page<CategoriaListDto> listActiveDto(int page) {

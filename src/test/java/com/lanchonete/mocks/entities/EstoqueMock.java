@@ -44,8 +44,7 @@ public class EstoqueMock {
     public void ESTOQUE(ProdutoDto produto) {
         EstoqueDto estoque = EstoqueMock.dto();
         estoque.produto = Mapper.map(produto, EstoqueProdutoDto.class);
-        estoque.quantidade = 1;
-        estoque.data = LocalDateTime.now().toString();
+        estoque.quantidade = 1L;
 
         HttpEntity<EstoqueDto> requestSave = new HttpEntity<>(estoque, null);
 

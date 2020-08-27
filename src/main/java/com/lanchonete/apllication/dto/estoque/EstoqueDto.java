@@ -16,11 +16,9 @@ public class EstoqueDto  {
 
     public long id;
 
-    @Min(value = 0, message = MessageError.MIN_LIMITE)
-    public long quantidade;
-
     @NotNull(message = MessageError.IS_MANDATORY)
-    public String data;
+    @Min(value = 1, message = MessageError.MIN_LIMITE)
+    public Long quantidade;
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public EstoqueProdutoDto produto;
