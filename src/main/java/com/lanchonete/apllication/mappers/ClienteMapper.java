@@ -16,6 +16,7 @@ final class ClienteMapper {
         entity.setNome(entityDto.nome);
         entity.setCnjp(entityDto.cnpj);
         entity.setCpf(entityDto.cpf);
+        entity.setRg(entityDto.rg);
         entity.setTipoCliente(entityDto.tipoCliente);
         entity.setTipoPessoa(entityDto.tipoPessoa);
         entity.setEndereco(enderecoEntity);

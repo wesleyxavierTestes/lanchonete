@@ -8,4 +8,4 @@ EXPOSE 8080
 ENTRYPOINT exec java $JAVA_OPTS -jar lanchonete.jar
 # For Spring-Boot project, use the entrypoint below to reduce Tomcat startup time.
 #ENTRYPOINT exec java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar lanchonete.jar
-#docker run -d -it --restart=always -p 192.168.1.12:7071:8080 --name=local-lanchonete -e  ambiente=dev -e data_base_url=jdbc:postgresql://192.168.1.12:5432/lanchonete -e data_base_user=trainee -e data_base_password=123 lanchonete
+#docker run -d -it --restart=always -p 192.168.1.11:7071:8080 --name=local-lanchonete -e  ambiente=dev -e data_base_url=jdbc:postgresql://192.168.1.11:5432/lanchonete -e data_base_user=trainee -e data_base_password=123 lanchonete
