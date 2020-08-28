@@ -28,13 +28,23 @@ public class CepController {
         return cepConsultado;
     }
 
+    @GetMapping(path = "cnpj/{cnpj}")
+    public ResponseEntity<String> getcnpj(@PathVariable(name = "cnpj") String cnpj) {
+
+        String url = "https://www.receitaws.com.br/v1/cnpj/"+cnpj;
+
+        ResponseEntity<String> cepConsultado = HttpBase.getParameterResponseEntity(url, String.class);
+
+        return cepConsultado;
+    }
+
     @GetMapping(path = "consultar/piped/{cep}")
-    public ResponseEntity<String> getCepPiped(@PathVariable(name = "cep") String cep) {
+    public ResponseEntity<Object> getCepPiped(@PathVariable(name = "cep") String cep) {
         if (!Validacao.validarCep(cep)) return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
 
         String url = "https://viacep.com.br/ws/{parametro}/piped/";
 
-        ResponseEntity<String> cepConsultado = HttpBase.getParameterResponseEntity(url, cep, String.class);
+        ResponseEntity<Object> cepConsultado = HttpBase.getParameterResponseEntity(url, cep, Object.class);
 
         return cepConsultado;
     }

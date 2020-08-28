@@ -42,7 +42,6 @@ public class LancheDto  {
     @JsonDeserialize(using = MoneyConverter.Deserialize.class)
     public BigDecimal valor;
 
-    @NotNull(message =  MessageError.IS_MANDATORY+"N")
     @DecimalMax(value = "100000000000.00", message = MessageError.MAX_LIMITE)
     @JsonDeserialize(using = MoneyConverter.Deserialize.class)
     public BigDecimal valorTotal;
