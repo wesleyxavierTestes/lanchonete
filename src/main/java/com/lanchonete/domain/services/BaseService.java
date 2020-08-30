@@ -16,6 +16,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 
 public abstract class BaseService<T extends IBaseEntity, Y extends IBaseRepository<T>> {
@@ -27,7 +28,7 @@ public abstract class BaseService<T extends IBaseEntity, Y extends IBaseReposito
     }
 
     public Page<T> list(int page) {
-        return _repository.findAll(PageRequest.of((page - 1), 10));
+        return _repository.findAll(PageRequest.of((page - 1), 10, Sort.by("id")));
     }
 
     public Page<T> listFilter(T entity, int page) {

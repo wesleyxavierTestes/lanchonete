@@ -12,9 +12,11 @@ import com.lanchonete.domain.enuns.cliente.EnumTipoCliente;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ClienteDto  {
 
     public long id;
@@ -49,8 +51,4 @@ public class ClienteDto  {
 
     @NotNull(message = MessageError.IS_MANDATORY)
     public EnderecoDto endereco;
-
-    public ClienteDto() {
-        
-    }
 }

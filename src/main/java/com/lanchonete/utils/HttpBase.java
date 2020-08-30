@@ -30,4 +30,17 @@ public final class HttpBase {
         return new ResponseEntity(consultado.getBody(), HttpStatus.OK);
 
     }
+
+    public static <T> ResponseEntity<T> getParameterResponseEntity(String url, Class<T> tipo) {
+        RestTemplate http = new RestTemplate();
+        ResponseEntity<T> consultado = http.getForEntity(url, tipo);
+
+        if (consultado.getStatusCode() != HttpStatus.OK)
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+
+        if (consultado.getBody() == null) return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity(consultado.getBody(), HttpStatus.OK);
+
+    }
 }
