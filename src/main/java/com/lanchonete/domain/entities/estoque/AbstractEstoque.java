@@ -1,6 +1,5 @@
 package com.lanchonete.domain.entities.estoque;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -19,7 +18,6 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity(name = "estoque")
 @Table(name = "estoque")
-@DiscriminatorColumn(name = "estoque_tipo")
 public abstract class AbstractEstoque extends BaseEntity implements IEstoque {
 
   @ManyToOne(fetch = FetchType.EAGER)

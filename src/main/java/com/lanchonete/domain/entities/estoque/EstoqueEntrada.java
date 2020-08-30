@@ -2,8 +2,8 @@ package com.lanchonete.domain.entities.estoque;
 
 import java.math.BigDecimal;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.lanchonete.domain.entities.produto.Produto;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("E")
+@PrimaryKeyJoinColumn(name="estoque_id")
 public class EstoqueEntrada extends AbstractEstoque {
   private BigDecimal valorAnterior;
 

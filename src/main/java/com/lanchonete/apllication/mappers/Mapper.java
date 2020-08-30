@@ -79,7 +79,7 @@ public final class Mapper {
     public static <Y, T> T map(final Y o, final Class<T> ref) {
         try {
             final ModelMapper mapper = new ModelMapper();
-            mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(AccessLevel.PRIVATE);
+            mapper.getConfiguration().setFieldMatchingEnabled(true);
             return mapper.map(o, ref);
         } catch (final Exception e) {
             return null;

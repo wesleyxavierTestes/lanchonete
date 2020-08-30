@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-
 @ComponentScan({ "com.lanchonete.apllication.configurations", "com.lanchonete.infra.data", "com.lanchonete.controllers", "com.lanchonete.domain.services" })
 @EntityScan("com.lanchonete.domain.entities")
 @EnableJpaRepositories("com.lanchonete.infra.repositorys")

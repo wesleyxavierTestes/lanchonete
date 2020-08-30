@@ -3,7 +3,6 @@ package com.lanchonete.infra.repositorys.produto;
 import java.util.Collection;
 import java.util.UUID;
 
-import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.produto.Produto;
 import com.lanchonete.infra.repositorys.IBaseRepository;
 

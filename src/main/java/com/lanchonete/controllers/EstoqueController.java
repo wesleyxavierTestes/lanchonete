@@ -98,7 +98,7 @@ public class EstoqueController extends AbstractBaseController {
 
         entity = (EstoqueEntrada) this._service.save(entity);
 
-        return ResponseEntity.ok(entity);
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @PostMapping("save/remove")
@@ -116,7 +116,7 @@ public class EstoqueController extends AbstractBaseController {
 
         entity = (EstoqueSaida) this._service.save(entity);
 
-        return ResponseEntity.ok(entity);
+        return ResponseEntity.ok(Mapper.map(entity));
     }
 
     @DeleteMapping("delete")

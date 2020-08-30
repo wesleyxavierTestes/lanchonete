@@ -7,14 +7,11 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 import com.lanchonete.domain.entities.bebida.Bebida;
-import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.entities.produto.baseentity.AbstractProduto;
 import com.lanchonete.domain.entities.produto.baseentity.IProdutoCardapio;

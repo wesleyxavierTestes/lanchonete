@@ -9,7 +9,6 @@ import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.venda.Venda;
-import com.lanchonete.domain.services.categoria.CategoriaService;
 import com.lanchonete.domain.services.venda.VendaService;
 
 import org.springframework.beans.factory.annotation.Autowired;

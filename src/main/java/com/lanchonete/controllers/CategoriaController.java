@@ -11,6 +11,9 @@ import com.lanchonete.domain.services.categoria.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +42,9 @@ public class CategoriaController extends AbstractBaseController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<Page<CategoriaListDto>> list(@RequestParam(name = "page") int page) {
+    // @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Page<CategoriaListDto>> list(@RequestParam(name = "page") int page,
+    @AuthenticationPrincipal UserDetails user) {
 
         Page<CategoriaListDto> list = this._service.listDto(page);
 

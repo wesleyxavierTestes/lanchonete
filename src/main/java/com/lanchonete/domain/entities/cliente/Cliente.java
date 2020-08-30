@@ -1,6 +1,7 @@
 package com.lanchonete.domain.entities.cliente;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,7 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class Cliente extends BaseEntity {
-    
+
     @Column(nullable = false, length = 150)
     private String nome;
 
@@ -40,26 +41,31 @@ public class Cliente extends BaseEntity {
 
     @Column(nullable = true, length = 11)
     private String cpf;
-    
+
     @Column(nullable = true, length = 14)
     private String cnjp;
 
     @Enumerated(EnumType.STRING)
     private EnumTipoPessoa tipoPessoa;
-            
+
     @Enumerated(EnumType.STRING)
     private EnumTipoCliente tipoCliente;
-   
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Endereco endereco;
 
     public static Object isValidCpfCnpj(EnumTipoPessoa tipoPessoa, String cpf, String cnpj) {
-        if (tipoPessoa != EnumTipoPessoa.Fisica && cnpj == null) {
-            return new ArrayList<CustomErro>() {{ add(new CustomErro("cnpj", MessageError.IS_MANDATORY)); }};
-        } else if (cpf == null) {
-            return new ArrayList<CustomErro>() {{ add(new CustomErro("cpf", MessageError.IS_MANDATORY)); }};
-        }
+        if (tipoPessoa != EnumTipoPessoa.Fisica && cnpj == null)
+            return getCpfCnpjListError(EnumTipoPessoa.Juridica.tipo);
+        else if (cpf == null)
+            return getCpfCnpjListError(EnumTipoPessoa.Fisica.tipo);
 
         return null;
+    }
+
+    private static List<CustomErro> getCpfCnpjListError(String item) {
+        List<CustomErro> lista = new ArrayList<>();
+        lista.add(new CustomErro(item, MessageError.IS_MANDATORY));
+        return lista;
     }
 }
