@@ -1,11 +1,11 @@
 package com.lanchonete.apllication.configurations;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,8 +39,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             Usuario user = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), user.getPassword());
+            UsernamePasswordAuthenticationToken authentication = 
+            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 
             return this.authenticationManager.authenticate(authentication);
         } catch (IOException e) {
@@ -61,6 +61,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .signWith(SignatureAlgorithm.HS512, SECRET).compact();
 
         response.addHeader(HEADER_STRING, TOKEN_PREFIX +" "+ token);
+        response.setHeader("Content-Type", "application/json");
+        PrintWriter writer = response.getWriter();
+        writer.println(new ObjectMapper().writeValueAsString(new JwtResponse(TOKEN_PREFIX +" "+ token)));
+        writer.flush();
     }
-
 }

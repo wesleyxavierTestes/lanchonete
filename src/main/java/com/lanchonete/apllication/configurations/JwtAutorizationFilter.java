@@ -1,5 +1,9 @@
 package com.lanchonete.apllication.configurations;
 
+import static com.lanchonete.apllication.configurations.SecurityConstants.HEADER_STRING;
+import static com.lanchonete.apllication.configurations.SecurityConstants.SECRET;
+import static com.lanchonete.apllication.configurations.SecurityConstants.TOKEN_PREFIX;
+
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -16,8 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import io.jsonwebtoken.Jwts;
-
-import static com.lanchonete.apllication.configurations.SecurityConstants.*;
 
 public class JwtAutorizationFilter extends BasicAuthenticationFilter {
     private final CustomUserDetailsService customUserDetailsService;
