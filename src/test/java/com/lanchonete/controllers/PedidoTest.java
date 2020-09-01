@@ -33,6 +33,7 @@ import com.lanchonete.mocks.entities.EstoqueMock;
 import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.PedidoMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
+import com.lanchonete.mocks.pages.CardapioUtilsPageMock;
 import com.lanchonete.mocks.pages.PedidoUtilsPageMock;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -116,8 +117,7 @@ public class PedidoTest {
             PedidoDto entity = new PedidoDto();
             HttpEntity<PedidoDto> requestSave = new HttpEntity<>(entity, null);
 
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave,
-                    Object.class);
+            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, requestSave, Object.class);
 
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -160,7 +160,7 @@ public class PedidoTest {
 
             LIST();
             FIND();
-            // // AGUARDANDO();
+            // AGUARDANDO();
             // // FIND_AGUARDANDO();
             // CANCEL();
             // FIND_CANCEL();
@@ -175,10 +175,15 @@ public class PedidoTest {
         }
 
         private CardapioDto GET_CARDAPIO_COM_ESTOQUE() {
-            Page<CardapioListDto> pageCardapio = _cardapioService.listDto(1);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioList + "/?page=1", port);
+
+            ResponseEntity<CardapioUtilsPageMock> response = restTemplate.getForEntity(url,
+                    CardapioUtilsPageMock.class);
+            CardapioUtilsPageMock pageCardapio = response.getBody();
+
             assertNotNull(pageCardapio);
-            assertNotNull(pageCardapio.getContent());
-            List<CardapioListDto> content = pageCardapio.getContent();
+            assertNotNull(pageCardapio.content);
+            List<CardapioListDto> content = pageCardapio.content;
             CardapioDto cardapio = Mapper.map(content.get(0), CardapioDto.class);
             assertNotNull(cardapio);
             return cardapio;
@@ -235,16 +240,16 @@ public class PedidoTest {
             for (int i = 0; i < 30; i++) {
                 int index = new Random().nextInt(20);
                 ProdutoDto produto = produtoMock.PRODUTO("PedidoTest: Produto" + i + " Save_ok", categorias.get(index));
-             //   if (index % 2 == 0) {
-                    estoqueMock.ESTOQUE(produto);
-                    estoqueMock.ESTOQUE(produto);
-                    estoqueMock.ESTOQUE(produto);
-                //} else if (i == 10) {
-                    estoqueMock.ESTOQUE(produto);
-                    estoqueMock.ESTOQUE(produto);
-                    estoqueMock.ESTOQUE(produto);
-                    estoqueMock.ESTOQUE(produto);
-                //}
+                // if (index % 2 == 0) {
+                estoqueMock.ESTOQUE(produto);
+                estoqueMock.ESTOQUE(produto);
+                estoqueMock.ESTOQUE(produto);
+                // } else if (i == 10) {
+                estoqueMock.ESTOQUE(produto);
+                estoqueMock.ESTOQUE(produto);
+                estoqueMock.ESTOQUE(produto);
+                estoqueMock.ESTOQUE(produto);
+                // }
                 produtos.add(produto);
             }
             return produtos;
@@ -257,30 +262,34 @@ public class PedidoTest {
         }
 
         // private void FIND_CANCEL() {
-        //     ResponseEntity<PedidoDto> responseFind;
-        //     // FIND DESACTIVE
-        //     String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFindCancel + "/?id=" + entity.id, port);
-        //     responseFind = restTemplate.getForEntity(url, PedidoDto.class);
+        // ResponseEntity<PedidoDto> responseFind;
+        // // FIND DESACTIVE
+        // String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoFindCancel +
+        // "/?id=" + entity.id, port);
+        // responseFind = restTemplate.getForEntity(url, PedidoDto.class);
 
-        //     assertEquals(HttpStatus.OK, responseFind.getStatusCode());
-        //     assertEquals(false, responseFind.getBody().ativo);
+        // assertEquals(HttpStatus.OK, responseFind.getStatusCode());
+        // assertEquals(false, responseFind.getBody().ativo);
         // }
 
         // private void CANCEL() {
-        //     // DESACTIVE
-        //     String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoCancel + "/?id=" + entity.id, port);
+        // // DESACTIVE
+        // String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoCancel +
+        // "/?id=" + entity.id, port);
 
-        //     HttpEntity<PedidoDto> responseurl = new HttpEntity<>(null, null);
-        //     ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.DELETE, responseurl, Object.class);
+        // HttpEntity<PedidoDto> responseurl = new HttpEntity<>(null, null);
+        // ResponseEntity<Object> response = restTemplate.exchange(url,
+        // HttpMethod.DELETE, responseurl, Object.class);
 
-        //     assertNotNull(response);
-        //     assertEquals(HttpStatus.OK, response.getStatusCode());
-        //     assertNotNull(response.getBody());
+        // assertNotNull(response);
+        // assertEquals(HttpStatus.OK, response.getStatusCode());
+        // assertNotNull(response.getBody());
 
-        //     String json = ObjectMapperUtils.toJson(response.getBody());
-        //     PedidoCancelamento pedido = ObjectMapperUtils.jsonTo(json, PedidoCancelamento.class);
+        // String json = ObjectMapperUtils.toJson(response.getBody());
+        // PedidoCancelamento pedido = ObjectMapperUtils.jsonTo(json,
+        // PedidoCancelamento.class);
 
-        //     assertNotNull(pedido);
+        // assertNotNull(pedido);
         // }
 
         private void FIND() {
@@ -297,8 +306,7 @@ public class PedidoTest {
             String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoList + "/?page=1", port);
             ResponseEntity<PedidoUtilsPageMock> responselist = null;
             try {
-                responselist = restTemplate.getForEntity(url,
-                    PedidoUtilsPageMock.class);
+                responselist = restTemplate.getForEntity(url, PedidoUtilsPageMock.class);
             } catch (Exception e) {
                 System.out.print(e);
             }

@@ -21,7 +21,6 @@ import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaListDto;
 import com.lanchonete.apllication.mappers.Mapper;
-import com.lanchonete.apllication.validations.CustomErro;
 import com.lanchonete.domain.entities.cliente.Cliente;
 import com.lanchonete.domain.entities.venda.Venda;
 import com.lanchonete.domain.services.cardapio.CardapioService;
@@ -37,6 +36,8 @@ import com.lanchonete.mocks.entities.LancheMock;
 import com.lanchonete.mocks.entities.PedidoMock;
 import com.lanchonete.mocks.entities.ProdutoMock;
 import com.lanchonete.mocks.entities.VendaMock;
+import com.lanchonete.mocks.pages.CardapioUtilsPageMock;
+import com.lanchonete.mocks.pages.PedidoUtilsPageMock;
 import com.lanchonete.mocks.pages.VendaUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -182,10 +183,14 @@ public class VendaTest {
         }
 
         private List<PedidoListDto> GET_PEDIDOS() {
-            Page<PedidoListDto> pagePedido = _pedidoService.listDto(1);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.PedidoList + "/?page=1", port);
+
+            ResponseEntity<PedidoUtilsPageMock> response = restTemplate.getForEntity(url, PedidoUtilsPageMock.class);
+            PedidoUtilsPageMock pagePedido = response.getBody();
+
             assertNotNull(pagePedido);
-            assertNotNull(pagePedido.getContent());
-            List<PedidoListDto> content = pagePedido.getContent();
+            assertNotNull(pagePedido.content);
+            List<PedidoListDto> content = pagePedido.content;
             System.out.println("CONTAGEM PEDIDOS "+content.size());
             return content;
         }
@@ -199,10 +204,15 @@ public class VendaTest {
         }
 
         private CardapioDto GET_CARDAPIO_COM_ESTOQUE() {
-            Page<CardapioListDto> pageCardapio = _cardapioService.listDto(1);
+            String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.CardapioList + "/?page=1", port);
+
+            ResponseEntity<CardapioUtilsPageMock> response = restTemplate.getForEntity(url,
+                    CardapioUtilsPageMock.class);
+            CardapioUtilsPageMock pageCardapio = response.getBody();
+
             assertNotNull(pageCardapio);
-            assertNotNull(pageCardapio.getContent());
-            List<CardapioListDto> content = pageCardapio.getContent();
+            assertNotNull(pageCardapio.content);
+            List<CardapioListDto> content = pageCardapio.content;
             CardapioDto cardapio = Mapper.map(content.get(0), CardapioDto.class);
             assertNotNull(cardapio);
             return cardapio;

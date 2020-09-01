@@ -21,7 +21,6 @@ import com.lanchonete.apllication.dto.pedido.PedidoDto;
 import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
-import com.lanchonete.apllication.dto.venda.VendaPedidoDto;
 import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.categoria.Categoria;
@@ -168,7 +167,7 @@ public final class Mapper {
 
     public static Venda map(final VendaDto entity) {
         
-        Pedido pedidoMap = Mapper.map(entity.pedido, Pedido.class);
+        Pedido pedidoMap = Mapper.map(entity.pedido);
         
         entity.pedido = null;
 
@@ -293,15 +292,6 @@ public final class Mapper {
         entity.pedidoitens = copy;
 
         return pedidoMap;
-    }
-
-    public static PedidoFinalizado map(final VendaPedidoDto entity) {
-
-        PedidoFinalizado pedido = new PedidoFinalizado();
-        pedido.setId(entity.id);
-        pedido.setCodigo(UUID.fromString(entity.codigo));
-
-        return pedido;
     }
 
     public static PedidoDto map(final Pedido entity) {
