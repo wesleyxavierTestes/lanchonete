@@ -66,6 +66,7 @@ public abstract class BaseService<T extends IBaseEntity, Y extends IBaseReposito
 
         entity.setDataCadastro(LocalDateTime.now());
         entity.setAtivo(true);
+        entity.setId(0);
 
         _repository.save(entity);
 

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
@@ -15,6 +16,10 @@ import com.lanchonete.apllication.exceptions.RegraNegocioException;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
+import com.lanchonete.mocks.pages.BebidaUtilsPageMock;
+import com.lanchonete.mocks.pages.ComboUtilsPageMock;
+import com.lanchonete.mocks.pages.LancheUtilsPageMock;
+import com.lanchonete.mocks.pages.ProdutoUtilsPageMock;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
 
@@ -50,20 +55,44 @@ public class CardapioMock {
         CardapioDto cardapio = (CardapioDto) CardapioMock.dto(nome);
         cardapio.itensDisponiveis = new ArrayList<>();
         CardapioItemDto produto = null;
+
+        String urlProduto = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoList + "/?page=1", port);
+        ResponseEntity<ProdutoUtilsPageMock> responseProduto = restTemplate.getForEntity(urlProduto,
+                ProdutoUtilsPageMock.class);
+        ProdutoUtilsPageMock pageProduto = responseProduto.getBody();
+
+        String urlLanche = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.LancheList + "/?page=1", port);
+        ResponseEntity<LancheUtilsPageMock> responseLanche = restTemplate.getForEntity(urlLanche,
+                LancheUtilsPageMock.class);
+        LancheUtilsPageMock pageLanche = responseLanche.getBody();
+
+        String urlCombo = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ComboList + "/?page=1", port);
+        ResponseEntity<ComboUtilsPageMock> responseCombo = restTemplate.getForEntity(urlCombo,
+                ComboUtilsPageMock.class);
+        ComboUtilsPageMock pageCombo = responseCombo.getBody();
+
+        String urlBebida = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.BebidaList + "/?page=1", port);
+        ResponseEntity<BebidaUtilsPageMock> responseBebida = restTemplate.getForEntity(urlBebida,
+                BebidaUtilsPageMock.class);
+        BebidaUtilsPageMock pageBebida = responseBebida.getBody();
         
         for (int i = 0; i < 30; i++) {
             try {
                 if (i % 3 == 0) {
-                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+                    int indexOutros = new Random().nextInt(pageProduto.content.size());
+                    produto = Mapper.map(pageProduto.content.get(indexOutros), CardapioItemDto.class);
                     produto.tipoProduto = EnumTipoProduto.Outros;
                 } else if (i % 4 == 0) {
-                    produto = Mapper.map(lanches.get(i), CardapioItemDto.class);
+                    int indexLanche = new Random().nextInt(pageLanche.content.size());
+                    produto = Mapper.map(pageLanche.content.get(indexLanche), CardapioItemDto.class);
                     produto.tipoProduto = EnumTipoProduto.Lanche;
                 } else if (i % 5 == 0) {
-                    produto = Mapper.map(combos.get(i), CardapioItemDto.class);
+                    int indexCombo = new Random().nextInt(pageCombo.content.size());
+                    produto = Mapper.map(pageCombo.content.get(indexCombo), CardapioItemDto.class);
                     produto.tipoProduto = EnumTipoProduto.Combo;
                 } else {
-                    produto = Mapper.map(produtos.get(i), CardapioItemDto.class);
+                    int indexBebida = new Random().nextInt(pageBebida.content.size());
+                    produto = Mapper.map(pageBebida.content.get(indexBebida), CardapioItemDto.class);
                     produto.tipoProduto = EnumTipoProduto.Bebida;
                 }
                 cardapio.itensDisponiveis.add(produto);

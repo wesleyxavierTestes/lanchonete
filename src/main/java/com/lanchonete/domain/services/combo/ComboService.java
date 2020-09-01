@@ -3,6 +3,7 @@ package com.lanchonete.domain.services.combo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.lanchonete.apllication.dto.combo.ComboListDto;
@@ -17,7 +18,6 @@ import com.lanchonete.domain.services.BaseService;
 import com.lanchonete.infra.repositorys.bebida.IBebidaRepository;
 import com.lanchonete.infra.repositorys.combo.IComboRepository;
 import com.lanchonete.infra.repositorys.lanche.ILancheRepository;
-import com.lanchonete.infra.repositorys.produto.IProdutoRepository;
 import com.lanchonete.utils.MessageError;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,12 +82,12 @@ public class ComboService extends BaseService<Combo, IComboRepository> {
     private void configurarBebida(Combo entity) {
         List<Bebida> bebidas = new ArrayList<>();
         for (Bebida bebida : entity.getBebidas()) {
-            bebida = this._bebidaRepository.findByIdEqualsAndAtivoTrue(bebida.getId());
+          Optional<Bebida>  bebidaOptional = this._bebidaRepository.findById(bebida.getId());
 
-            if (!Objects.nonNull(bebida))
+            if (!bebidaOptional.isPresent())
                 throw new RegraNegocioException("bebida" + MessageError.NOT_EXISTS);
 
-            bebidas.add(bebida);
+            bebidas.add(bebidaOptional.get());
         }
         entity.setBebidas(bebidas);
     }

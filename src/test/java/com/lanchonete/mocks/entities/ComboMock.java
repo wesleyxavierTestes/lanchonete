@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lanchonete.apllication.dto.bebida.BebidaDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
 import com.lanchonete.apllication.dto.combo.ComboDto;
 import com.lanchonete.apllication.dto.combo.ComboItemDto;
@@ -14,7 +15,6 @@ import com.lanchonete.apllication.dto.lanche.LancheDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.mappers.Mapper;
 import com.lanchonete.domain.entities.combo.Combo;
-import com.lanchonete.domain.entities.lanche.Lanche;
 import com.lanchonete.domain.enuns.produto.EnumTipoProduto;
 import com.lanchonete.utils.ObjectMapperUtils;
 import com.lanchonete.utils.URL_CONSTANTS_TEST;
@@ -64,7 +64,14 @@ public class ComboMock {
         ComboDto combo = ComboMock.dto(nome);
         combo.categoria = categoria;
         combo.lanches = new ArrayList<ComboItemDto>() {{ add(Mapper.map(lanche, ComboItemDto.class)); }};
-        combo.bebidas = new ArrayList<ComboItemDto>() {{ add(Mapper.map(comboBebida, ComboItemDto.class)); }};
+        
+
+        String urlBebida = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.BebidaConvert, port);
+        ResponseEntity<BebidaDto> responseBebida = restTemplate.exchange(urlBebida, HttpMethod.PUT, new HttpEntity<>(comboBebida, null),
+        BebidaDto.class);
+
+        combo.bebidas = new ArrayList<ComboItemDto>() {{ add(Mapper.map(responseBebida.getBody(), ComboItemDto.class)); }};
+        
         combo.valor = new BigDecimal("123");
         combo.valorTotal = new BigDecimal("123");
 

@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.lanchonete.apllication.dto.bebida.BebidaDto;
+import com.lanchonete.apllication.dto.bebida.BebidaListDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioDto;
 import com.lanchonete.apllication.dto.cardapio.CardapioItemDto;
 import com.lanchonete.apllication.dto.categoria.CategoriaDto;
@@ -20,6 +22,7 @@ import com.lanchonete.apllication.dto.pedido.PedidoItemDto;
 import com.lanchonete.apllication.dto.produto.ProdutoDto;
 import com.lanchonete.apllication.dto.venda.VendaDto;
 import com.lanchonete.apllication.dto.venda.VendaPedidoDto;
+import com.lanchonete.domain.entities.bebida.Bebida;
 import com.lanchonete.domain.entities.cardapio.Cardapio;
 import com.lanchonete.domain.entities.categoria.Categoria;
 import com.lanchonete.domain.entities.cliente.Cliente;
@@ -106,6 +109,10 @@ public final class Mapper {
 
     public static Categoria map(final CategoriaDto entity) {
         return Mapper.map(entity, Categoria.class);
+    }
+
+    public static BebidaDto map(final Bebida entity) {
+        return Mapper.map(entity, BebidaDto.class);
     }
 
     public static CategoriaDto map(final Categoria entity) {

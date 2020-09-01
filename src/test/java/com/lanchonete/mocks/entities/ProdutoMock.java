@@ -53,7 +53,8 @@ public class ProdutoMock {
         // SAVE
         ProdutoDto produto = ProdutoMock.dto(nome);
         produto.categoria = categoria;
-        produto.tipoProduto = EnumTipoProduto.Ingrediente;
+        produto.tipoProduto = EnumTipoProduto.Ingrediente;  
+        produto.codigo = "";
 
         HttpEntity<ProdutoDto> requestSave = new HttpEntity<>(produto, null);
         String url = URL_CONSTANTS_TEST.getUrl(URL_CONSTANTS_TEST.ProdutoSave, port);

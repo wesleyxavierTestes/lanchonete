@@ -60,6 +60,10 @@ public final class URL_CONSTANTS_TEST {
     public final static String ComboSave = "http://localhost:%s/api/combo/save";
     public final static String ComboActive = "http://localhost:%s/api/combo/active";
     public final static String ComboDesactive = "http://localhost:%s/api/combo/desactive";
+
+    public final static String BebidaList = "http://localhost:%s/api/bebida/list";
+    public final static String BebidaFind = "http://localhost:%s/api/bebida/find";
+    public final static String BebidaConvert = "http://localhost:%s/api/bebida/convert";
     
     public final static String CardapioList = "http://localhost:%s/api/cardapio/list";
     public final static String CardapioFind = "http://localhost:%s/api/cardapio/find";

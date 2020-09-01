@@ -17,9 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static com.lanchonete.apllication.configurations.SecurityConstants.*;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, 
-securedEnabled = true, 
-jsr250Enabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -30,19 +28,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .anyRequest().authenticated()
-                .and()
-        // .antMatchers(HttpMethod.GET, SIGN_UP_URL).permitAll()
-        //.antMatchers("/*/api/*").hasRole("USER")
-        //.and()
-        .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-        .addFilter(new JwtAutorizationFilter(authenticationManager(), customUserDetailsService))
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        if (System.getenv("ambiente") == null)
+        {
+            http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll().and();
+            return;
+        }
+
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+                .anyRequest().authenticated().and()
+                // .antMatchers(HttpMethod.GET, SIGN_UP_URL).permitAll()
+                // .antMatchers("/*/api/*").hasRole("USER")
+                // .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAutorizationFilter(authenticationManager(), customUserDetailsService))
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // http
         // .authorizeRequests()
@@ -54,10 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // .csrf().disable();
     }
 
-    
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception
-    {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // auth.inMemoryAuthentication()
         // .withUser("user").password("{noop}teste").roles("USER")
         // .and()
